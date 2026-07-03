@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Shop PETTY'S Soaps{% endblock %}
+
+{% block content %}
+
+<section class="page-title">
+    <h1>Shop Our Collection</h1>
+    <p>Small batch soaps, handmade with care.</p>
+</section>
+
+<section class="collection">
+    <div class="products shop-grid">
+        {% for product in products %}
+        <div class="shop-card">
+            <img src="{{ url_for('static', filename='images/' + product.image) }}">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.short }}</p>
+            <strong>${{ "%.2f"|format(product.price) }}</strong>
+            <a class="btn" href="/products/{{ product.slug }}">View Soap</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}
