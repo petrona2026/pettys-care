@@ -1,0 +1,181 @@
+/* ===========================
+   PETTY'S HOMEPAGE V1
+=========================== */
+
+.hero-v3{
+    background:#FAF8F2;
+    min-height:650px;
+    display:grid;
+    grid-template-columns:1fr 1.2fr 1fr;
+    align-items:center;
+    padding:40px 5%;
+}
+
+.hero-left-v3,
+.hero-right-v3{
+    display:flex;
+    justify-content:center;
+}
+
+.hero-left-v3 img,
+.hero-right-v3 img{
+    width:100%;
+    max-width:520px;
+}
+
+.hero-copy-v3{
+    text-align:center;
+}
+
+.hero-copy-v3 h1{
+    font-size:70px;
+    color:#3B2A1E;
+    line-height:1.05;
+    margin-bottom:10px;
+}
+
+.hero-copy-v3 h1 span{
+    color:#556B2F;
+}
+
+.hero-copy-v3 h2{
+    font-size:48px;
+    color:#C9A35A;
+    font-weight:400;
+    margin-bottom:25px;
+}
+
+.hero-copy-v3 p{
+    font-size:20px;
+    color:#555;
+    line-height:1.7;
+    margin-bottom:35px;
+}
+
+.hero-btn{
+    display:inline-block;
+    background:#556B2F;
+    color:white;
+    padding:18px 42px;
+    border-radius:40px;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.hero-btn:hover{
+    background:#445522;
+    transform:translateY(-3px);
+}
+.collection-v3{
+    background:#fffdf8;
+    padding:25px 4% 55px;
+}
+
+.collection-v3 h2{
+    text-align:center;
+    color:#556B2F;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-size:32px;
+    margin-bottom:25px;
+}
+
+.products-v3{
+    display:grid;
+    grid-template-columns:repeat(6, 1fr);
+    gap:20px;
+}
+
+.product-card-v3{
+    background:white;
+    border:1px solid #eee6db;
+    border-radius:16px;
+    padding:18px;
+    text-align:center;
+    box-shadow:0 8px 24px rgba(0,0,0,.07);
+}
+
+.product-card-v3 img{
+    width:100%;
+    border-radius:12px;
+    margin-bottom:12px;
+}
+
+.product-card-v3 h3{
+    font-size:18px;
+    margin-bottom:8px;
+}
+
+.product-card-v3 p{
+    font-size:14px;
+    min-height:38px;
+}
+
+.product-card-v3 strong{
+    display:block;
+    font-size:20px;
+    margin:12px 0;
+}
+
+.product-card-v3 a{
+    display:block;
+    background:#556B2F;
+    color:white;
+    text-decoration:none;
+    padding:10px;
+    border-radius:6px;
+    text-transform:uppercase;
+    font-size:13px;
+}
+/* ===========================
+   PREMIUM PRODUCT CARDS
+=========================== */
+
+.product-card{
+    background:#fff;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    transition:.3s ease;
+}
+
+.product-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 18px 35px rgba(0,0,0,.18);
+}
+
+.product-card img{
+    transition:.4s ease;
+}
+
+.product-card:hover img{
+    transform:scale(1.05);
+}
+
+.product-title{
+    font-size:20px;
+    font-weight:700;
+    color:#3B2A1E;
+    margin-top:12px;
+}
+
+.price{
+    font-size:20px;
+    font-weight:bold;
+    color:#556B2F;
+}
+
+.btn-shop{
+    background:#556B2F;
+    color:white;
+    border:none;
+    border-radius:30px;
+    padding:10px 24px;
+    font-weight:600;
+    transition:.3s ease;
+}
+
+.btn-shop:hover{
+    background:#6B8E23;
+}

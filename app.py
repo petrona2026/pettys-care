@@ -9,7 +9,7 @@ products = [
         "slug": "coconut-bliss",
         "short": "Crafted with coconut oil and Vitamin E.",
         "price": 8.00,
-        "image": "products/coconut.png",
+        "image": "products/coconut-bliss.png",
     },
     {
         "id": 2,
@@ -17,7 +17,7 @@ products = [
         "slug": "aloe-serenity",
         "short": "A soothing aloe vera soap with Vitamin E.",
         "price": 8.00,
-        "image": "products/aloe.png",
+        "image": "products/aloe-vera.png",
     },
     {
         "id": 3,
@@ -25,7 +25,7 @@ products = [
         "slug": "golden-turmeric",
         "short": "A warm botanical soap with turmeric and Vitamin E.",
         "price": 8.00,
-        "image": "products/turmeric.png",
+        "image": "products/golden-turmeric.png",
     },
     {
         "id": 4,
@@ -33,7 +33,7 @@ products = [
         "slug": "honey-harvest",
         "short": "A comforting honey and oatmeal soap.",
         "price": 8.00,
-        "image": "products/honey.png",
+        "image": "products/honey-harvest.png",
     },
     {
         "id": 5,
@@ -41,7 +41,7 @@ products = [
         "slug": "coffee-invigorate",
         "short": "A rich coffee-inspired handcrafted soap.",
         "price": 8.00,
-        "image": "products/coffee.png",
+        "image": "products/coffee-invigorate.png",
     },
     {
         "id": 6,
@@ -49,7 +49,7 @@ products = [
         "slug": "midnight-charcoal",
         "short": "A bold activated charcoal soap.",
         "price": 8.00,
-        "image": "products/charcoal.png",
+        "image": "products/charcoal-cleanse.png",
     },
 ]
 
