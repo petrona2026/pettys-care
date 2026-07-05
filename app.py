@@ -1,7 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template,session, redirect, url_for, request
 
 app = Flask(__name__)
-
+app.secret_key = "pettys-secret-key-change-later"
 products = [
     {
         "id": 1,
@@ -68,10 +68,103 @@ def product_list():
 def product_detail(slug):
     product = next((p for p in products if p["slug"] == slug), None)
     return render_template("product_detail.html", product=product)
+@app.route("/add-to-cart/<slug>")
+def add_to_cart(slug):
+    cart = session.get("cart", {})
+
+    cart[slug] = cart.get(slug, 0) + 1
+
+    session["cart"] = cart
+    return redirect(url_for("cart"))
+
+
+@app.route("/cart")
+def cart():
+    cart = session.get("cart", {})
+    cart_items = []
+    total = 0
+
+    for slug, quantity in cart.items():
+        product = next((p for p in products if p["slug"] == slug), None)
+
+        if product:
+            subtotal = product["price"] * quantity
+            total += subtotal
+
+            cart_items.append({
+                "product": product,
+                "quantity": quantity,
+                "subtotal": subtotal
+            })
+
+    return render_template("cart.html", cart_items=cart_items, total=total)
+@app.route("/checkout", methods=["GET", "POST"])
+def checkout():
+    cart = session.get("cart", {})
+
+    if not cart:
+        return redirect(url_for("cart"))
+
+    cart_items = []
+    total = 0
+
+    for slug, quantity in cart.items():
+        product = next((p for p in products if p["slug"] == slug), None)
+
+        if product:
+            subtotal = product["price"] * quantity
+            total += subtotal
+            cart_items.append({
+                "product": product,
+                "quantity": quantity,
+                "subtotal": subtotal
+            })
+
+    if request.method == "POST":
+        customer = {
+            "first_name": request.form.get("first_name"),
+            "last_name": request.form.get("last_name"),
+            "email": request.form.get("email"),
+            "phone": request.form.get("phone"),
+            "address": request.form.get("address"),
+            "city": request.form.get("city"),
+            "state": request.form.get("state"),
+            "zip_code": request.form.get("zip_code"),
+            "notes": request.form.get("notes"),
+        }
+
+        session["customer"] = customer
+        return redirect(url_for("payment"))
+
+    return render_template("checkout.html", cart_items=cart_items, total=total)
+
+
+@app.route("/payment")
+def payment():
+    customer = session.get("customer")
+    cart = session.get("cart", {})
+
+    if not customer or not cart:
+        return redirect(url_for("checkout"))
+
+    return render_template("payment.html", customer=customer)
+
+
+@app.route("/remove-from-cart/<slug>")
+def remove_from_cart(slug):
+    cart = session.get("cart", {})
+
+    if slug in cart:
+        del cart[slug]
+
+    session["cart"] = cart
+    return redirect(url_for("cart"))
+
 
 @app.route("/about")
 def about():
     return render_template("about.html")
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

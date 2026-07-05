@@ -17,18 +17,41 @@
 </header>
 
 <section class="hero-v2">
-    <img class="leaf-left" src="{{ url_for('static', filename='images/left_leaf_cluster.png') }}" alt="">
-    <img class="palm-right" src="{{ url_for('static', filename='images/palm_tree.png') }}" alt="">
 
-    <div class="hero-text">
-        <h1>Handcrafted with <span>Nature.</span></h1>
-        <p>Small batch soaps made with natural ingredients and crafted with care.</p>
-        <a href="#collection" class="btn-v2">Shop Our Collection</a>
+    <div class="hero-left">
+        <img class="hero-left-bg"
+             src="{{ url_for('static', filename='images/hero/botanical.png') }}">
     </div>
 
-    <div class="hero-img">
-        <img src="{{ url_for('static', filename='images/hero_soap_stack.png') }}" alt="Handcrafted soap stack">
+    <div class="hero-center">
+
+        <h1>
+            Handcrafted with<br>
+            <span>Nature.</span>
+        </h1>
+
+        <h2>
+            Made with <em>Love.</em>
+        </h2>
+
+        <div class="hero-divider">❦</div>
+
+        <p>
+            Small batch soaps made with natural ingredients
+            to nourish your skin and elevate your everyday.
+        </p>
+
+        <a href="#collection" class="hero-button">
+            SHOP OUR COLLECTION
+        </a>
+
     </div>
+
+    <div class="hero-right">
+        <img class="hero-palm"
+             src="{{ url_for('static', filename='images/hero/hero-soap-stack.png') }}">
+    </div>
+
 </section>
 
 <section class="collection-v2" id="collection">

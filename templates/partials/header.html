@@ -11,10 +11,27 @@ k<div class="top-bar">
     </a>
 
     <nav>
+    <nav class="main-nav">
+
         <a href="/">Home</a>
         <a href="/shop">Shop</a>
         <a href="/about">About Us</a>
         <a href="/ingredients">Ingredients</a>
         <a href="/contact">Contact</a>
+
+        <a href="/search" class="nav-icon" title="Search">
+        🔍
+        </a>
+
+        <a href="/account" class="nav-icon" title="My Account">
+        👤
+        </a>
+
+        <a href="/cart" class="nav-icon cart-icon" title="Shopping Cart">
+        🛒
+        <span>{{ session.get('cart', {})|length }}</span>
+        </a>
+ 
+    
     </nav>
 </header>

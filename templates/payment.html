@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+
+<section style="max-width:900px;margin:60px auto;text-align:center;">
+    <h1>Payment</h1>
+
+    <p>Thank you, {{ customer.first_name }}.</p>
+    <p>Your order information was saved. Payment setup is next.</p>
+
+    <a href="/cart" class="hero-final-btn">Back to Cart</a>
+</section>
+
+{% endblock %}

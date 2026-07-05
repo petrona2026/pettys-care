@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block content %}
+
+<section class="container" style="max-width:1000px;margin:50px auto;">
+
+    <h1>Your Shopping Cart</h1>
+
+    {% if cart_items %}
+
+    <table style="width:100%;border-collapse:collapse;">
+
+        <thead>
+            <tr>
+                <th align="left">Product</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for item in cart_items %}
+
+        <tr style="border-bottom:1px solid #ddd;">
+
+            <td style="padding:15px;">
+                <img
+                    src="{{ url_for('static', filename='images/' + item.product.image) }}"
+                    width="80">
+
+                <strong>{{ item.product.name }}</strong>
+            </td>
+
+            <td align="center">
+                ${{ "%.2f"|format(item.product.price) }}
+            </td>
+
+            <td align="center">
+                {{ item.quantity }}
+            </td>
+
+            <td align="center">
+                ${{ "%.2f"|format(item.subtotal) }}
+            </td>
+
+            <td align="center">
+                <a href="/remove-from-cart/{{ item.product.slug }}">
+                    Remove
+                </a>
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <div style="margin-top:30px;text-align:right;">
+
+        <h2>Total:
+            ${{ "%.2f"|format(total) }}
+        </h2>
+
+        <a class="hero-final-btn" href="/checkout">
+            Proceed to Checkout
+        </a>
+
+    </div>
+
+    {% else %}
+
+        <h2>Your shopping cart is empty.</h2>
+
+        <a class="hero-final-btn" href="/products">
+            Continue Shopping
+        </a>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

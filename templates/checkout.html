@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/checkout.css') }}">
+<section class="checkout-page">
+
+    <h1>Checkout</h1>
+
+    <div class="checkout-layout">
+
+        <form class="checkout-form" method="POST" action="/checkout">
+
+            <h2>Customer Information</h2>
+
+            <input type="text" name="first_name" placeholder="First Name" required>
+            <input type="text" name="last_name" placeholder="Last Name" required>
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="text" name="phone" placeholder="Phone Number" required>
+
+            <h2>Shipping Address</h2>
+
+            <input type="text" name="address" placeholder="Street Address" required>
+            <input type="text" name="city" placeholder="City" required>
+            <input type="text" name="state" placeholder="State" required>
+            <input type="text" name="zip_code" placeholder="ZIP Code" required>
+
+            <textarea name="notes" placeholder="Order notes optional"></textarea>
+
+            <button type="submit" class="hero-final-btn">
+                Continue to Payment
+            </button>
+
+        </form>
+
+        <div class="order-summary">
+
+            <h2>Order Summary</h2>
+
+            {% for item in cart_items %}
+            <div class="summary-item">
+                <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                <strong>${{ "%.2f"|format(item.subtotal) }}</strong>
+            </div>
+            {% endfor %}
+
+            <hr>
+
+            <div class="summary-total">
+                <span>Total</span>
+                <strong>${{ "%.2f"|format(total) }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
