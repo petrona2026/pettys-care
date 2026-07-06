@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Order Details{% endblock %}
+
+{% block content %}
+
+<section style="max-width:1000px;margin:50px auto;">
+
+    <h1>Order {{ order.order_number }}</h1>
+
+    <h2>Customer Information</h2>
+
+    <p><strong>Name:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+    <p><strong>Email:</strong> {{ order.email }}</p>
+    <p><strong>Phone:</strong> {{ order.phone }}</p>
+
+    <h2>Shipping Address</h2>
+
+    <p>{{ order.address }}</p>
+    <p>{{ order.city }}, {{ order.state }} {{ order.zip_code }}</p>
+
+    <p><strong>Order Status:</strong> {{ order.status }}</p>
+<form method="POST" action="/admin/orders/{{ order.id }}/status" style="margin:20px 0;">
+    <label><strong>Update Status:</strong></label>
+
+    <select name="status" style="padding:10px;margin-left:10px;">
+        <option value="Pending Payment">Pending Payment</option>
+        <option value="Paid">Paid</option>
+        <option value="Preparing">Preparing</option>
+        <option value="Packed">Packed</option>
+        <option value="Shipped">Shipped</option>
+        <option value="Delivered">Delivered</option>
+        <option value="Cancelled">Cancelled</option>
+    </select>
+
+    <button type="submit" class="hero-final-btn" style="padding:10px 20px;margin-left:10px;">
+        Save
+    </button>
+</form>
+    <hr>
+
+    <h2>Products Ordered</h2>
+
+    <table style="width:100%;border-collapse:collapse;">
+
+        <thead>
+            <tr style="background:#556B2F;color:white;">
+                <th style="padding:10px;">Product</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for item in items %}
+
+        <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:10px;">{{ item.product_name }}</td>
+            <td align="center">{{ item.quantity }}</td>
+            <td align="center">${{ "%.2f"|format(item.price) }}</td>
+            <td align="center">${{ "%.2f"|format(item.subtotal) }}</td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <h2 style="text-align:right;margin-top:30px;">
+        Total: ${{ "%.2f"|format(order.total) }}
+    </h2>
+
+    <p style="margin-top:30px;">
+        <a href="/admin/orders">← Back to Orders</a>
+    </p>
+
+</section>
+
+{% endblock %}

@@ -157,3 +157,55 @@ body{
     border-radius:20px;
     font-size:13px;
 }
+/* ==========================
+   MOBILE HOMEPAGE FIX
+========================== */
+
+@media (max-width: 768px) {
+    .hero-final {
+        display: flex;
+        flex-direction: column;
+        padding: 35px 18px;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .hero-main {
+        order: 1;
+    }
+
+    .hero-left {
+        order: 2;
+    }
+
+    .hero-right {
+        order: 3;
+    }
+
+    .hero-side img {
+        max-width: 260px;
+    }
+
+    .hero-main h1 {
+        font-size: 42px;
+    }
+
+    .hero-main h2 {
+        font-size: 28px;
+    }
+
+    .hero-main p {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    .product-row-final {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .product-card-final {
+        width: 45%;
+        max-width: 170px;
+    }
+}

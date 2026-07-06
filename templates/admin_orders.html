@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Orders{% endblock %}
+
+{% block content %}
+
+<section style="max-width:1100px;margin:50px auto;">
+    <h1>PETTY'S Orders</h1>
+
+    {% if orders %}
+    <table style="width:100%;border-collapse:collapse;background:white;">
+        <thead>
+            <tr style="background:#556B2F;color:white;">
+                <th style="padding:12px;">Order</th>
+                <th style="padding:12px;">Customer</th>
+                <th style="padding:12px;">Email</th>
+                <th style="padding:12px;">Total</th>
+                <th style="padding:12px;">Status</th>
+                <th style="padding:12px;">Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for order in orders %}
+            <tr style="border-bottom:1px solid #ddd;">
+                <td style="padding:12px;">
+    <a href="/admin/orders/{{ order.id }}" style="color:#556B2F;font-weight:bold;text-decoration:none;">
+        {{ order.order_number }}
+    </a>
+</td>
+                <td style="padding:12px;">{{ order.first_name }} {{ order.last_name }}</td>
+                <td style="padding:12px;">{{ order.email }}</td>
+                <td style="padding:12px;">${{ "%.2f"|format(order.total) }}</td>
+                <td style="padding:12px;">{{ order.status }}</td>
+                <td style="padding:12px;">{{ order.created_at }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No orders yet.</p>
+    {% endif %}
+</section>
+
+{% endblock %}

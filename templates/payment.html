@@ -7,10 +7,20 @@
 <section style="max-width:900px;margin:60px auto;text-align:center;">
     <h1>Payment</h1>
 
-    <p>Thank you, {{ customer.first_name }}.</p>
-    <p>Your order information was saved. Payment setup is next.</p>
+    <h2>Order {{ order_number }}</h2>
 
-    <a href="/cart" class="hero-final-btn">Back to Cart</a>
+    <p>Thank you, {{ customer.first_name }}.</p>
+    <p>Your order is saved as <strong>Pending Payment</strong>.</p>
+
+    <form action="/create-checkout-session" method="POST">
+        <button type="submit" class="hero-final-btn">
+            Pay Securely with Stripe
+        </button>
+    </form>
+
+    <br>
+
+    <a href="/cart">Back to Cart</a>
 </section>
 
 {% endblock %}

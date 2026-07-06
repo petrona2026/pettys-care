@@ -1,37 +1,38 @@
-k<div class="top-bar">
+<div class="top-bar">
     Free shipping on orders over $60 • Handmade in small batches
 </div>
 
 <header class="main-header">
-    <a href="/">
-<img class="logo"
-     src="{{ url_for('static',
-     filename='images/branding/official_logo1.png') }}"
-     alt="PETTY'S Handcrafted Soap">
+    <a href="/" class="logo-link">
+        <img class="logo"
+             src="{{ url_for('static', filename='images/branding/official_logo1.png') }}"
+             alt="PETTY'S Handcrafted Soap">
     </a>
 
-    <nav>
     <nav class="main-nav">
-
         <a href="/">Home</a>
         <a href="/shop">Shop</a>
         <a href="/about">About Us</a>
         <a href="/ingredients">Ingredients</a>
         <a href="/contact">Contact</a>
 
-        <a href="/search" class="nav-icon" title="Search">
-        🔍
-        </a>
+        <a href="/search" class="nav-icon" title="Search">🔍</a>
+        <a href="/account" class="nav-icon" title="My Account">👤</a>
 
-        <a href="/account" class="nav-icon" title="My Account">
-        👤
-        </a>
+        <div class="admin-menu">
+            <a href="#" class="admin-link">Admin ▾</a>
+
+            <div class="admin-dropdown">
+                <a href="/admin/orders">Orders</a>
+                <a href="#">Customers</a>
+                <a href="#">Suppliers</a>
+                <a href="#">Products</a>
+            </div>
+        </div>
 
         <a href="/cart" class="nav-icon cart-icon" title="Shopping Cart">
-        🛒
-        <span>{{ session.get('cart', {})|length }}</span>
+            🛒
+            <span>{{ session.get('cart', {})|length }}</span>
         </a>
- 
-    
     </nav>
 </header>
