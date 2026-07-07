@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash
 from flask import Flask, render_template,session, redirect, url_for, request
 import os
 import stripe
+from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -42,7 +43,7 @@ products = [
         "name": "Coconut Bliss",
         "slug": "coconut-bliss",
         "short": "Crafted with coconut oil and Vitamin E.",
-        "price": 8.00,
+        "price": 12.00,
         "image": "products_update/01-coconut-bliss.png",
     },
     {
@@ -50,7 +51,7 @@ products = [
         "name": "Aloe Serenity",
         "slug": "aloe-serenity",
         "short": "A soothing aloe vera soap with Vitamin E.",
-        "price": 8.00,
+        "price": 12.00,
         "image": "products_update/02-aloe-serenity.png",
     },
     {
@@ -58,7 +59,7 @@ products = [
         "name": "Golden Turmeric",
         "slug": "golden-turmeric",
         "short": "A warm botanical soap with turmeric and Vitamin E.",
-        "price": 8.00,
+        "price": 12.00,
         "image": "products_update/03-golden-turmeric.png",
     },
     {
@@ -66,7 +67,7 @@ products = [
         "name": "Honey Glow",
         "slug": "honey-glow",
         "short": "A comforting honey and oatmeal soap.",
-        "price": 8.00,
+        "price": 12.00,
         "image": "products_update/04-honey-glow.png",
     },
     {
@@ -74,7 +75,7 @@ products = [
         "name": "Coffee Delight",
         "slug": "coffee-delight",
         "short": "A rich coffee-inspired handcrafted soap.",
-        "price": 8.00,
+        "price": 12.00,
         "image": "products_update/05-coffee-delight.png",
     },
     {
@@ -82,7 +83,7 @@ products = [
         "name": "Charcoal Cleanse",
         "slug": "charcoal-cleanse",
         "short": "A bold activated charcoal soap.",
-        "price": 8.00,
+        "price": 12.00,
         "image": "products_update/06-charcoal-cleanse.png",
     },
 ]
@@ -96,7 +97,7 @@ def shop():
     return render_template("shop.html", products=products)
 @app.route("/products")
 def product_list():
-    return render_template("products.html", products=products)
+    return redirect(url_for("shop"))
 
 @app.route("/products/<slug>")
 def product_detail(slug):
@@ -110,7 +111,24 @@ def add_to_cart(slug):
 
     session["cart"] = cart
     return redirect(url_for("cart"))
+@app.route("/ingredients")
+def ingredients():
+    return render_template("ingredients.html")
 
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+
+@app.route("/search")
+def search():
+    return render_template("search.html")
+
+
+@app.route("/account")
+def account():
+    return render_template("account.html")
 
 @app.route("/cart")
 def cart():
@@ -308,6 +326,188 @@ def admin_order_detail(order_id):
     conn.close()
 
     return render_template("admin_order_detail.html", order=order, items=items)
+
+@app.route("/admin")
+@login_required
+def admin_dashboard():
+
+    conn = sqlite3.connect("pettys.db")
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    # Total Orders
+    cursor.execute("SELECT COUNT(*) FROM orders")
+    total_orders = cursor.fetchone()[0]
+
+    # Total Products
+    cursor.execute("SELECT COUNT(*) FROM products")
+    total_products = cursor.fetchone()[0]
+
+    # Total Customers
+    cursor.execute("SELECT COUNT(DISTINCT email) FROM orders")
+    total_customers = cursor.fetchone()[0]
+
+    # Total Revenue
+    cursor.execute("SELECT IFNULL(SUM(total), 0) FROM orders")
+    total_revenue = cursor.fetchone()[0]
+
+    conn.close()
+
+    return render_template(
+        "admin_dashboard.html",
+        total_orders=total_orders,
+        total_customers=total_customers,
+        total_products=total_products,
+        total_revenue=total_revenue
+    )
+@app.route("/admin/customers")
+@login_required
+def admin_customers():
+    return render_template("admin_customers.html")
+
+
+@app.route("/admin/suppliers")
+@login_required
+def admin_suppliers():
+    return render_template("admin_suppliers.html")
+
+
+@app.route("/admin/products")
+@login_required
+def admin_products():
+    conn = sqlite3.connect("pettys.db")
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM products ORDER BY id DESC")
+    products = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("admin_products.html", products=products)
+
+@app.route("/admin/products/add", methods=["GET", "POST"])
+@login_required
+def admin_add_product():
+    if request.method == "POST":
+        name = request.form.get("name")
+        slug = request.form.get("slug")
+        description = request.form.get("description")
+        price = request.form.get("price")
+        stock = request.form.get("stock")
+        image_file = request.files.get("image")
+        image = ""
+
+        if image_file and image_file.filename:
+            filename = secure_filename(image_file.filename)
+            image_path = os.path.join("static/images/products", filename)
+            image_file.save(image_path)
+            image = filename
+        conn = sqlite3.connect("pettys.db")
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO products (name, slug, description, price, image, stock)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (name, slug, description, price, image, stock))
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/admin/products")
+
+    return render_template("admin_add_product.html")
+@app.route("/admin/products/edit/<int:product_id>", methods=["GET", "POST"])
+@login_required
+def admin_edit_product(product_id):
+    conn = sqlite3.connect("pettys.db")
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+        name = request.form.get("name")
+        slug = request.form.get("slug")
+        description = request.form.get("description")
+        price = request.form.get("price")
+        stock = request.form.get("stock")
+        image = request.form.get("image")
+        status = request.form.get("status")
+
+        cursor.execute("""
+            UPDATE products
+            SET name = ?, slug = ?, description = ?, price = ?, image = ?, stock = ?, status = ?
+            WHERE id = ?
+        """, (name, slug, description, price, image, stock, status, product_id))
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/admin/products")
+
+    cursor.execute("SELECT * FROM products WHERE id = ?", (product_id,))
+    product = cursor.fetchone()
+    conn.close()
+
+    return render_template("admin_edit_product.html", product=product)
+@app.route("/admin/products/delete/<int:product_id>", methods=["POST"])
+@login_required
+def admin_delete_product(product_id):
+    conn = sqlite3.connect("pettys.db")
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM products WHERE id = ?", (product_id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/admin/products")
+@app.route("/admin/settings", methods=["GET", "POST"])
+@login_required
+def admin_settings():
+
+    conn = sqlite3.connect("pettys.db")
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+
+        cursor.execute("""
+            UPDATE store_settings
+            SET business_name=?,
+                owner_name=?,
+                contact_email=?,
+                website=?,
+                phone=?,
+                address=?,
+                city=?,
+                state=?,
+                zip_code=?
+            WHERE id=1
+        """, (
+
+            request.form["business_name"],
+            request.form["owner_name"],
+            request.form["contact_email"],
+            request.form["website"],
+            request.form["phone"],
+            request.form["address"],
+            request.form["city"],
+            request.form["state"],
+            request.form["zip_code"]
+
+        ))
+
+        conn.commit()
+
+    cursor.execute("SELECT * FROM store_settings WHERE id=1")
+    settings = cursor.fetchone()
+
+    conn.close()
+
+    return render_template(
+        "admin_settings.html",
+        settings=settings
+    )
 
 @app.route("/admin/orders/<int:order_id>/status", methods=["POST"])
 @login_required

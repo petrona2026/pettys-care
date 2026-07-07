@@ -756,3 +756,281 @@ body {
         height: auto;
     }
 }
+/* ===========================
+   ADMIN DROPDOWN MENU
+=========================== */
+
+.admin-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.admin-link {
+    text-decoration: none;
+    color: inherit;
+    padding: 10px 15px;
+    display: block;
+}
+
+.admin-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.15);
+    z-index: 9999;
+}
+
+.admin-dropdown a {
+    display: block;
+    padding: 12px 16px;
+    color: #333;
+    text-decoration: none;
+}
+
+.admin-dropdown a:hover {
+    background: #f4f4f4;
+}
+
+.admin-menu:hover .admin-dropdown {
+    display: block;
+}
+.admin-layout {
+    display: flex;
+    min-height: 70vh;
+}
+
+.admin-sidebar {
+    width: 240px;
+    background: #556B2F;
+    color: white;
+    padding: 25px;
+}
+
+.admin-sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 12px 0;
+}
+
+.admin-main {
+    flex: 1;
+    padding: 40px;
+    background: #f7f5ef;
+}
+
+.admin-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.admin-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,.08);
+}
+
+.admin-card h3 {
+    margin-bottom: 10px;
+}
+
+.admin-card p {
+    font-size: 2rem;
+    font-weight: bold;
+}
+.admin-page {
+    display: flex;
+    min-height: 100vh;
+    background: #f7f5ef;
+}
+
+.admin-sidebar {
+    width: 280px;
+    background: #556B2F;
+    color: white;
+    padding: 30px 22px;
+}
+
+.admin-sidebar h2 {
+    margin-bottom: 5px;
+}
+
+.admin-sidebar p {
+    margin-bottom: 25px;
+    opacity: .85;
+}
+
+.admin-sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 12px 10px;
+    border-radius: 6px;
+}
+
+.admin-sidebar a:hover {
+    background: rgba(255,255,255,.15);
+}
+
+.admin-content {
+    flex: 1;
+    padding: 50px;
+}
+
+.admin-header {
+    margin-bottom: 25px;
+}
+
+.admin-header h1 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.quick-actions a {
+    background: #556B2F;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.admin-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+}
+
+.admin-card {
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+
+.admin-card h3 {
+    margin-bottom: 12px;
+}
+
+.admin-card p {
+    font-size: 2rem;
+    font-weight: bold;
+}
+.admin-table-card {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th {
+    background: #556B2F;
+    color: white;
+    padding: 14px;
+    text-align: left;
+}
+
+.admin-table td {
+    padding: 14px;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-table tr:hover {
+    background: #f7f5ef;
+}
+.admin-form-card {
+    background: white;
+    max-width: 750px;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+
+.admin-form-card label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.admin-form-card input,
+.admin-form-card textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.admin-form-card button {
+    background: #556B2F;
+    color: white;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.cancel-link {
+    margin-left: 15px;
+    color: #556B2F;
+    text-decoration: none;
+}
+.table-action {
+    background: #556B2F;
+    color: white;
+    padding: 7px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+}
+.admin-form-card select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+.table-delete {
+    background: #c0392b;
+    color: white;
+    border: none;
+    padding: 7px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.table-delete:hover {
+    background: #a93226;
+}
+.product-thumb {
+    width: 55px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
