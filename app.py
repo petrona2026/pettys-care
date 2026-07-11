@@ -2,7 +2,7 @@ import sqlite3
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
 
-from flask import Flask, render_template,session, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, abort
 import os
 import stripe
 from werkzeug.utils import secure_filename
@@ -101,8 +101,228 @@ def product_list():
 
 @app.route("/products/<slug>")
 def product_detail(slug):
-    product = next((p for p in products if p["slug"] == slug), None)
-    return render_template("product_detail.html", product=product)
+
+    product = next(
+        (item for item in products if item["slug"] == slug),
+        None
+    )
+
+    if product is None:
+        abort(404)
+    product_details = {
+        "coconut-bliss": {
+            "ingredients": [
+                {
+                    "icon": "🥥",
+                    "name": "Coconut Oil",
+                    "description": "Helps create a rich, creamy lather while leaving the skin feeling soft and moisturized."
+                },
+                {
+                    "icon": "💧",
+                    "name": "Vegetable Glycerin",
+                    "description": "Attracts moisture to help the skin feel smooth, hydrated, and refreshed."
+                },
+                {
+                    "icon": "💛",
+                    "name": "Vitamin E",
+                    "description": "A natural antioxidant that helps nourish and care for the skin."
+                }
+            ],
+            "benefits": [
+                "Deep hydration",
+                "Rich, creamy lather",
+                "Helps soften dry-feeling skin",
+                "Gentle everyday cleansing",
+                "Leaves skin feeling smooth and refreshed"
+            ],
+            "perfect_for": [
+                "Dry Skin",
+                "Normal Skin",
+                "Daily Use",
+                "Face & Body"
+            ]
+        },
+
+        "aloe-serenity": {
+            "ingredients": [
+                {
+                    "icon": "🌿",
+                    "name": "Aloe Vera",
+                    "description": "Known for its soothing and refreshing qualities, helping the skin feel calm and comfortable."
+                },
+                {
+                    "icon": "💧",
+                    "name": "Vegetable Glycerin",
+                    "description": "Helps attract moisture and leaves the skin feeling soft and hydrated."
+                },
+                {
+                    "icon": "💛",
+                    "name": "Vitamin E",
+                    "description": "Helps nourish the skin with antioxidant care."
+                }
+            ],
+            "benefits": [
+                "Soothes and refreshes",
+                "Gentle cleansing",
+                "Helps maintain moisture",
+                "Leaves skin feeling soft",
+                "Ideal for everyday use"
+            ],
+            "perfect_for": [
+                "Sensitive Skin",
+                "Normal Skin",
+                "Daily Use",
+                "Face & Body"
+            ]
+        },
+
+        "golden-turmeric": {
+            "ingredients": [
+                {
+                    "icon": "✨",
+                    "name": "Turmeric",
+                    "description": "A botanical ingredient valued for helping promote brighter, more radiant-looking skin."
+                },
+                {
+                    "icon": "💧",
+                    "name": "Vegetable Glycerin",
+                    "description": "Helps retain moisture and leaves the skin feeling smooth."
+                },
+                {
+                    "icon": "💛",
+                    "name": "Vitamin E",
+                    "description": "Provides antioxidant care and helps nourish the skin."
+                }
+            ],
+            "benefits": [
+                "Promotes a brighter appearance",
+                "Helps improve the look of uneven tone",
+                "Gentle daily cleansing",
+                "Leaves skin feeling smooth",
+                "Rich in antioxidant care"
+            ],
+            "perfect_for": [
+                "Dull-Looking Skin",
+                "Normal Skin",
+                "Daily Use",
+                "Face & Body"
+            ]
+        },
+
+        "honey-glow": {
+            "ingredients": [
+                {
+                    "icon": "🍯",
+                    "name": "Pure Honey",
+                    "description": "Known for its moisturizing and soothing properties, helping the skin feel soft and comfortable."
+                },
+                {
+                    "icon": "💧",
+                    "name": "Vegetable Glycerin",
+                    "description": "Helps draw moisture to the skin for a smooth and hydrated feel."
+                },
+                {
+                    "icon": "💛",
+                    "name": "Vitamin E",
+                    "description": "Helps nourish and protect the skin with antioxidant care."
+                }
+            ],
+            "benefits": [
+                "Moisturizes and softens",
+                "Soothes dry-feeling skin",
+                "Gentle cleansing",
+                "Leaves skin feeling smooth",
+                "Supports healthy-looking skin"
+            ],
+            "perfect_for": [
+                "Dry Skin",
+                "Normal Skin",
+                "Daily Use",
+                "Face & Body"
+            ]
+        },
+
+        "coffee-delight": {
+            "ingredients": [
+                {
+                    "icon": "☕",
+                    "name": "Coffee",
+                    "description": "Provides gentle exfoliation to help remove surface buildup and leave the skin feeling smoother."
+                },
+                {
+                    "icon": "💧",
+                    "name": "Vegetable Glycerin",
+                    "description": "Helps keep the skin feeling soft and hydrated after cleansing."
+                },
+                {
+                    "icon": "💛",
+                    "name": "Vitamin E",
+                    "description": "Adds nourishing antioxidant care."
+                }
+            ],
+            "benefits": [
+                "Gentle exfoliation",
+                "Helps smooth rough-feeling skin",
+                "Refreshes the skin",
+                "Cleanses away surface buildup",
+                "Leaves skin feeling renewed"
+            ],
+            "perfect_for": [
+                "Rough Skin",
+                "Body Use",
+                "Occasional Exfoliation",
+                "Normal Skin"
+            ]
+        },
+
+        "charcoal-cleanse": {
+            "ingredients": [
+                {
+                    "icon": "⚫",
+                    "name": "Activated Charcoal",
+                    "description": "Helps lift away excess oil and surface impurities for a fresh, clean feeling."
+                },
+                {
+                    "icon": "💧",
+                    "name": "Vegetable Glycerin",
+                    "description": "Helps prevent the skin from feeling overly dry after cleansing."
+                },
+                {
+                    "icon": "💛",
+                    "name": "Vitamin E",
+                    "description": "Helps nourish the skin with antioxidant care."
+                }
+            ],
+            "benefits": [
+                "Deep-cleansing feel",
+                "Helps remove excess oil",
+                "Cleanses surface impurities",
+                "Leaves skin feeling fresh",
+                "Suitable for regular body cleansing"
+            ],
+            "perfect_for": [
+                "Oily Skin",
+                "Combination Skin",
+                "Body Use",
+                "Deep Cleansing"
+            ]
+        }
+    }
+
+    details = product_details.get(
+        slug,
+        {
+            "ingredients": [],
+            "benefits": [],
+            "perfect_for": []
+        }
+    )
+
+    return render_template(
+        "product_detail.html",
+        product=product,
+        details=details
+    )
 @app.route("/add-to-cart/<slug>")
 def add_to_cart(slug):
     cart = session.get("cart", {})
