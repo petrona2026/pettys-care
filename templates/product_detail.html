@@ -31,14 +31,13 @@
         PETTY'S CARE
     </a>
 
-    <p class="product-brand-tagline">
-        From Our Hands to Your Home
-    </p>
-
+<p class="product-brand-tagline">
+    {{ t.product_tagline }}
+</p>
     <nav class="product-page-nav">
-        <a href="/">Home</a>
-        <a href="/shop">Shop</a>
-        <a href="/about">About</a>
+<a href="/">{{ t.home }}</a>
+<a href="/shop">{{ t.shop }}</a>
+<a href="/about">{{ t.product_nav_about }}</a>
     </nav>
 </header>
 
@@ -64,16 +63,15 @@
         <div class="product-information-column">
 
             <p class="product-small-label">
-                HANDCRAFTED SOAP
-            </p>
-
+    {{ t.handcrafted_soap|upper }}
+</p>
             <h1 class="product-detail-title">
                 {{ product.name }}
             </h1>
 
             <div class="product-rating">
                 <span>★★★★★</span>
-                <small>Handcrafted with care</small>
+            <small>{{ t.handcrafted_with_care }}</small>
             </div>
 
             <p class="product-detail-description">
@@ -86,28 +84,28 @@
 
             <div class="product-quick-details">
                 <p>
-                    <strong>Net Weight:</strong>
-                    4 oz (113 g)
+                <strong>{{ t.net_weight }}:</strong>
+                4 oz (113 g)
                 </p>
 
                 <p>
-                    <strong>Made:</strong>
-                    Handcrafted in small batches
+                <strong>{{ t.made }}:</strong>
+                Handcrafted in small batches 
                 </p>
 
                 <p>
-                    <strong>Use:</strong>
-                    Face and body
+                <strong>{{ t.use }}:</strong>
+                {{ t.face_and_body }} 
                 </p>
             </div>
 
             <div class="product-actions">
                 <a class="product-primary-button" href="/shop">
-                    Continue Shopping
+                {{ t.continue_shopping }}
                 </a>
 
                 <a class="product-secondary-button" href="/">
-                    Back Home
+                    {{ t.back_home }}
                 </a>
             </div>
 
@@ -154,58 +152,46 @@
         </article>
 
 
-        <article class="product-info-card">
+<article class="product-info-card">
 
-            <div class="product-card-heading">
-                <span class="product-card-icon">✨</span>
+    <div class="product-card-heading">
+        <span class="product-card-icon">✨</span>
 
-                <div>
-                    <p class="product-card-label">
-                        EVERYDAY SKINCARE
-                    </p>
+        <div>
+            <p class="product-card-label">
+                EVERYDAY SKINCARE
+            </p>
 
-                    <h2>Benefits</h2>
-                </div>
-            </div>
-
-            <div class="product-benefit-list">
-
-                <div class="product-tag-list">
-
-                    {% for item in details.perfect_for %}
-                    <span>{{ item }}</span>
-                     {% endfor %}
-
-                 </div>
-                
-                
-                
-
-<div class="product-benefit-list">
-
-    {% for benefit in details.benefits %}
-
-    <div class="product-benefit-item">
-        <span>✓</span>
-        <p>{{ benefit }}</p>
+            <h2>Benefits</h2>
+        </div>
     </div>
 
-    {% endfor %}
+    <div class="product-benefit-list">
 
-</div>
-            <div class="product-perfect-for">
-                <h3>Perfect For</h3>
+        {% for benefit in details.benefits %}
 
-<div class="product-tag-list">
+        <div class="product-benefit-item">
+            <span>✓</span>
+            <p>{{ benefit }}</p>
+        </div>
 
-    {% for item in details.perfect_for %}
+        {% endfor %}
 
-        <span>{{ item }}</span>
+    </div>
 
-    {% endfor %}
+    <div class="product-perfect-for">
 
-</div>
-            </div>
+        <h3>Perfect For</h3>
+
+        <div class="product-tag-list">
+
+            {% for item in details.perfect_for %}
+                <span>{{ item }}</span>
+            {% endfor %}
+
+        </div>
+
+    </div>
 
         </article>
 
