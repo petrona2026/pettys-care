@@ -10,25 +10,50 @@
              alt="Soap Stack">
     </div>
 
-    <div class="hero-main">
-        <h1>Handcrafted with</h1>
+<div class="hero-main">
 
-        <h1 class="hero-nature">
-            <span>Nature.</span>
-        </h1>
+{% if session.get('language', 'en') == 'es' %}
 
-        <h2>Made with <em>Love.</em></h2>
+    <h1>Hecho a Mano con</h1>
 
-        <p>
-            Small batch soaps made with natural ingredients<br>
-            to nourish your skin and elevate your everyday.
-        </p>
+    <h1 class="hero-nature">
+        <span>la Naturaleza.</span>
+    </h1>
 
-        <a href="#collection" class="hero-final-btn">
-            Shop Our Collection
-        </a>
-    </div>
+    <h2>Elaborado con <em>Amor.</em></h2>
 
+    <p>
+        Jabones artesanales elaborados en pequeños lotes<br>
+        con ingredientes naturales para cuidar tu piel
+        y hacer especial tu rutina diaria.
+    </p>
+
+    <a href="#collection" class="hero-final-btn">
+        Ver Nuestra Colección
+    </a>
+
+{% else %}
+
+    <h1>Handcrafted with</h1>
+
+    <h1 class="hero-nature">
+        <span>Nature.</span>
+    </h1>
+
+    <h2>Made with <em>Love.</em></h2>
+
+    <p>
+        Small batch soaps made with natural ingredients<br>
+        to nourish your skin and elevate your everyday.
+    </p>
+
+    <a href="#collection" class="hero-final-btn">
+        Shop Our Collection
+    </a>
+
+{% endif %}
+
+</div>
     <div class="hero-side hero-right">
         <img src="{{ url_for('static', filename='images/hero_soap_stack_right1.png') }}"
              alt="Palm Tree">
@@ -36,8 +61,12 @@
 </section>
 
 <section class="collection-final" id="collection">
-    <h2>OUR COLLECTION</h2>
 
+    {% if session.get('language', 'en') == 'es' %}
+        <h2>NUESTRA COLECCIÓN</h2>
+    {% else %}
+        <h2>OUR COLLECTION</h2>
+    {% endif %}
     <div class="product-row-final">
         {% for product in products %}
         <div class="product-card-final">
@@ -51,10 +80,15 @@
             <h3>{{ product.name }}</h3>
             <strong>${{ "%.2f"|format(product.price) }}</strong>
 
-            <a href="/add-to-cart/{{ product.slug }}">
-                Add to Cart
-            </a>
+	<a href="/add-to-cart/{{ product.slug }}">
 
+    {% if session.get('language', 'en') == 'es' %}
+        Agregar al Carrito
+    {% else %}
+        Add to Cart
+    {% endif %}
+
+</a>
         </div>
         {% endfor %}
     </div>

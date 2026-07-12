@@ -87,7 +87,15 @@ products = [
         "image": "products_clean/06-charcoal-cleanse.png",
     },
 ]
+@app.route("/set-language/<language>")
+def set_language(language):
 
+    if language not in ["en", "es"]:
+        language = "en"
+
+    session["language"] = language
+
+    return redirect(request.referrer or url_for("index"))
 @app.route("/")
 def index():
     return render_template("index.html", products=products)

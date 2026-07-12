@@ -1,33 +1,98 @@
 <div class="top-bar">
-    Free shipping on orders over $60 • Handmade in small batches
+    {% if session.get('language', 'en') == 'es' %}
+        Envío gratis en pedidos de más de $60 • Hecho a mano en pequeños lotes
+    {% else %}
+        Free shipping on orders over $60 • Handmade in small batches
+    {% endif %}
 </div>
 
 <header class="main-header">
 
     <nav class="main-nav">
-        <a href="/">Home</a>
-        <a href="/shop">Shop</a>
-        <a href="/about">About Us</a>
-        <a href="/ingredients">Ingredients</a>
-        <a href="/contact">Contact</a>
 
-        <a href="/search" class="nav-icon" title="Search">🔍</a>
-        <a href="/account" class="nav-icon" title="My Account">👤</a>
+        {% if session.get('language', 'en') == 'es' %}
+
+            <a href="/">Inicio</a>
+            <a href="/shop">Tienda</a>
+            <a href="/about">Nosotros</a>
+            <a href="/ingredients">Ingredientes</a>
+            <a href="/contact">Contacto</a>
+
+            <a href="/search" class="nav-icon" title="Buscar">🔍</a>
+            <a href="/account" class="nav-icon" title="Mi cuenta">👤</a>
+
+        {% else %}
+
+            <a href="/">Home</a>
+            <a href="/shop">Shop</a>
+            <a href="/about">About Us</a>
+            <a href="/ingredients">Ingredients</a>
+            <a href="/contact">Contact</a>
+
+            <a href="/search" class="nav-icon" title="Search">🔍</a>
+            <a href="/account" class="nav-icon" title="My Account">👤</a>
+
+        {% endif %}
 
         <div class="admin-menu">
-                <a href="/admin" class="admin-link">Admin ▾</a>
+
+            <a href="/admin" class="admin-link">
+                Admin ▾
+            </a>
+
             <div class="admin-dropdown">
-                <a href="/admin">Dashboard</a>
-                <a href="/admin/orders">Orders</a>
-                <a href="/admin/customers">Customers</a>
-                <a href="/admin/suppliers">Suppliers</a>
-                <a href="/admin/products">Products</a>
+
+                {% if session.get('language', 'en') == 'es' %}
+
+                    <a href="/admin">Panel</a>
+                    <a href="/admin/orders">Pedidos</a>
+                    <a href="/admin/customers">Clientes</a>
+                    <a href="/admin/suppliers">Proveedores</a>
+                    <a href="/admin/products">Productos</a>
+
+                {% else %}
+
+                    <a href="/admin">Dashboard</a>
+                    <a href="/admin/orders">Orders</a>
+                    <a href="/admin/customers">Customers</a>
+                    <a href="/admin/suppliers">Suppliers</a>
+                    <a href="/admin/products">Products</a>
+
+                {% endif %}
+
             </div>
+
         </div>
 
-        <a href="/cart" class="nav-icon cart-icon" title="Shopping Cart">
+        <a
+            href="/cart"
+            class="nav-icon cart-icon"
+            title="{% if session.get('language', 'en') == 'es' %}Carrito de compras{% else %}Shopping Cart{% endif %}"
+        >
             🛒
             <span>{{ session.get('cart', {})|length }}</span>
         </a>
+
+        <div class="language-switcher">
+
+            <a
+                href="{{ url_for('set_language', language='en') }}"
+                class="{% if session.get('language', 'en') == 'en' %}active-language{% endif %}"
+            >
+                EN
+            </a>
+
+            <span>|</span>
+
+            <a
+                href="{{ url_for('set_language', language='es') }}"
+                class="{% if session.get('language', 'en') == 'es' %}active-language{% endif %}"
+            >
+                ES
+            </a>
+
+        </div>
+
     </nav>
+
 </header>
