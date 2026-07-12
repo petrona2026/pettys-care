@@ -2,14 +2,14 @@ import sqlite3
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
 
-from flask import Flask, render_template, redirect, url_for, abort,session,request
+from flask import Flask, render_template, redirect, url_for, abort
 import os
 import stripe
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 
 load_dotenv()
-# print("Stripe Key:", os.getenv("STRIPE_SECRET_KEY"))
+print("Stripe Key:", os.getenv("STRIPE_SECRET_KEY"))
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 app = Flask(__name__)
 app.secret_key = "pettys-secret-key-change-later"
@@ -323,7 +323,7 @@ def product_detail(slug):
         product=product,
         details=details
     )
-@app.route("/add-to-cart/<slug>", methods=["GET", "POST"])
+@app.route("/add-to-cart/<slug>")
 def add_to_cart(slug):
     cart = session.get("cart", {})
 
@@ -369,42 +369,7 @@ def cart():
                 "subtotal": subtotal
             })
 
-    cart_slugs = set(cart.keys())
-
-    recommended_products = [
-    product
-    for product in products
-    if product["slug"] not in cart_slugs
-    ][:3]
-
-    return render_template(
-    "cart.html",
-    cart_items=cart_items,
-    total=total,
-    recommended_products=recommended_products
-)
-@app.route("/update-cart/<slug>", methods=["POST"])
-def update_cart(slug):
-    cart = session.get("cart", {})
-
-    if slug not in cart:
-        return redirect(url_for("cart"))
-
-    action = request.form.get("action")
-
-    if action == "increase":
-        cart[slug] += 1
-
-    elif action == "decrease":
-        cart[slug] -= 1
-
-        if cart[slug] <= 0:
-            cart.pop(slug)
-
-    session["cart"] = cart
-    session.modified = True
-
-    return redirect(url_for("cart"))
+    return render_template("cart.html", cart_items=cart_items, total=total)
 @app.route("/checkout", methods=["GET", "POST"])
 def checkout():
     cart = session.get("cart", {})

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>{{ product.name }} | PETTY'S CARE</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/product_detail.css') }}"
+    >
+</head>
+
+<body class="product-detail-page">
+
+<header class="product-page-header">
+    <a href="/" class="product-brand">
+        PETTY'S CARE
+    </a>
+
+    <p class="product-brand-tagline">
+        From Our Hands to Your Home
+    </p>
+
+    <nav class="product-page-nav">
+        <a href="/">Home</a>
+        <a href="/shop">Shop</a>
+        <a href="/about">About</a>
+    </nav>
+</header>
+
+
+<main class="product-detail-container">
+
+    <!-- Main product section -->
+    <section class="product-main">
+
+        <div class="product-image-column">
+            <div class="product-image-frame">
+
+                <img
+                    src="{{ url_for('static', filename='images/' + product.image) }}"
+                    alt="{{ product.name }} handcrafted soap"
+                    class="product-detail-image"
+                >
+
+            </div>
+        </div>
+
+
+        <div class="product-information-column">
+
+            <p class="product-small-label">
+                HANDCRAFTED SOAP
+            </p>
+
+            <h1 class="product-detail-title">
+                {{ product.name }}
+            </h1>
+
+            <div class="product-rating">
+                <span>★★★★★</span>
+                <small>Handcrafted with care</small>
+            </div>
+
+            <p class="product-detail-description">
+                {{ product.short }}
+            </p>
+
+            <p class="product-detail-price">
+                ${{ "%.2f"|format(product.price) }}
+            </p>
+
+            <div class="product-quick-details">
+                <p>
+                    <strong>Net Weight:</strong>
+                    4 oz (113 g)
+                </p>
+
+                <p>
+                    <strong>Made:</strong>
+                    Handcrafted in small batches
+                </p>
+
+                <p>
+                    <strong>Use:</strong>
+                    Face and body
+                </p>
+            </div>
+
+            <div class="product-actions">
+                <a class="product-primary-button" href="/shop">
+                    Continue Shopping
+                </a>
+
+                <a class="product-secondary-button" href="/">
+                    Back Home
+                </a>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Ingredients and benefits -->
+    <section class="product-information-grid">
+
+        <article class="product-info-card">
+
+            <div class="product-card-heading">
+                <span class="product-card-icon">🌿</span>
+
+                <div>
+                    <p class="product-card-label">
+                        NATURALLY INSPIRED
+                    </p>
+
+                    <h2>Key Ingredients</h2>
+                </div>
+            </div>
+
+<div class="product-feature-list">
+
+    {% for ingredient in details.ingredients %}
+
+    <div class="product-feature-item">
+
+        <span>{{ ingredient.icon }}</span>
+
+        <div>
+            <h3>{{ ingredient.name }}</h3>
+            <p>{{ ingredient.description }}</p>
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+        </article>
+
+
+        <article class="product-info-card">
+
+            <div class="product-card-heading">
+                <span class="product-card-icon">✨</span>
+
+                <div>
+                    <p class="product-card-label">
+                        EVERYDAY SKINCARE
+                    </p>
+
+                    <h2>Benefits</h2>
+                </div>
+            </div>
+
+            <div class="product-benefit-list">
+
+                <div class="product-tag-list">
+
+                    {% for item in details.perfect_for %}
+                    <span>{{ item }}</span>
+                     {% endfor %}
+
+                 </div>
+                
+                
+                
+
+<div class="product-benefit-list">
+
+    {% for benefit in details.benefits %}
+
+    <div class="product-benefit-item">
+        <span>✓</span>
+        <p>{{ benefit }}</p>
+    </div>
+
+    {% endfor %}
+
+</div>
+            <div class="product-perfect-for">
+                <h3>Perfect For</h3>
+
+<div class="product-tag-list">
+
+    {% for item in details.perfect_for %}
+
+        <span>{{ item }}</span>
+
+    {% endfor %}
+
+</div>
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- How to use -->
+    <section class="product-use-section">
+
+        <div class="product-use-heading">
+            <p>CARE INSTRUCTIONS</p>
+            <h2>How to Use</h2>
+        </div>
+
+        <div class="product-use-steps">
+
+            <div class="product-use-step">
+                <span>01</span>
+                <h3>Lather</h3>
+                <p>
+                    Wet the soap and work it into a rich lather
+                    using your hands or a washcloth.
+                </p>
+            </div>
+
+            <div class="product-use-step">
+                <span>02</span>
+                <h3>Cleanse</h3>
+                <p>
+                    Gently massage the lather over your skin,
+                    avoiding direct contact with the eyes.
+                </p>
+            </div>
+
+            <div class="product-use-step">
+                <span>03</span>
+                <h3>Rinse</h3>
+                <p>
+                    Rinse thoroughly with clean water and gently
+                    pat your skin dry.
+                </p>
+            </div>
+
+            <div class="product-use-step">
+                <span>04</span>
+                <h3>Keep Dry</h3>
+                <p>
+                    Allow the bar to dry between uses to help it
+                    last longer.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="product-care-message">
+        <p>HANDMADE WITH CARE</p>
+
+        <h2>
+            Thoughtfully crafted for your everyday skincare ritual.
+        </h2>
+
+        <p>
+            Every PETTY'S CARE bar is handcrafted in small batches
+            to provide a warm, gentle, and enjoyable cleansing
+            experience.
+        </p>
+    </section>
+
+</main>
+
+
+<footer class="product-page-footer">
+    <p>
+        &copy; 2026 PETTY'S CARE.
+        From Our Hands to Your Home.
+    </p>
+</footer>
+
+</body>
+</html>
