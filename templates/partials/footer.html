@@ -6,87 +6,27 @@
 
             <h2>PETTY'S CARE</h2>
 
-            {% if session.get('language', 'en') == 'es' %}
-
-                <p>Inspirado por la Naturaleza.</p>
-                <p>Hecho con Amor.</p>
-
-            {% else %}
-
-                <p>Inspired by Nature.</p>
-                <p>Made with Love.</p>
-
-            {% endif %}
+            <p>{{ t.hero_line_1 }} {{ t.hero_line_2 }}</p>
+            <p>{{ t.hero_line_3 }}</p>
 
         </div>
 
         <div class="footer-links">
 
-            <h3>
+            <h3>{{ t.explore }}</h3>
 
-                {% if session.get('language', 'en') == 'es' %}
-                    Explorar
-                {% else %}
-                    Explore
-                {% endif %}
-
-            </h3>
-
-            <a href="/shop">
-                {% if session.get('language', 'en') == 'es' %}
-                    Tienda
-                {% else %}
-                    Shop
-                {% endif %}
-            </a>
-
-            <a href="/ingredients">
-                {% if session.get('language', 'en') == 'es' %}
-                    Ingredientes
-                {% else %}
-                    Ingredients
-                {% endif %}
-            </a>
-
-            <a href="/about">
-                {% if session.get('language', 'en') == 'es' %}
-                    Nosotros
-                {% else %}
-                    About Us
-                {% endif %}
-            </a>
-
-            <a href="/contact">
-                {% if session.get('language', 'en') == 'es' %}
-                    Contacto
-                {% else %}
-                    Contact
-                {% endif %}
-            </a>
+            <a href="/shop">{{ t.shop }}</a>
+            <a href="/ingredients">{{ t.ingredients }}</a>
+            <a href="/about">{{ t.about_us }}</a>
+            <a href="/contact">{{ t.contact }}</a>
 
         </div>
 
         <div class="footer-newsletter">
 
-            <h3>
+            <h3>{{ t.stay_connected }}</h3>
 
-                {% if session.get('language', 'en') == 'es' %}
-                    Mantente Informado
-                {% else %}
-                    Stay Connected
-                {% endif %}
-
-            </h3>
-
-            <p>
-
-                {% if session.get('language', 'en') == 'es' %}
-                    Próximamente podrás suscribirte para recibir noticias y ofertas especiales.
-                {% else %}
-                    Newsletter and exclusive offers coming soon.
-                {% endif %}
-
-            </p>
+            <p>{{ t.newsletter_coming_soon }}</p>
 
         </div>
 
@@ -96,19 +36,9 @@
 
     <div class="footer-bottom">
 
-        <p>
-            © 2026 PETTY'S CARE
-        </p>
+        <p>© 2026 PETTY'S CARE</p>
 
-        <p>
-
-            {% if session.get('language', 'en') == 'es' %}
-                De Nuestras Manos a Tu Hogar.
-            {% else %}
-                From Our Hands to Your Home.
-            {% endif %}
-
-        </p>
+        <p>{{ t.from_our_hands }}</p>
 
     </div>
 

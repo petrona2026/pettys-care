@@ -3,6 +3,8 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import check_password_hash
 
 from flask import Flask, render_template, redirect, url_for, abort,session,request
+from translations.en import translations as en
+from translations.es import translations as es
 import os
 import stripe
 from werkzeug.utils import secure_filename
@@ -12,6 +14,17 @@ load_dotenv()
 # print("Stripe Key:", os.getenv("STRIPE_SECRET_KEY"))
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 app = Flask(__name__)
+@app.context_processor
+def inject_translations():
+
+    language = session.get("language", "en")
+
+    if language == "es":
+        t = es
+    else:
+        t = en
+
+    return dict(t=t)
 app.secret_key = "pettys-secret-key-change-later"
 login_manager = LoginManager()
 login_manager.init_app(app)

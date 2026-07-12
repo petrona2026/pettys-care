@@ -1,39 +1,31 @@
 <div class="top-bar">
-    {% if session.get('language', 'en') == 'es' %}
-        Envío gratis en pedidos de más de $60 • Hecho a mano en pequeños lotes
-    {% else %}
-        Free shipping on orders over $60 • Handmade in small batches
-    {% endif %}
+    {{ t.free_shipping }} • {{ t.small_batches }}
 </div>
-
 <header class="main-header">
 
     <nav class="main-nav">
 
-        {% if session.get('language', 'en') == 'es' %}
+<a href="/">{{ t.home }}</a>
+<a href="/shop">{{ t.shop }}</a>
+<a href="/about">{{ t.about_us }}</a>
+<a href="/ingredients">{{ t.ingredients }}</a>
+<a href="/contact">{{ t.contact }}</a>
 
-            <a href="/">Inicio</a>
-            <a href="/shop">Tienda</a>
-            <a href="/about">Nosotros</a>
-            <a href="/ingredients">Ingredientes</a>
-            <a href="/contact">Contacto</a>
+<a
+    href="/search"
+    class="nav-icon"
+    title="{{ t.search }}"
+>
+    🔍
+</a>
 
-            <a href="/search" class="nav-icon" title="Buscar">🔍</a>
-            <a href="/account" class="nav-icon" title="Mi cuenta">👤</a>
-
-        {% else %}
-
-            <a href="/">Home</a>
-            <a href="/shop">Shop</a>
-            <a href="/about">About Us</a>
-            <a href="/ingredients">Ingredients</a>
-            <a href="/contact">Contact</a>
-
-            <a href="/search" class="nav-icon" title="Search">🔍</a>
-            <a href="/account" class="nav-icon" title="My Account">👤</a>
-
-        {% endif %}
-
+<a
+    href="/account"
+    class="nav-icon"
+    title="{{ t.my_account }}"
+>
+    👤
+</a>
         <div class="admin-menu">
 
             <a href="/admin" class="admin-link">

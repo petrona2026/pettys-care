@@ -18,6 +18,10 @@
     rel="stylesheet"
     href="{{ url_for('static', filename='css/product_detail.css') }}"
     >
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/reviews.css') }}"
+>
 </head>
 
 <body class="product-detail-page">
@@ -272,7 +276,62 @@
             experience.
         </p>
     </section>
+<section class="product-reviews">
 
+    <div class="reviews-header">
+
+        <p>WHAT OUR CUSTOMERS SAY</p>
+
+        <h2>Customer Reviews</h2>
+
+    </div>
+
+    <div class="review-card">
+
+        <div class="review-stars">
+            ★★★★★
+        </div>
+
+        <h3>Sarah M.</h3>
+
+        <p>
+            "I've been using this soap for several weeks and absolutely love
+            how soft and refreshed my skin feels."
+        </p>
+
+    </div>
+
+    <div class="review-card">
+
+        <div class="review-stars">
+            ★★★★★
+        </div>
+
+        <h3>Michael R.</h3>
+
+        <p>
+            "Beautiful handcrafted soap with a wonderful scent.
+            I'll definitely be ordering again."
+        </p>
+
+    </div>
+
+    <div class="review-card">
+
+        <div class="review-stars">
+            ★★★★★
+        </div>
+
+        <h3>Emily T.</h3>
+
+        <p>
+            "Excellent quality and beautiful presentation.
+            Highly recommended."
+        </p>
+
+    </div>
+
+</section>
 </main>
 
 

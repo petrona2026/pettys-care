@@ -12,47 +12,21 @@
 
 <div class="hero-main">
 
-{% if session.get('language', 'en') == 'es' %}
+<h1>{{ t.hero_line_1 }}</h1>
 
-    <h1>Hecho a Mano con</h1>
+<h1 class="hero-nature">
+    <span>{{ t.hero_line_2 }}</span>
+</h1>
 
-    <h1 class="hero-nature">
-        <span>la Naturaleza.</span>
-    </h1>
+<h2>{{ t.hero_line_3 }}</h2>
 
-    <h2>Elaborado con <em>Amor.</em></h2>
+<p>
+    {{ t.hero_description }}
+</p>
 
-    <p>
-        Jabones artesanales elaborados en pequeños lotes<br>
-        con ingredientes naturales para cuidar tu piel
-        y hacer especial tu rutina diaria.
-    </p>
-
-    <a href="#collection" class="hero-final-btn">
-        Ver Nuestra Colección
-    </a>
-
-{% else %}
-
-    <h1>Handcrafted with</h1>
-
-    <h1 class="hero-nature">
-        <span>Nature.</span>
-    </h1>
-
-    <h2>Made with <em>Love.</em></h2>
-
-    <p>
-        Small batch soaps made with natural ingredients<br>
-        to nourish your skin and elevate your everyday.
-    </p>
-
-    <a href="#collection" class="hero-final-btn">
-        Shop Our Collection
-    </a>
-
-{% endif %}
-
+<a href="#collection" class="hero-final-btn">
+    {{ t.shop_collection }}
+</a>
 </div>
     <div class="hero-side hero-right">
         <img src="{{ url_for('static', filename='images/hero_soap_stack_right1.png') }}"
@@ -62,11 +36,7 @@
 
 <section class="collection-final" id="collection">
 
-    {% if session.get('language', 'en') == 'es' %}
-        <h2>NUESTRA COLECCIÓN</h2>
-    {% else %}
-        <h2>OUR COLLECTION</h2>
-    {% endif %}
+<h2>{{ t.our_collection }}</h2>
     <div class="product-row-final">
         {% for product in products %}
         <div class="product-card-final">
@@ -80,14 +50,8 @@
             <h3>{{ product.name }}</h3>
             <strong>${{ "%.2f"|format(product.price) }}</strong>
 
-	<a href="/add-to-cart/{{ product.slug }}">
-
-    {% if session.get('language', 'en') == 'es' %}
-        Agregar al Carrito
-    {% else %}
-        Add to Cart
-    {% endif %}
-
+<a href="/add-to-cart/{{ product.slug }}">
+    {{ t.add_to_cart }}
 </a>
         </div>
         {% endfor %}
