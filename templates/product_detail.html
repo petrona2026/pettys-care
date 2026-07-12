@@ -123,11 +123,11 @@
                 <span class="product-card-icon">🌿</span>
 
                 <div>
-                    <p class="product-card-label">
-                        NATURALLY INSPIRED
-                    </p>
+                <p class="product-card-label">
+    {{ t.naturally_inspired|upper }}
+</p>
 
-                    <h2>Key Ingredients</h2>
+<h2>{{ t.key_ingredients }}</h2>
                 </div>
             </div>
 
@@ -158,11 +158,11 @@
         <span class="product-card-icon">✨</span>
 
         <div>
-            <p class="product-card-label">
-                EVERYDAY SKINCARE
-            </p>
+          <p class="product-card-label">
+    {{ t.everyday_skincare|upper }}
+</p>
 
-            <h2>Benefits</h2>
+<h2>{{ t.benefits }}</h2>
         </div>
     </div>
 
@@ -181,8 +181,7 @@
 
     <div class="product-perfect-for">
 
-        <h3>Perfect For</h3>
-
+          <h3>{{ t.perfect_for }}</h3>
         <div class="product-tag-list">
 
             {% for item in details.perfect_for %}
@@ -202,45 +201,44 @@
     <section class="product-use-section">
 
         <div class="product-use-heading">
-            <p>CARE INSTRUCTIONS</p>
-            <h2>How to Use</h2>
+          <p>{{ t.care_instructions|upper }}</p>
+<h2>{{ t.how_to_use }}</h2>
         </div>
 
         <div class="product-use-steps">
 
             <div class="product-use-step">
                 <span>01</span>
-                <h3>Lather</h3>
+                <h3>{{ t.lather }}</h3>
                 <p>
-                    Wet the soap and work it into a rich lather
-                    using your hands or a washcloth.
+                 <p>{{ t.lather_text }}</p>
                 </p>
             </div>
 
             <div class="product-use-step">
                 <span>02</span>
-                <h3>Cleanse</h3>
+                <p>{{ t.cleanse_text }}</p>
                 <p>
-                    Gently massage the lather over your skin,
-                    avoiding direct contact with the eyes.
+                    <p>{{ t.cleanse_text }}</p>
+                    
                 </p>
             </div>
 
             <div class="product-use-step">
                 <span>03</span>
-                <h3>Rinse</h3>
+                <h3>{{ t.rinse }}</h3>
                 <p>
-                    Rinse thoroughly with clean water and gently
-                    pat your skin dry.
+                    <p>{{ t.rinse_text }}</p>
+                    
                 </p>
             </div>
 
             <div class="product-use-step">
                 <span>04</span>
-                <h3>Keep Dry</h3>
+                <h3>{{ t.keep_dry }}</h3>
                 <p>
-                    Allow the bar to dry between uses to help it
-                    last longer.
+                    <p>{{ t.keep_dry_text }}</p>
+                    
                 </p>
             </div>
 
@@ -248,20 +246,15 @@
 
     </section>
 
+<section class="product-care-message">
 
-    <section class="product-care-message">
-        <p>HANDMADE WITH CARE</p>
+    <p>{{ t.handmade_with_care|upper }}</p>
 
-        <h2>
-            Thoughtfully crafted for your everyday skincare ritual.
-        </h2>
+    <h2>{{ t.care_message_title }}</h2>
 
-        <p>
-            Every PETTY'S CARE bar is handcrafted in small batches
-            to provide a warm, gentle, and enjoyable cleansing
-            experience.
-        </p>
-    </section>
+    <p>{{ t.hero_description }}</p>
+
+</section>
 <section class="product-reviews">
 
     <div class="reviews-header">

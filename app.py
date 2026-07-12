@@ -99,7 +99,7 @@ products = [
         "price": 12.00,
         "image": "products_clean/06-charcoal-cleanse.png",
     },
-]
+    ]
 @app.route("/set-language/<language>")
 def set_language(language):
 
@@ -130,39 +130,76 @@ def product_detail(slug):
 
     if product is None:
         abort(404)
+    language = session.get("language", "en")
+
     product_details = {
         "coconut-bliss": {
-            "ingredients": [
-                {
-                    "icon": "🥥",
-                    "name": "Coconut Oil",
-                    "description": "Helps create a rich, creamy lather while leaving the skin feeling soft and moisturized."
-                },
-                {
-                    "icon": "💧",
-                    "name": "Vegetable Glycerin",
-                    "description": "Attracts moisture to help the skin feel smooth, hydrated, and refreshed."
-                },
-                {
-                    "icon": "💛",
-                    "name": "Vitamin E",
-                    "description": "A natural antioxidant that helps nourish and care for the skin."
-                }
-            ],
-            "benefits": [
-                "Deep hydration",
-                "Rich, creamy lather",
-                "Helps soften dry-feeling skin",
-                "Gentle everyday cleansing",
-                "Leaves skin feeling smooth and refreshed"
-            ],
-            "perfect_for": [
-                "Dry Skin",
-                "Normal Skin",
-                "Daily Use",
-                "Face & Body"
-            ]
-        },
+        "en": {
+        "ingredients": [
+            {
+                "icon": "🥥",
+                "name": "Coconut Oil",
+                "description": "Helps create a rich, creamy lather while leaving the skin feeling soft and moisturized."
+            },
+            {
+                "icon": "💧",
+                "name": "Vegetable Glycerin",
+                "description": "Attracts moisture to help the skin feel smooth, hydrated, and refreshed."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamin E",
+                "description": "A natural antioxidant that helps nourish and care for the skin."
+            }
+        ],
+        "benefits": [
+            "Deep hydration",
+            "Rich, creamy lather",
+            "Helps soften dry-feeling skin",
+            "Gentle everyday cleansing",
+            "Leaves skin feeling smooth and refreshed"
+        ],
+        "perfect_for": [
+            "Dry Skin",
+            "Normal Skin",
+            "Daily Use",
+            "Face & Body"
+        ]
+    },
+
+        "es": {
+        "ingredients": [
+            {
+                "icon": "🥥",
+                "name": "Aceite de Coco",
+                "description": "Ayuda a crear una espuma rica y cremosa, dejando la piel suave e hidratada."
+            },
+            {
+                "icon": "💧",
+                "name": "Glicerina Vegetal",
+                "description": "Atrae la humedad para ayudar a mantener la piel suave, hidratada y fresca."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamina E",
+                "description": "Un antioxidante natural que ayuda a nutrir y cuidar la piel."
+            }
+        ],
+        "benefits": [
+            "Hidratación profunda",
+            "Espuma rica y cremosa",
+            "Ayuda a suavizar la piel reseca",
+            "Limpieza suave para el uso diario",
+            "Deja la piel suave y fresca"
+        ],
+        "perfect_for": [
+            "Piel Seca",
+            "Piel Normal",
+            "Uso Diario",
+            "Rostro y Cuerpo"
+        ]
+    }
+},
 
         "aloe-serenity": {
             "ingredients": [
@@ -330,15 +367,14 @@ def product_detail(slug):
         }
     }
 
-    details = product_details.get(
-        slug,
+    details = product_details.get(slug, {}).get(
+        language,
         {
             "ingredients": [],
             "benefits": [],
             "perfect_for": []
         }
-    )
-
+   )
     return render_template(
         "product_detail.html",
         product=product,
