@@ -41,9 +41,66 @@
             </td>
 
             <td align="center">
-                {{ item.quantity }}
-            </td>
 
+    <div style="
+        display:inline-flex;
+        align-items:center;
+        gap:10px;
+    ">
+
+        <form
+            action="{{ url_for('update_cart', slug=item.product.slug) }}"
+            method="POST"
+            style="margin:0;"
+        >
+            <button
+                type="submit"
+                name="action"
+                value="decrease"
+                style="
+                    width:34px;
+                    height:34px;
+                    border:1px solid #556B2F;
+                    border-radius:50%;
+                    background:white;
+                    color:#556B2F;
+                    font-size:18px;
+                    cursor:pointer;
+                "
+            >
+                −
+            </button>
+        </form>
+
+        <strong>{{ item.quantity }}</strong>
+
+        <form
+            action="{{ url_for('update_cart', slug=item.product.slug) }}"
+            method="POST"
+            style="margin:0;"
+        >
+            <button
+                type="submit"
+                name="action"
+                value="increase"
+                style="
+                    width:34px;
+                    height:34px;
+                    border:none;
+                    border-radius:50%;
+                    background:#556B2F;
+                    color:white;
+                    font-size:18px;
+                    cursor:pointer;
+                "
+            >
+                +
+            </button>
+        </form>
+
+    </div>
+
+</td>
             <td align="center">
                 ${{ "%.2f"|format(item.subtotal) }}
             </td>
@@ -83,7 +140,82 @@
         </a>
 
     {% endif %}
+{% if recommended_products %}
 
+<section style="margin-top:70px;">
+
+    <div style="text-align:center;margin-bottom:30px;">
+        <p style="
+            margin:0 0 8px;
+            color:#999;
+            letter-spacing:2px;
+            font-size:.75rem;
+        ">
+            YOU MAY ALSO ENJOY
+        </p>
+
+        <h2 style="color:#556B2F;margin:0;">
+            Customers Also Bought
+        </h2>
+    </div>
+
+    <div style="
+        display:grid;
+        grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+        gap:25px;
+    ">
+
+        {% for product in recommended_products %}
+
+        <article style="
+            background:white;
+            border-radius:16px;
+            padding:20px;
+            text-align:center;
+            box-shadow:0 8px 25px rgba(0,0,0,.07);
+        ">
+
+            <a href="{{ url_for('product_detail', slug=product.slug) }}">
+                <img
+                    src="{{ url_for('static', filename='images/' + product.image) }}"
+                    alt="{{ product.name }}"
+                    style="
+                        width:100%;
+                        max-height:220px;
+                        object-fit:contain;
+                        border-radius:12px;
+                    "
+                >
+            </a>
+
+            <h3 style="color:#556B2F;">
+                {{ product.name }}
+            </h3>
+
+            <p style="color:#666;min-height:45px;">
+                {{ product.short }}
+            </p>
+
+            <p style="font-weight:bold;font-size:1.1rem;">
+                ${{ "%.2f"|format(product.price) }}
+            </p>
+
+            <a
+                href="{{ url_for('product_detail', slug=product.slug) }}"
+                class="hero-final-btn"
+            >
+                View Product
+            </a>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endif %}
 </section>
 
 {% endblock %}
