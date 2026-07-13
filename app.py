@@ -202,171 +202,341 @@ def product_detail(slug):
 },
 
         "aloe-serenity": {
-            "ingredients": [
-                {
-                    "icon": "🌿",
-                    "name": "Aloe Vera",
-                    "description": "Known for its soothing and refreshing qualities, helping the skin feel calm and comfortable."
-                },
-                {
-                    "icon": "💧",
-                    "name": "Vegetable Glycerin",
-                    "description": "Helps attract moisture and leaves the skin feeling soft and hydrated."
-                },
-                {
-                    "icon": "💛",
-                    "name": "Vitamin E",
-                    "description": "Helps nourish the skin with antioxidant care."
-                }
-            ],
-            "benefits": [
-                "Soothes and refreshes",
-                "Gentle cleansing",
-                "Helps maintain moisture",
-                "Leaves skin feeling soft",
-                "Ideal for everyday use"
-            ],
-            "perfect_for": [
-                "Sensitive Skin",
-                "Normal Skin",
-                "Daily Use",
-                "Face & Body"
-            ]
-        },
+    "en": {
+        "ingredients": [
+            {
+                "icon": "🌿",
+                "name": "Aloe Vera",
+                "description": "Known for its soothing and refreshing qualities, helping the skin feel calm and comfortable."
+            },
+            {
+                "icon": "💧",
+                "name": "Vegetable Glycerin",
+                "description": "Helps attract moisture and leaves the skin feeling soft and hydrated."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamin E",
+                "description": "Helps nourish the skin with antioxidant care."
+            }
+        ],
+        "benefits": [
+            "Soothes and refreshes",
+            "Gentle cleansing",
+            "Helps maintain moisture",
+            "Leaves skin feeling soft",
+            "Ideal for everyday use"
+        ],
+        "perfect_for": [
+            "Sensitive Skin",
+            "Normal Skin",
+            "Daily Use",
+            "Face & Body"
+        ]
+    },
 
-        "golden-turmeric": {
-            "ingredients": [
-                {
-                    "icon": "✨",
-                    "name": "Turmeric",
-                    "description": "A botanical ingredient valued for helping promote brighter, more radiant-looking skin."
-                },
-                {
-                    "icon": "💧",
-                    "name": "Vegetable Glycerin",
-                    "description": "Helps retain moisture and leaves the skin feeling smooth."
-                },
-                {
-                    "icon": "💛",
-                    "name": "Vitamin E",
-                    "description": "Provides antioxidant care and helps nourish the skin."
-                }
-            ],
-            "benefits": [
-                "Promotes a brighter appearance",
-                "Helps improve the look of uneven tone",
-                "Gentle daily cleansing",
-                "Leaves skin feeling smooth",
-                "Rich in antioxidant care"
-            ],
-            "perfect_for": [
-                "Dull-Looking Skin",
-                "Normal Skin",
-                "Daily Use",
-                "Face & Body"
-            ]
-        },
-
-        "honey-glow": {
-            "ingredients": [
-                {
-                    "icon": "🍯",
-                    "name": "Pure Honey",
-                    "description": "Known for its moisturizing and soothing properties, helping the skin feel soft and comfortable."
-                },
-                {
-                    "icon": "💧",
-                    "name": "Vegetable Glycerin",
-                    "description": "Helps draw moisture to the skin for a smooth and hydrated feel."
-                },
-                {
-                    "icon": "💛",
-                    "name": "Vitamin E",
-                    "description": "Helps nourish and protect the skin with antioxidant care."
-                }
-            ],
-            "benefits": [
-                "Moisturizes and softens",
-                "Soothes dry-feeling skin",
-                "Gentle cleansing",
-                "Leaves skin feeling smooth",
-                "Supports healthy-looking skin"
-            ],
-            "perfect_for": [
-                "Dry Skin",
-                "Normal Skin",
-                "Daily Use",
-                "Face & Body"
-            ]
-        },
-
-        "coffee-delight": {
-            "ingredients": [
-                {
-                    "icon": "☕",
-                    "name": "Coffee",
-                    "description": "Provides gentle exfoliation to help remove surface buildup and leave the skin feeling smoother."
-                },
-                {
-                    "icon": "💧",
-                    "name": "Vegetable Glycerin",
-                    "description": "Helps keep the skin feeling soft and hydrated after cleansing."
-                },
-                {
-                    "icon": "💛",
-                    "name": "Vitamin E",
-                    "description": "Adds nourishing antioxidant care."
-                }
-            ],
-            "benefits": [
-                "Gentle exfoliation",
-                "Helps smooth rough-feeling skin",
-                "Refreshes the skin",
-                "Cleanses away surface buildup",
-                "Leaves skin feeling renewed"
-            ],
-            "perfect_for": [
-                "Rough Skin",
-                "Body Use",
-                "Occasional Exfoliation",
-                "Normal Skin"
-            ]
-        },
-
-        "charcoal-cleanse": {
-            "ingredients": [
-                {
-                    "icon": "⚫",
-                    "name": "Activated Charcoal",
-                    "description": "Helps lift away excess oil and surface impurities for a fresh, clean feeling."
-                },
-                {
-                    "icon": "💧",
-                    "name": "Vegetable Glycerin",
-                    "description": "Helps prevent the skin from feeling overly dry after cleansing."
-                },
-                {
-                    "icon": "💛",
-                    "name": "Vitamin E",
-                    "description": "Helps nourish the skin with antioxidant care."
-                }
-            ],
-            "benefits": [
-                "Deep-cleansing feel",
-                "Helps remove excess oil",
-                "Cleanses surface impurities",
-                "Leaves skin feeling fresh",
-                "Suitable for regular body cleansing"
-            ],
-            "perfect_for": [
-                "Oily Skin",
-                "Combination Skin",
-                "Body Use",
-                "Deep Cleansing"
-            ]
-        }
+    "es": {
+        "ingredients": [
+            {
+                "icon": "🌿",
+                "name": "Aloe Vera",
+                "description": "Conocida por sus propiedades calmantes y refrescantes, ayuda a que la piel se sienta cómoda y revitalizada."
+            },
+            {
+                "icon": "💧",
+                "name": "Glicerina Vegetal",
+                "description": "Ayuda a atraer la humedad y deja la piel suave e hidratada."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamina E",
+                "description": "Ayuda a nutrir la piel con cuidado antioxidante."
+            }
+        ],
+        "benefits": [
+            "Calma y refresca la piel",
+            "Limpieza suave",
+            "Ayuda a mantener la hidratación",
+            "Deja la piel suave",
+            "Ideal para uso diario"
+        ],
+        "perfect_for": [
+            "Piel Sensible",
+            "Piel Normal",
+            "Uso Diario",
+            "Rostro y Cuerpo"
+        ]
     }
+},
+"golden-turmeric": {
+    "en": {
+        "ingredients": [
+            {
+                "icon": "✨",
+                "name": "Turmeric",
+                "description": "A botanical ingredient valued for helping promote brighter, more radiant-looking skin."
+            },
+            {
+                "icon": "💧",
+                "name": "Vegetable Glycerin",
+                "description": "Helps retain moisture and leaves the skin feeling smooth."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamin E",
+                "description": "Provides antioxidant care and helps nourish the skin."
+            }
+        ],
+        "benefits": [
+            "Promotes a brighter appearance",
+            "Helps improve the look of uneven tone",
+            "Gentle daily cleansing",
+            "Leaves skin feeling smooth",
+            "Rich in antioxidant care"
+        ],
+        "perfect_for": [
+            "Dull-Looking Skin",
+            "Normal Skin",
+            "Daily Use",
+            "Face & Body"
+        ]
+    },
 
+    "es": {
+        "ingredients": [
+            {
+                "icon": "✨",
+                "name": "Cúrcuma",
+                "description": "Ingrediente botánico apreciado por ayudar a que la piel luzca más brillante y radiante."
+            },
+            {
+                "icon": "💧",
+                "name": "Glicerina Vegetal",
+                "description": "Ayuda a retener la humedad y deja la piel suave."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamina E",
+                "description": "Proporciona cuidado antioxidante y ayuda a nutrir la piel."
+            }
+        ],
+        "benefits": [
+            "Favorece una apariencia más luminosa",
+            "Ayuda a mejorar el aspecto del tono desigual",
+            "Limpieza suave diaria",
+            "Deja la piel suave",
+            "Rica en cuidado antioxidante"
+        ],
+        "perfect_for": [
+            "Piel de Apariencia Opaca",
+            "Piel Normal",
+            "Uso Diario",
+            "Rostro y Cuerpo"
+        ]
+    }
+},
+"honey-glow": {
+    "en": {
+        "ingredients": [
+            {
+                "icon": "🍯",
+                "name": "Pure Honey",
+                "description": "Known for its moisturizing and soothing properties, helping the skin feel soft and comfortable."
+            },
+            {
+                "icon": "💧",
+                "name": "Vegetable Glycerin",
+                "description": "Helps draw moisture to the skin for a smooth and hydrated feel."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamin E",
+                "description": "Helps nourish and protect the skin with antioxidant care."
+            }
+        ],
+        "benefits": [
+            "Moisturizes and softens",
+            "Soothes dry-feeling skin",
+            "Gentle cleansing",
+            "Leaves skin feeling smooth",
+            "Supports healthy-looking skin"
+        ],
+        "perfect_for": [
+            "Dry Skin",
+            "Normal Skin",
+            "Daily Use",
+            "Face & Body"
+        ]
+    },
+
+    "es": {
+        "ingredients": [
+            {
+                "icon": "🍯",
+                "name": "Miel Pura",
+                "description": "Conocida por sus propiedades hidratantes y calmantes, ayuda a que la piel se sienta suave y confortable."
+            },
+            {
+                "icon": "💧",
+                "name": "Glicerina Vegetal",
+                "description": "Ayuda a atraer la humedad hacia la piel para dejarla suave e hidratada."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamina E",
+                "description": "Ayuda a nutrir y proteger la piel con cuidado antioxidante."
+            }
+        ],
+        "benefits": [
+            "Hidrata y suaviza",
+            "Calma la piel reseca",
+            "Limpieza suave",
+            "Deja la piel tersa",
+            "Favorece una apariencia saludable"
+        ],
+        "perfect_for": [
+            "Piel Seca",
+            "Piel Normal",
+            "Uso Diario",
+            "Rostro y Cuerpo"
+        ]
+    }
+},
+"coffee-delight": {
+    "en": {
+        "ingredients": [
+            {
+                "icon": "☕",
+                "name": "Coffee",
+                "description": "Provides gentle exfoliation to help remove surface buildup and leave the skin feeling smoother."
+            },
+            {
+                "icon": "💧",
+                "name": "Vegetable Glycerin",
+                "description": "Helps keep the skin feeling soft and hydrated after cleansing."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamin E",
+                "description": "Adds nourishing antioxidant care."
+            }
+        ],
+        "benefits": [
+            "Gentle exfoliation",
+            "Helps smooth rough-feeling skin",
+            "Refreshes the skin",
+            "Cleanses away surface buildup",
+            "Leaves skin feeling renewed"
+        ],
+        "perfect_for": [
+            "Rough Skin",
+            "Body Use",
+            "Occasional Exfoliation",
+            "Normal Skin"
+        ]
+    },
+
+    "es": {
+        "ingredients": [
+            {
+                "icon": "☕",
+                "name": "Café",
+                "description": "Proporciona una exfoliación suave que ayuda a eliminar las impurezas superficiales y deja la piel más lisa."
+            },
+            {
+                "icon": "💧",
+                "name": "Glicerina Vegetal",
+                "description": "Ayuda a mantener la piel suave e hidratada después de la limpieza."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamina E",
+                "description": "Aporta un cuidado antioxidante que ayuda a nutrir la piel."
+            }
+        ],
+        "benefits": [
+            "Exfoliación suave",
+            "Ayuda a suavizar la piel áspera",
+            "Refresca la piel",
+            "Elimina impurezas superficiales",
+            "Deja la piel renovada"
+        ],
+        "perfect_for": [
+            "Piel Áspera",
+            "Uso Corporal",
+            "Exfoliación Ocasional",
+            "Piel Normal"
+        ]
+    }
+},
+"charcoal-cleanse": {
+    "en": {
+        "ingredients": [
+            {
+                "icon": "⚫",
+                "name": "Activated Charcoal",
+                "description": "Helps lift away excess oil and surface impurities for a fresh, clean feeling."
+            },
+            {
+                "icon": "💧",
+                "name": "Vegetable Glycerin",
+                "description": "Helps prevent the skin from feeling overly dry after cleansing."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamin E",
+                "description": "Helps nourish the skin with antioxidant care."
+            }
+        ],
+        "benefits": [
+            "Deep-cleansing feel",
+            "Helps remove excess oil",
+            "Cleanses surface impurities",
+            "Leaves skin feeling fresh",
+            "Suitable for regular body cleansing"
+        ],
+        "perfect_for": [
+            "Oily Skin",
+            "Combination Skin",
+            "Body Use",
+            "Deep Cleansing"
+        ]
+    },
+
+    "es": {
+        "ingredients": [
+            {
+                "icon": "⚫",
+                "name": "Carbón Activado",
+                "description": "Ayuda a eliminar el exceso de grasa y las impurezas superficiales para una sensación de limpieza profunda."
+            },
+            {
+                "icon": "💧",
+                "name": "Glicerina Vegetal",
+                "description": "Ayuda a evitar que la piel se sienta reseca después de la limpieza."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamina E",
+                "description": "Ayuda a nutrir la piel con cuidado antioxidante."
+            }
+        ],
+        "benefits": [
+            "Sensación de limpieza profunda",
+            "Ayuda a eliminar el exceso de grasa",
+            "Limpia las impurezas superficiales",
+            "Deja la piel fresca",
+            "Ideal para la limpieza corporal regular"
+        ],
+        "perfect_for": [
+            "Piel Grasa",
+            "Piel Mixta",
+            "Uso Corporal",
+            "Limpieza Profunda"
+        ]
+    }
+},
+    }
     details = product_details.get(slug, {}).get(
         language,
         {
