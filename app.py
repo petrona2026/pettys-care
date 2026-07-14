@@ -51,54 +51,72 @@ def load_user(user_id):
 
     return None
 products = [
-    {
-        "id": 1,
-        "name": "Coconut Bliss",
-        "slug": "coconut-bliss",
-        "short": "Crafted with coconut oil and Vitamin E.",
-        "price": 12.00,
-        "image": "products_clean/01-coconut-bliss.png",
+{
+    "id": 1,
+    "name": "Coconut Bliss",
+    "slug": "coconut-bliss",
+    "short": {
+        "en": "Crafted with coconut oil and Vitamin E.",
+        "es": "Elaborado con aceite de coco y vitamina E."
     },
-    {
-        "id": 2,
-        "name": "Aloe Serenity",
-        "slug": "aloe-serenity",
-        "short": "A soothing aloe vera soap with Vitamin E.",
-        "price": 12.00,
-        "image": "products_clean/02-aloe-serenity.png",
+    "price": 12.00,
+    "image": "products_clean/01-coconut-bliss.png",
+},
+{
+    "id": 2,
+    "name": "Aloe Serenity",
+    "slug": "aloe-serenity",
+    "short": {
+        "en": "A soothing aloe vera soap with Vitamin E.",
+        "es": "Un jabón calmante de aloe vera con vitamina E."
     },
-    {
-        "id": 3,
-        "name": "Golden Turmeric",
-        "slug": "golden-turmeric",
-        "short": "A warm botanical soap with turmeric and Vitamin E.",
-        "price": 12.00,
-        "image": "products_clean/03-golden-turmeric.png",
+    "price": 12.00,
+    "image": "products_clean/02-aloe-serenity.png",
+},
+{
+    "id": 3,
+    "name": "Golden Turmeric",
+    "slug": "golden-turmeric",
+    "short": {
+        "en": "A warm botanical soap with turmeric and Vitamin E.",
+        "es": "Un jabón botánico de cúrcuma con vitamina E."
     },
-    {
-        "id": 4,
-        "name": "Honey Glow",
-        "slug": "honey-glow",
-        "short": "A comforting honey and oatmeal soap.",
-        "price": 12.00,
-        "image": "products_clean/04-honey-glow.png",
+    "price": 12.00,
+    "image": "products_clean/03-golden-turmeric.png",
+},
+{
+    "id": 4,
+    "name": "Honey Glow",
+    "slug": "honey-glow",
+    "short": {
+        "en": "A comforting honey and oatmeal soap.",
+        "es": "Un jabón reconfortante de miel y avena."
     },
-    {
-        "id": 5,
-        "name": "Coffee Delight",
-        "slug": "coffee-delight",
-        "short": "A rich coffee-inspired handcrafted soap.",
-        "price": 12.00,
-        "image": "products_clean/05-coffee-delight.png",
+    "price": 12.00,
+    "image": "products_clean/04-honey-glow.png",
+},
+{
+    "id": 5,
+    "name": "Coffee Delight",
+    "slug": "coffee-delight",
+    "short": {
+        "en": "A rich coffee-inspired handcrafted soap.",
+        "es": "Un jabón artesanal inspirado en el café."
     },
-    {
-        "id": 6,
-        "name": "Charcoal Cleanse",
-        "slug": "charcoal-cleanse",
-        "short": "A bold activated charcoal soap.",
-        "price": 12.00,
-        "image": "products_clean/06-charcoal-cleanse.png",
+    "price": 12.00,
+    "image": "products_clean/05-coffee-delight.png",
+},
+{
+    "id": 6,
+    "name": "Charcoal Cleanse",
+    "slug": "charcoal-cleanse",
+    "short": {
+        "en": "A bold activated charcoal soap.",
+        "es": "Un jabón de carbón activado para una limpieza profunda."
     },
+    "price": 12.00,
+    "image": "products_clean/06-charcoal-cleanse.png",
+},
     ]
 @app.route("/set-language/<language>")
 def set_language(language):

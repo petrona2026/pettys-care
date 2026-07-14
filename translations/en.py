@@ -38,10 +38,18 @@ translations = {
     "hero_line_1": "Inspired by",
     "hero_line_2": "Nature.",
     "hero_line_3": "Made with Love.",
+    
     "hero_description": (
-        "Small batch soaps made with natural ingredients "
-        "to nourish your skin and elevate your everyday."
+        "Small batch soaps made with natural ingredients ",
+        "to nourish your skin and elevate your everyday.",
     ),
+    
+    "what_our_customers_say": "What Our Customers Say",
+    "customer_reviews": "Customer Reviews",
+    
+    
+    
+    
 
     "shop_collection": "Shop Our Collection",
     "our_collection": "Our Collection",

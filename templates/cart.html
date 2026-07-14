@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Shopping Cart{% endblock %}
-
+{% block title %}{{ t.shopping_cart }}{% endblock %}
 {% block content %}
 
 <section class="cart-page">
 
     <h1 class="cart-page-title">
-        Your Shopping Cart
+       {{ t.shopping_cart }}
     </h1>
 
     <p class="cart-page-subtitle">
@@ -39,11 +38,11 @@
                 </h2>
 
                 <p class="cart-card-description">
-                    {{ item.product.short }}
+                    {{ item.product.short[session.get('language', 'en')] }}
                 </p>
 
                 <p class="cart-card-price">
-                    ${{ "%.2f"|format(item.product.price) }} each
+                    ${{ "%.2f"|format(item.product.price) }} {{ t.price_each }}
                 </p>
 
             </div>
@@ -98,7 +97,7 @@
 
                 <p>
 
-                    <strong>Subtotal</strong>
+                    <strong>{{ t.subtotal }}</strong>
 
                     <br>
 
@@ -109,7 +108,7 @@
                 <p style="margin-top:15px;">
 
                     <a href="/remove-from-cart/{{ item.product.slug }}">
-                        Remove
+                        {{ t.remove }}
                     </a>
 
                 </p>
@@ -128,7 +127,7 @@
     ">
 
         <h2>
-            Total:
+            {{ t.total }}:
             ${{ "%.2f"|format(total) }}
         </h2>
 
@@ -136,7 +135,7 @@
             class="hero-final-btn"
             href="/checkout"
         >
-            Secure Checkout
+            {{ t.secure_checkout }}
         </a>
 
     </div>
@@ -144,7 +143,7 @@
     {% else %}
 
         <h2 style="text-align:center;">
-            Your shopping cart is empty.
+            {{ t.cart_empty }}
         </h2>
 
         <div style="text-align:center;">
@@ -153,7 +152,7 @@
                 class="hero-final-btn"
                 href="/products"
             >
-                Continue Shopping
+                {{ t.continue_shopping }}
             </a>
 
         </div>
@@ -175,14 +174,14 @@
                 letter-spacing:2px;
                 font-size:.75rem;
             ">
-                YOU MAY ALSO ENJOY
+                {{ t.you_may_also_enjoy|upper }}
             </p>
 
             <h2 style="
                 color:#556B2F;
                 margin:0;
             ">
-                Customers Also Bought
+                {{ t.customers_also_bought }}
             </h2>
 
         </div>
@@ -225,7 +224,7 @@
                     color:#666;
                     min-height:45px;
                 ">
-                    {{ product.short }}
+                    {{ product.short[session.get('language', 'en')] }}
                 </p>
 
                 <p style="
@@ -246,7 +245,7 @@
         type="submit"
         class="hero-final-btn"
     >
-        🛒 Add to Cart
+        🛒 {{ t.add_to_cart }}
     </button>
 
 </form>
@@ -257,7 +256,7 @@
 ">
 
     <a href="{{ url_for('product_detail', slug=product.slug) }}">
-        Learn more about this soap →
+        {{ t.learn_more }} →
     </a>
 
 </p>

@@ -38,7 +38,8 @@ translations = {
     "hero_line_1": "Inspirado por",
     "hero_line_2": "la Naturaleza.",
     "hero_line_3": "Hecho con Amor.",
-
+    "what_our_customers_say": "Lo Que Opinan Nuestros Clientes",
+    "customer_reviews": "Reseñas de Clientes",
     "hero_description": (
         "Jabones artesanales elaborados en pequeños lotes "
         "con ingredientes naturales para cuidar tu piel "

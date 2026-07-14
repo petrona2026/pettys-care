@@ -75,30 +75,52 @@
             </div>
 
             <p class="product-detail-description">
-                {{ product.short }}
+                {{ product.short[session.get('language', 'en')] }}
             </p>
 
             <p class="product-detail-price">
                 ${{ "%.2f"|format(product.price) }}
             </p>
 
-            <div class="product-quick-details">
-                <p>
-                <strong>{{ t.net_weight }}:</strong>
-                4 oz (113 g)
-                </p>
+             <div class="product-quick-details">
 
-                <p>
-                <strong>{{ t.made }}:</strong>
-                Handcrafted in small batches 
-                </p>
+{% if session.get('language', 'en') == 'es' %}
 
-                <p>
-                <strong>{{ t.use }}:</strong>
-                {{ t.face_and_body }} 
-                </p>
-            </div>
+    <p>
+        <strong>Peso Neto:</strong>
+        4 oz (113 g)
+    </p>
 
+    <p>
+        <strong>Elaboración:</strong>
+        Hecho a mano en pequeños lotes
+    </p>
+
+    <p>
+        <strong>Uso:</strong>
+        Rostro y cuerpo
+    </p>
+
+{% else %}
+
+    <p>
+        <strong>Net Weight:</strong>
+        4 oz (113 g)
+    </p>
+
+    <p>
+        <strong>Made:</strong>
+        Handcrafted in small batches
+    </p>
+
+    <p>
+        <strong>Use:</strong>
+        Face and body
+    </p>
+
+{% endif %}
+
+</div>
             <div class="product-actions">
                 <a class="product-primary-button" href="/shop">
                 {{ t.continue_shopping }}
@@ -259,9 +281,9 @@
 
     <div class="reviews-header">
 
-        <p>WHAT OUR CUSTOMERS SAY</p>
+        <p>{{ t.what_our_customers_say|upper }}</p>
 
-        <h2>Customer Reviews</h2>
+        <h2>{{ t.customer_reviews }}</h2>
 
     </div>
 
