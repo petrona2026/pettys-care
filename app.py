@@ -1,10 +1,11 @@
 import sqlite3
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
-
+from product_profiles import product_profiles
 from flask import Flask, render_template, redirect, url_for, abort,session,request
 from translations.en import translations as en
 from translations.es import translations as es
+from recommendation_engine import recommend_soap
 import os
 import stripe
 from werkzeug.utils import secure_filename
@@ -137,7 +138,39 @@ def shop():
 @app.route("/products")
 def product_list():
     return redirect(url_for("shop"))
+@app.route("/soap-quiz")
+def soap_quiz():
+    return render_template("soap_quiz.html")
+@app.route("/soap-quiz/start")
+def soap_quiz_start():
+    return render_template("soap_quiz_start.html")
+@app.route("/soap-quiz/result")
+def soap_quiz_result():
 
+    skin = request.args.get("skin_type")
+    use = request.args.get("use_area")
+    goal = request.args.get("goal")
+    
+    slug, match_score, reasons = recommend_soap(
+        skin,
+        use,
+        goal
+    
+    )
+    
+    return render_template(
+    "soap_quiz_result.html",
+    product=next(
+        p for p in products
+        if p["slug"] == slug
+    ),
+    skin=skin,
+    use=use,
+    goal=goal,
+    reasons=reasons,
+    match_score=match_score
+
+)
 @app.route("/products/<slug>")
 def product_detail(slug):
 
