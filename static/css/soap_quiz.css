@@ -1,0 +1,96 @@
+/* ==========================================
+   PETTY'S CARE
+   SKIN ADVISOR
+========================================== */
+
+.quiz-container{
+    max-width:950px;
+    margin:60px auto;
+    padding:0 25px 80px;
+}
+
+.quiz-title{
+    text-align:center;
+    color:#556B2F;
+    font-size:2.8rem;
+    margin-bottom:10px;
+}
+
+.quiz-subtitle{
+    text-align:center;
+    color:#777;
+    font-size:1.1rem;
+    max-width:700px;
+    margin:auto;
+    margin-bottom:50px;
+}
+
+.quiz-card{
+    background:white;
+    border-radius:18px;
+    padding:35px;
+    margin-bottom:35px;
+    box-shadow:0 12px 30px rgba(0,0,0,.08);
+}
+
+.quiz-card h2{
+    color:#556B2F;
+    margin-top:0;
+}
+
+.match-bar{
+    width:100%;
+    background:#E5E5E5;
+    border-radius:40px;
+    overflow:hidden;
+    margin-top:20px;
+}
+
+.match-fill{
+    width:94%;
+    background:#556B2F;
+    color:white;
+    padding:14px;
+    text-align:center;
+    font-weight:bold;
+    font-size:1.1rem;
+}
+
+.profile-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.profile-table td{
+    padding:15px;
+    border-bottom:1px solid #EFEFEF;
+}
+
+.notice-card{
+    background:#FFF9E6;
+    border-left:6px solid #D4A100;
+}
+
+.action-buttons{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    margin-top:45px;
+    flex-wrap:wrap;
+}
+
+.action-buttons a{
+    text-decoration:none;
+}
+
+@media(max-width:768px){
+
+    .quiz-title{
+        font-size:2rem;
+    }
+
+    .quiz-card{
+        padding:25px;
+    }
+
+}

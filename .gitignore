@@ -5,3 +5,6 @@ __pycache__/
 .env
 instance/
 .DS_Store
+backups/
+__pycache__/
+pettys.db

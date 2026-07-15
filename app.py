@@ -26,7 +26,10 @@ def inject_translations():
         t = en
 
     return dict(t=t)
-app.secret_key = "pettys-secret-key-change-later"
+app.secret_key = os.getenv(
+    "SECRET_KEY",
+    "pettys-local-development-key"
+)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "admin_login"

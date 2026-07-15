@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t.soap_quiz_title }}{% endblock %}
+
+{% block content %}
+
+<section style="max-width:850px;margin:60px auto;padding:0 20px;">
+
+    <h1 style="text-align:center;color:#556B2F;">
+        {{ t.soap_quiz_title }}
+    </h1>
+
+    <form method="GET" action="{{ url_for('soap_quiz_result') }}">
+
+        <div style="margin:35px 0;">
+            <h2>{{ t.soap_quiz_question_skin }}</h2>
+
+            <label>
+                <input type="radio" name="skin_type" value="dry" required>
+                {{ t.skin_dry }}
+            </label><br>
+
+            <label>
+                <input type="radio" name="skin_type" value="oily">
+                {{ t.skin_oily }}
+            </label><br>
+
+            <label>
+                <input type="radio" name="skin_type" value="combination">
+                {{ t.skin_combination }}
+            </label><br>
+
+            <label>
+                <input type="radio" name="skin_type" value="sensitive">
+                {{ t.skin_sensitive }}
+            </label><br>
+
+            <label>
+                <input type="radio" name="skin_type" value="normal">
+                {{ t.skin_normal }}
+            </label>
+        </div>
+
+        <div style="margin:35px 0;">
+            <h2>{{ t.soap_quiz_question_use }}</h2>
+
+            <label>
+                <input type="radio" name="use_area" value="face" required>
+                {{ t.use_face }}
+            </label><br>
+
+            <label>
+                <input type="radio" name="use_area" value="body">
+                {{ t.use_body }}
+            </label><br>
+
+            <label>
+                <input type="radio" name="use_area" value="face_body">
+                {{ t.use_face_body }}
+            </label>
+        </div>
+
+        <div style="margin:35px 0;">
+            <h2>{{ t.soap_quiz_question_goal }}</h2>
+
+            <label>
+                <input type="radio" name="goal" value="hydration" required>
+                {{ t.goal_hydration }}
+            </label><br>
+
+            <label>
+                <input type="radio" name="goal" value="brightening">
+                {{ t.goal_brightening }}
+            </label><br>
+
+            <label>
+                <input type="radio" name="goal" value="gentle">
+                {{ t.goal_gentle }}
+            </label><br>
+
+            <label>
+                <input type="radio" name="goal" value="deep">
+                {{ t.goal_deep }}
+            </label><br>
+
+            <label>
+                <input type="radio" name="goal" value="exfoliation">
+                {{ t.goal_exfoliation }}
+            </label>
+        </div>
+
+        <div style="text-align:center;">
+            <button type="submit" class="hero-final-btn">
+                {{ t.see_my_recommendation }}
+            </button>
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock %}

@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Payment Successful{% endblock %}
+{% block title %}{{ t.payment_successful }}{% endblock %}
 
 {% block content %}
 
 <section style="max-width:700px;margin:80px auto;text-align:center;">
-    <h1>Payment Successful</h1>
+    <h1>{{ t.payment_successful }}</h1>
 
     {% if order_number %}
-        <h2>Order {{ order_number }}</h2>
+        <h2>{{ t.order }} {{ order_number }}</h2>
     {% endif %}
 
-    <p>Thank you for your order. We will start preparing your soaps.</p>
+    <p>{{ t.thank_you_for_your_order }}</p>
 
-    <a href="/shop" class="hero-final-btn">Continue Shopping</a>
+    <a href="/shop" class="hero-final-btn">{{ t.continue_shopping }}</a>
 </section>
 
 {% endblock %}
