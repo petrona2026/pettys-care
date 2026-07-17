@@ -113,9 +113,6 @@ translations = {
     "what_our_customers_say": "What Our Customers Say",
     "customer_reviews": "Customer Reviews",
     
-    
-    
-    
 
     "shop_collection": "Shop Our Collection",
     "our_collection": "Our Collection",
@@ -140,4 +137,20 @@ translations = {
     "customers_also_bought": "Customers Also Bought",
     "you_may_also_enjoy": "You May Also Enjoy",
     "learn_more": "Learn more about this soap",
+    "email_order_received_subject": "We received your order!",
+    "email_order_received_title": "Thank you for your order!",
+    "email_greeting": "Hello",
+    "email_order_received_message": (
+        "We received your order and your payment was successful. "
+        "We are now preparing your handmade products with care."
+    ),
+    "email_order_number": "Order Number",
+    "email_shipping_address": "Shipping Address",
+    "email_order_next_step": (
+        "We will send you another email when your order is being prepared "
+        "and again when it ships."
+    ),
+    "email_thank_you": (
+        "Thank you for supporting PETTY'S CARE and our handcrafted products."
+    ),
 }

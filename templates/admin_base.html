@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PETTY'S CARE Admin{% endblock %}</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -10,18 +12,38 @@
 <section class="admin-page">
 
     <aside class="admin-sidebar">
-        <h2>PETTY'S CARE</h2>
-        <p>Admin Panel</p>
 
-        <a href="/admin">Dashboard</a>
-        <a href="/admin/orders">Orders</a>
-        <a href="/admin/products">Products</a>
-        <a href="/admin/customers">Customers</a>
-        <a href="/admin/suppliers">Suppliers</a>
-        <a href="#">Inventory</a>
-        <a href="#">Reports</a>
-        <a href="/admin/settings">Settings</a>
-        <a href="/">View Store</a>
+        <div class="admin-brand">
+            <h2>PETTY'S CARE</h2>
+            <p>Admin Panel</p>
+        </div>
+
+        <hr>
+
+        <small class="menu-title">DASHBOARD</small>
+        <a href="/admin">🏠 Dashboard</a>
+
+        <small class="menu-title">SALES</small>
+        <a href="/admin/orders">📦 Orders</a>
+        <a href="/admin/customers">👥 Customers</a>
+        <a href="/admin/reviews">⭐ Reviews</a>
+
+        <small class="menu-title">CATALOG</small>
+        <a href="/admin/products">🧼 Products</a>
+        <a href="/admin/inventory">📋 Inventory</a>
+
+        <small class="menu-title">FULFILLMENT</small>
+        <a href="/admin/packing-slips">🖨️ Packing Slips</a>
+        <a href="/admin/suppliers">🚚 Suppliers</a>
+
+        <small class="menu-title">BUSINESS</small>
+        <a href="/admin/reports">📊 Reports</a>
+        <a href="/admin/settings">⚙️ Settings</a>
+
+        <hr>
+
+        <a href="/" target="_blank">🌐 View Store</a>
+
     </aside>
 
     <main class="admin-content">

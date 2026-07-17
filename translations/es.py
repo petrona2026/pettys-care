@@ -139,4 +139,20 @@ translations = {
     "customers_also_bought": "Otros Clientes También Compraron",
     "you_may_also_enjoy": "También Te Puede Gustar",
     "learn_more": "Conoce más sobre este jabón",
+    "email_order_received_subject": "¡Hemos recibido tu pedido!",
+    "email_order_received_title": "¡Gracias por tu pedido!",
+    "email_greeting": "Hola",
+    "email_order_received_message": (
+        "Hemos recibido tu pedido y tu pago fue procesado correctamente. "
+        "Ahora estamos preparando tus productos artesanales con mucho cuidado."
+    ),
+    "email_order_number": "Número de Pedido",
+    "email_shipping_address": "Dirección de Envío",
+    "email_order_next_step": (
+        "Te enviaremos otro correo cuando tu pedido esté en preparación "
+        "y nuevamente cuando haya sido enviado."
+    ),
+    "email_thank_you": (
+        "Gracias por apoyar a PETTY'S CARE y nuestros productos artesanales."
+    ),
 }

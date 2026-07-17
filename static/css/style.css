@@ -1140,3 +1140,48 @@ body {
         text-align:center;
     }
 }
+/* =========================
+   ADMIN SIDEBAR MENU
+========================= */
+
+.admin-brand h2 {
+    margin-bottom: 4px;
+}
+
+.admin-brand p {
+    margin-top: 0;
+    opacity: 0.8;
+}
+
+.menu-title {
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    padding-left: 10px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: #d7dfc8;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.admin-sidebar hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin: 15px 0;
+}
+
+.admin-sidebar a {
+    display: block;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: white;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.admin-sidebar a:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateX(3px);
+}

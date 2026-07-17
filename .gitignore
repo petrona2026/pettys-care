@@ -8,3 +8,4 @@ instance/
 backups/
 __pycache__/
 pettys.db
+app_before_email_system.py

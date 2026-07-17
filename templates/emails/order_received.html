@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ t["email_order_received_subject"] }}</title>
+</head>
+
+<body style="margin:0; padding:0; background:#f4f1e8; font-family:Arial, Helvetica, sans-serif; color:#333333;">
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f4f1e8;">
+    <tr>
+        <td align="center" style="padding:30px 12px;">
+
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+                   style="max-width:620px; background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 4px 18px rgba(0,0,0,0.08);">
+
+                <tr>
+                    <td align="center" style="background:#556b2f; padding:28px 20px;">
+                        <h1 style="margin:0; color:#ffffff; font-size:28px; letter-spacing:1px;">
+                            PETTY'S CARE
+                        </h1>
+
+                        <p style="margin:8px 0 0; color:#edf1e5; font-size:14px;">
+                            {{ t["from_our_hands"] }}
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:32px 30px;">
+
+                        <h2 style="margin:0 0 18px; color:#556b2f; font-size:24px;">
+                            {{ t["email_order_received_title"] }}
+                        </h2>
+
+                        <p style="font-size:16px; line-height:1.6; margin:0 0 16px;">
+                            {{ t["email_greeting"] }} {{ order["first_name"] }},
+                        </p>
+
+                        <p style="font-size:16px; line-height:1.6; margin:0 0 22px;">
+                            {{ t["email_order_received_message"] }}
+                        </p>
+
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+                               style="background:#f8f7f2; border-radius:10px; margin-bottom:24px;">
+
+                            <tr>
+                                <td style="padding:18px 20px;">
+                                    <p style="margin:0 0 8px; font-size:14px; color:#777777;">
+                                        {{ t["email_order_number"] }}
+                                    </p>
+
+                                    <p style="margin:0; font-size:20px; font-weight:bold; color:#556b2f;">
+                                        {{ order["order_number"] }}
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <h3 style="margin:0 0 14px; font-size:18px; color:#333333;">
+                            {{ t["order_summary"] }}
+                        </h3>
+
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+                               style="border-collapse:collapse; margin-bottom:20px;">
+
+                            {% for item in items %}
+                            <tr>
+                                <td style="padding:12px 0; border-bottom:1px solid #e7e4dc; font-size:15px;">
+                                    {{ item["product_name"] }} × {{ item["quantity"] }}
+                                </td>
+
+                                <td align="right"
+                                    style="padding:12px 0; border-bottom:1px solid #e7e4dc; font-size:15px;">
+                                    ${{ "%.2f"|format(item["subtotal"]) }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                            <tr>
+                                <td style="padding:16px 0 0; font-size:17px; font-weight:bold;">
+                                    {{ t["total"] }}
+                                </td>
+
+                                <td align="right"
+                                    style="padding:16px 0 0; font-size:17px; font-weight:bold; color:#556b2f;">
+                                    ${{ "%.2f"|format(order["total"]) }}
+                                </td>
+                            </tr>
+                        </table>
+
+                        <h3 style="margin:26px 0 10px; font-size:18px; color:#333333;">
+                            {{ t["email_shipping_address"] }}
+                        </h3>
+
+                        <p style="font-size:15px; line-height:1.6; margin:0 0 24px;">
+                            {{ order["first_name"] }} {{ order["last_name"] }}<br>
+                            {{ order["address"] }}<br>
+                            {{ order["city"] }}, {{ order["state"] }} {{ order["zip_code"] }}
+                        </p>
+
+                        <p style="font-size:16px; line-height:1.6; margin:0 0 16px;">
+                            {{ t["email_order_next_step"] }}
+                        </p>
+
+                        <p style="font-size:16px; line-height:1.6; margin:0;">
+                            {{ t["email_thank_you"] }}
+                        </p>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="background:#f8f7f2; padding:22px 20px;">
+                        <p style="margin:0 0 6px; font-size:13px; color:#777777;">
+                            PETTY'S CARE
+                        </p>
+
+                        <p style="margin:0; font-size:13px; color:#777777;">
+                            orders@pettyscare.com
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
