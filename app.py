@@ -875,10 +875,10 @@ def admin_dashboard():
     cursor.execute("SELECT COUNT(*) FROM orders")
     total_orders = cursor.fetchone()[0]
 
+    
     # Total Products
-    cursor.execute("SELECT COUNT(*) FROM products")
-    total_products = cursor.fetchone()[0]
-
+    total_products = len(products)
+    
     # Total Customers
     cursor.execute("SELECT COUNT(DISTINCT email) FROM orders")
     total_customers = cursor.fetchone()[0]
@@ -1106,16 +1106,25 @@ def create_checkout_session():
                 "quantity": quantity,
             })
 
-    checkout_session = stripe.checkout.Session.create(
-        payment_method_types=["card"],
-        line_items=line_items,
-        mode="payment",
-        success_url=os.getenv("DOMAIN") + "/payment-success",
-        cancel_url=os.getenv("DOMAIN") + "/cart",
-    )
+    print("=== ENTERING STRIPE CHECKOUT ===")
+    print("Cart:", cart)
+    print("Line items:", line_items)
+    print("Stripe key loaded:", bool(stripe.api_key))
+    print("Domain:", os.getenv("DOMAIN"))
+
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=line_items,
+            mode="payment",
+            success_url=os.getenv("DOMAIN") + "/payment-success",
+            cancel_url=os.getenv("DOMAIN") + "/cart",
+        )
+    except Exception as e:
+        print("STRIPE ERROR:", repr(e))
+        raise
 
     return redirect(checkout_session.url, code=303)
-
 @app.route("/payment-success")
 def payment_success():
     order_id = session.get("order_id")
