@@ -7,6 +7,7 @@ from translations.en import translations as en
 from translations.es import translations as es
 from recommendation_engine import recommend_soap
 import os
+DB_PATH = os.getenv("DB_PATH", "pettys.db")
 import stripe
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
@@ -41,7 +42,7 @@ class AdminUser(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
-    conn = sqlite3.connect("pettys.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -721,7 +722,7 @@ def checkout():
             "notes": request.form.get("notes"),
         }
 
-        conn = sqlite3.connect("pettys.db")
+        conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
         cursor.execute("SELECT COUNT(*) FROM orders")
@@ -804,7 +805,7 @@ def admin_login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        conn = sqlite3.connect("pettys.db")
+        conn = sqlite3.connect(DB_PATH)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 
@@ -830,7 +831,7 @@ def admin_logout():
 @app.route("/admin/orders")
 @login_required
 def admin_orders():
-    conn = sqlite3.connect("pettys.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -849,7 +850,7 @@ def admin_orders():
 @app.route("/admin/orders/<int:order_id>")
 @login_required
 def admin_order_detail(order_id):
-    conn = sqlite3.connect("pettys.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -867,7 +868,7 @@ def admin_order_detail(order_id):
 @login_required
 def admin_dashboard():
 
-    conn = sqlite3.connect("pettys.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -911,7 +912,7 @@ def admin_suppliers():
 @app.route("/admin/products")
 @login_required
 def admin_products():
-    conn = sqlite3.connect("pettys.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -939,7 +940,7 @@ def admin_add_product():
             image_path = os.path.join("static/images/products", filename)
             image_file.save(image_path)
             image = filename
-        conn = sqlite3.connect("pettys.db")
+        conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
         cursor.execute("""
@@ -956,7 +957,7 @@ def admin_add_product():
 @app.route("/admin/products/edit/<int:product_id>", methods=["GET", "POST"])
 @login_required
 def admin_edit_product(product_id):
-    conn = sqlite3.connect("pettys.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -988,7 +989,7 @@ def admin_edit_product(product_id):
 @app.route("/admin/products/delete/<int:product_id>", methods=["POST"])
 @login_required
 def admin_delete_product(product_id):
-    conn = sqlite3.connect("pettys.db")
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM products WHERE id = ?", (product_id,))
@@ -1001,7 +1002,7 @@ def admin_delete_product(product_id):
 @login_required
 def admin_settings():
 
-    conn = sqlite3.connect("pettys.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -1063,7 +1064,7 @@ def update_order_status(order_id):
     if new_status not in allowed_statuses:
         return redirect(url_for("admin_order_detail", order_id=order_id))
 
-    conn = sqlite3.connect("pettys.db")
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -1131,7 +1132,7 @@ def payment_success():
     order_number = session.get("order_number")
 
     if order_id:
-        conn = sqlite3.connect("pettys.db")
+        conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
         cursor.execute("""
