@@ -23,8 +23,25 @@ from translations.es import translations as es
 
 
 load_dotenv()
-
 DB_PATH = os.getenv("DB_PATH", "pettys.db")
+def ensure_reviews_table():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS reviews (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_slug TEXT NOT NULL,
+        customer_name TEXT NOT NULL,
+        rating INTEGER NOT NULL,
+        comment TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+
+    conn.commit()
+    conn.close()
+ensure_reviews_table()
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 app = Flask(__name__)
