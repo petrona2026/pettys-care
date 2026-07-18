@@ -730,11 +730,141 @@ def product_detail(slug):
             "perfect_for": []
         }
    )
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT id, customer_name, rating, review_text, created_at
+        FROM reviews
+        WHERE product_slug = ?
+          AND approved = 1
+        ORDER BY created_at DESC
+        """,
+        (slug,),
+    )
+    reviews = cursor.fetchall()
+
+    cursor.execute(
+        """
+        SELECT
+            COUNT(*) AS review_count,
+            COALESCE(AVG(rating), 0) AS average_rating
+        FROM reviews
+        WHERE product_slug = ?
+          AND approved = 1
+        """,
+        (slug,),
+    )
+    review_summary = cursor.fetchone()
+
+    conn.close()
+
+    review_count = review_summary["review_count"]
+    average_rating = round(review_summary["average_rating"], 1)
+
     return render_template(
         "product_detail.html",
         product=product,
-        details=details
+        details=details,
+        reviews=reviews,
+        review_count=review_count,
+        average_rating=average_rating,
+        review_submitted=request.args.get("review_submitted") == "1",
+        review_error=request.args.get("review_error")
     )
+
+
+@app.route("/products/<slug>/reviews", methods=["POST"])
+def submit_review(slug):
+    product = next(
+        (item for item in products if item["slug"] == slug),
+        None
+    )
+
+    if product is None:
+        abort(404)
+
+    customer_name = request.form.get("customer_name", "").strip()
+    rating_value = request.form.get("rating", "").strip()
+    review_text = request.form.get("review_text", "").strip()
+
+    if not customer_name:
+        return redirect(
+            url_for(
+                "product_detail",
+                slug=slug,
+                review_error="Please enter your name."
+            ) + "#reviews"
+        )
+
+    try:
+        rating = int(rating_value)
+    except (TypeError, ValueError):
+        rating = 0
+
+    if rating < 1 or rating > 5:
+        return redirect(
+            url_for(
+                "product_detail",
+                slug=slug,
+                review_error="Please select a rating from 1 to 5 stars."
+            ) + "#reviews"
+        )
+
+    if len(review_text) < 10:
+        return redirect(
+            url_for(
+                "product_detail",
+                slug=slug,
+                review_error="Please write at least 10 characters."
+            ) + "#reviews"
+        )
+
+    if len(customer_name) > 100 or len(review_text) > 2000:
+        return redirect(
+            url_for(
+                "product_detail",
+                slug=slug,
+                review_error="The review is too long."
+            ) + "#reviews"
+        )
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        INSERT INTO reviews (
+            product_slug,
+            customer_name,
+            rating,
+            review_text,
+            approved
+        )
+        VALUES (?, ?, ?, ?, 0)
+        """,
+        (
+            slug,
+            customer_name,
+            rating,
+            review_text,
+        ),
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect(
+        url_for(
+            "product_detail",
+            slug=slug,
+            review_submitted="1"
+        ) + "#reviews"
+    )
+
+
 @app.route("/add-to-cart/<slug>", methods=["GET", "POST"])
 def add_to_cart(slug):
     cart = session.get("cart", {})
@@ -1037,6 +1167,127 @@ def admin_customers():
 @login_required
 def admin_suppliers():
     return render_template("admin_suppliers.html")
+
+
+@app.route("/admin/reviews")
+@login_required
+def admin_reviews():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            id,
+            product_slug,
+            customer_name,
+            rating,
+            review_text,
+            approved,
+            created_at
+        FROM reviews
+        ORDER BY
+            approved ASC,
+            created_at DESC
+        """
+    )
+    reviews = cursor.fetchall()
+
+    cursor.execute("SELECT COUNT(*) FROM reviews")
+    total_reviews = cursor.fetchone()[0]
+
+    cursor.execute(
+        "SELECT COUNT(*) FROM reviews WHERE approved = 0"
+    )
+    pending_reviews = cursor.fetchone()[0]
+
+    cursor.execute(
+        "SELECT COUNT(*) FROM reviews WHERE approved = 1"
+    )
+    approved_reviews = cursor.fetchone()[0]
+
+    cursor.execute(
+        """
+        SELECT COALESCE(AVG(rating), 0)
+        FROM reviews
+        WHERE approved = 1
+        """
+    )
+    average_rating = round(cursor.fetchone()[0], 1)
+
+    conn.close()
+
+    return render_template(
+        "admin_reviews.html",
+        reviews=reviews,
+        total_reviews=total_reviews,
+        pending_reviews=pending_reviews,
+        approved_reviews=approved_reviews,
+        average_rating=average_rating
+    )
+
+
+@app.route("/admin/reviews/<int:review_id>/approve", methods=["POST"])
+@login_required
+def admin_approve_review(review_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE reviews
+        SET approved = 1
+        WHERE id = ?
+        """,
+        (review_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for("admin_reviews"))
+
+
+@app.route("/admin/reviews/<int:review_id>/hide", methods=["POST"])
+@login_required
+def admin_hide_review(review_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE reviews
+        SET approved = 0
+        WHERE id = ?
+        """,
+        (review_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for("admin_reviews"))
+
+
+@app.route("/admin/reviews/<int:review_id>/delete", methods=["POST"])
+@login_required
+def admin_delete_review(review_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        DELETE FROM reviews
+        WHERE id = ?
+        """,
+        (review_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for("admin_reviews"))
 
 
 @app.route("/admin/products")

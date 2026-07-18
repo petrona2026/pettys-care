@@ -277,60 +277,89 @@
     <p>{{ t.hero_description }}</p>
 
 </section>
-<section class="product-reviews">
+<section class="product-reviews" id="reviews">
 
     <div class="reviews-header">
-
         <p>{{ t.what_our_customers_say|upper }}</p>
-
         <h2>{{ t.customer_reviews }}</h2>
 
+        <h3>
+            ⭐ {{ average_rating }}/5
+            {% if review_count %}
+                ({{ review_count }} Reviews)
+            {% else %}
+                (No reviews yet)
+            {% endif %}
+        </h3>
     </div>
+
+    {% if review_submitted %}
+    <div class="success-message">
+        Thank you! Your review has been received and is awaiting approval.
+    </div>
+    {% endif %}
+
+    {% if review_error %}
+    <div class="error-message">
+        {{ review_error }}
+    </div>
+    {% endif %}
+
+    {% for review in reviews %}
 
     <div class="review-card">
 
         <div class="review-stars">
-            ★★★★★
+            {{ "★" * review.rating }}
         </div>
 
-        <h3>Sarah M.</h3>
+        <h3>{{ review.customer_name }}</h3>
 
-        <p>
-            "I've been using this soap for several weeks and absolutely love
-            how soft and refreshed my skin feels."
-        </p>
+        <p>{{ review.review_text }}</p>
 
     </div>
 
-    <div class="review-card">
+    {% endfor %}
 
-        <div class="review-stars">
-            ★★★★★
-        </div>
+    <hr style="margin:50px 0;">
 
-        <h3>Michael R.</h3>
+    <h2>Write a Review</h2>
 
-        <p>
-            "Beautiful handcrafted soap with a wonderful scent.
-            I'll definitely be ordering again."
-        </p>
+    <form method="POST"
+          action="{{ url_for('submit_review', slug=product.slug) }}">
 
-    </div>
+        <input
+            type="text"
+            name="customer_name"
+            placeholder="Your name"
+            required>
 
-    <div class="review-card">
+        <br><br>
 
-        <div class="review-stars">
-            ★★★★★
-        </div>
+        <select name="rating" required>
+            <option value="">Select Rating</option>
+            <option value="5">★★★★★</option>
+            <option value="4">★★★★☆</option>
+            <option value="3">★★★☆☆</option>
+            <option value="2">★★☆☆☆</option>
+            <option value="1">★☆☆☆☆</option>
+        </select>
 
-        <h3>Emily T.</h3>
+        <br><br>
 
-        <p>
-            "Excellent quality and beautiful presentation.
-            Highly recommended."
-        </p>
+        <textarea
+            name="review_text"
+            rows="6"
+            placeholder="Tell us what you think..."
+            required></textarea>
 
-    </div>
+        <br><br>
+
+        <button class="btn" type="submit">
+            Submit Review
+        </button>
+
+    </form>
 
 </section>
 </main>

@@ -1,0 +1,269 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin Reviews{% endblock %}
+
+{% block content %}
+
+<div class="admin-header">
+    <h1>Customer Reviews</h1>
+    <p>Approve, hide, or delete reviews submitted by customers.</p>
+</div>
+
+<div class="review-stat-grid">
+
+    <div class="review-stat-card">
+        <span>Total Reviews</span>
+        <strong>{{ total_reviews }}</strong>
+    </div>
+
+    <div class="review-stat-card">
+        <span>Pending Approval</span>
+        <strong>{{ pending_reviews }}</strong>
+    </div>
+
+    <div class="review-stat-card">
+        <span>Approved</span>
+        <strong>{{ approved_reviews }}</strong>
+    </div>
+
+    <div class="review-stat-card">
+        <span>Average Rating</span>
+        <strong>★ {{ average_rating }}/5</strong>
+    </div>
+
+</div>
+
+<div class="admin-table-card">
+
+    {% if reviews %}
+
+    <table class="admin-table">
+
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Rating</th>
+                <th>Review</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for review in reviews %}
+
+            <tr>
+
+                <td>
+                    <strong>{{ review.customer_name }}</strong>
+                </td>
+
+                <td>
+                    <a href="{{ url_for('product_detail', slug=review.product_slug) }}"
+                       target="_blank">
+                        {{ review.product_slug|replace("-", " ")|title }}
+                    </a>
+                </td>
+
+                <td>
+                    <span class="admin-review-stars">
+                        {{ "★" * review.rating }}
+                        {{ "☆" * (5 - review.rating) }}
+                    </span>
+                </td>
+
+                <td class="review-text-cell">
+                    {{ review.review_text }}
+                </td>
+
+                <td>
+                    {% if review.created_at %}
+                        {{ review.created_at[:10] }}
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if review.approved %}
+                        <span class="review-status approved">
+                            Approved
+                        </span>
+                    {% else %}
+                        <span class="review-status pending">
+                            Pending
+                        </span>
+                    {% endif %}
+                </td>
+
+                <td class="review-actions">
+
+                    {% if review.approved %}
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('admin_hide_review', review_id=review.id) }}"
+                        style="display:inline;">
+
+                        <button type="submit" class="review-hide-button">
+                            Hide
+                        </button>
+
+                    </form>
+
+                    {% else %}
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('admin_approve_review', review_id=review.id) }}"
+                        style="display:inline;">
+
+                        <button type="submit" class="review-approve-button">
+                            Approve
+                        </button>
+
+                    </form>
+
+                    {% endif %}
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('admin_delete_review', review_id=review.id) }}"
+                        style="display:inline;">
+
+                        <button
+                            type="submit"
+                            class="review-delete-button"
+                            onclick="return confirm('Are you sure you want to delete this review?');">
+                            Delete
+                        </button>
+
+                    </form>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <div class="empty-review-message">
+        <h3>No customer reviews yet</h3>
+        <p>Submitted reviews will appear here for approval.</p>
+    </div>
+
+    {% endif %}
+
+</div>
+
+<style>
+
+.review-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(150px, 1fr));
+    gap: 20px;
+    margin: 25px 0;
+}
+
+.review-stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.review-stat-card span {
+    display: block;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.review-stat-card strong {
+    display: block;
+    font-size: 25px;
+}
+
+.admin-review-stars {
+    color: #c9972b;
+    white-space: nowrap;
+    font-size: 18px;
+}
+
+.review-text-cell {
+    max-width: 340px;
+    line-height: 1.5;
+}
+
+.review-status {
+    display: inline-block;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.review-status.approved {
+    background: #e7f5ea;
+    color: #276738;
+}
+
+.review-status.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.review-actions {
+    min-width: 180px;
+}
+
+.review-approve-button,
+.review-hide-button,
+.review-delete-button {
+    border: none;
+    border-radius: 5px;
+    padding: 7px 10px;
+    margin: 2px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.review-approve-button {
+    background: #2f7d32;
+    color: white;
+}
+
+.review-hide-button {
+    background: #d9a521;
+    color: white;
+}
+
+.review-delete-button {
+    background: #b43a3a;
+    color: white;
+}
+
+.empty-review-message {
+    padding: 50px 20px;
+    text-align: center;
+}
+
+@media (max-width: 900px) {
+    .review-stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-table-card {
+        overflow-x: auto;
+    }
+}
+
+</style>
+
+{% endblock %}
