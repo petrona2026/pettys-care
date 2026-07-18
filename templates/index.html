@@ -48,10 +48,15 @@
             </a>
 
             <h3>{{ product.name }}</h3>
-            <strong>${{ "%.2f"|format(product.price) }}</strong>
-
-<a href="/add-to-cart/{{ product.slug }}">
-    {{ t.add_to_cart }}
+        <div class="product-starting-price">
+    <small>{{ t.starting_from }}</small>
+    <strong>
+        ${{ "%.2f"|format(product.sizes | map(attribute='price') | min) }}
+    </strong>
+</div>
+<a href="{{ url_for('product_detail', slug=product.slug) }}"
+   class="product-button">
+    🌿 {{ t.choose_your_bar }}
 </a>
         </div>
         {% endfor %}

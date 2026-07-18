@@ -78,96 +78,9 @@
                 {{ product.short[session.get('language', 'en')] }}
             </p>
 
-            <form
-                action="{{ url_for('add_to_cart', slug=product.slug) }}"
-                method="POST"
-                class="product-size-form"
-            >
-
-                <p class="product-size-heading">
-                   {{ t.choose_your_bar }}
-                </p>
-
-                <label class="product-size-card">
-                    <input
-                        type="radio"
-                        name="size"
-                        value="mini"
-                        data-price="5.99"
-                        data-label="{{ t.discovery_bar }}"
-                        data-button-text="{{ t.add_discovery_bar }}"
-                    >
-
-                    <span class="product-size-card-content">
-                        <span class="product-size-name">
-                            🌿 {{ t.discovery_bar }}
-                        </span>
-
-                        <span class="product-size-weight">
-                            2 oz (56 g)
-                        </span>
-
-                        <span class="product-size-price">
-                            $5.99
-                        </span>
-
-                        <span class="product-size-description">
-                            {{ t.perfect_first_time }}
-                        </span>
-                    </span>
-                </label>
-
-                <label class="product-size-card selected">
-                    <input
-                        type="radio"
-                        name="size"
-                        value="standard"
-                        data-price="8.99"
-                        data-label="{{ t.classic_bar }}"
-                        data-button-text="{{ t.add_classic_bar }}"
-                        checked
-                    >
-
-                    <span class="product-size-card-content">
-                        <span class="product-size-badge">
-                          {{ t. most_popular }}
-                        </span>
-
-                        <span class="product-size-name">
-                            🧼 {{ t.classic_bar }}
-                        </span>
-
-                        <span class="product-size-weight">
-                            4 oz (113 g)
-                        </span>
-
-                        <span class="product-size-regular-price">
-                            $12.00
-                        </span>
-
-                        <span class="product-size-price">
-                            $8.99
-                        </span>
-
-                        <span class="product-size-description">
-                            🎉 {{ t.grand_opening_special }} — {{ t.save_amount }}
-                        </span>
-                    </span>
-                </label>
-
-                <p class="product-detail-price">
-                    $<span id="selected-price">8.99</span>
-                </p>
-
-                <button
-                    type="submit"
-                    class="product-primary-button"
-                    id="add-to-cart-button"
-                >
-                 {{ t.add_classic_bar }}
-                </button>
-
-            </form>
+            <p class="product-detail-price">
+                ${{ "%.2f"|format(product.price) }}
+            </p>
 
              <div class="product-quick-details">
 
@@ -364,89 +277,60 @@
     <p>{{ t.hero_description }}</p>
 
 </section>
-<section class="product-reviews" id="reviews">
+<section class="product-reviews">
 
     <div class="reviews-header">
+
         <p>{{ t.what_our_customers_say|upper }}</p>
+
         <h2>{{ t.customer_reviews }}</h2>
 
-        <h3>
-            ⭐ {{ average_rating }}/5
-            {% if review_count %}
-                ({{ review_count }} Reviews)
-            {% else %}
-                (No reviews yet)
-            {% endif %}
-        </h3>
     </div>
-
-    {% if review_submitted %}
-    <div class="success-message">
-        Thank you! Your review has been received and is awaiting approval.
-    </div>
-    {% endif %}
-
-    {% if review_error %}
-    <div class="error-message">
-        {{ review_error }}
-    </div>
-    {% endif %}
-
-    {% for review in reviews %}
 
     <div class="review-card">
 
         <div class="review-stars">
-            {{ "★" * review.rating }}
+            ★★★★★
         </div>
 
-        <h3>{{ review.customer_name }}</h3>
+        <h3>Sarah M.</h3>
 
-        <p>{{ review.review_text }}</p>
+        <p>
+            "I've been using this soap for several weeks and absolutely love
+            how soft and refreshed my skin feels."
+        </p>
 
     </div>
 
-    {% endfor %}
+    <div class="review-card">
 
-    <hr style="margin:50px 0;">
+        <div class="review-stars">
+            ★★★★★
+        </div>
 
-    <h2>Write a Review</h2>
+        <h3>Michael R.</h3>
 
-    <form method="POST"
-          action="{{ url_for('submit_review', slug=product.slug) }}">
+        <p>
+            "Beautiful handcrafted soap with a wonderful scent.
+            I'll definitely be ordering again."
+        </p>
 
-        <input
-            type="text"
-            name="customer_name"
-            placeholder="Your name"
-            required>
+    </div>
 
-        <br><br>
+    <div class="review-card">
 
-        <select name="rating" required>
-            <option value="">Select Rating</option>
-            <option value="5">★★★★★</option>
-            <option value="4">★★★★☆</option>
-            <option value="3">★★★☆☆</option>
-            <option value="2">★★☆☆☆</option>
-            <option value="1">★☆☆☆☆</option>
-        </select>
+        <div class="review-stars">
+            ★★★★★
+        </div>
 
-        <br><br>
+        <h3>Emily T.</h3>
 
-        <textarea
-            name="review_text"
-            rows="6"
-            placeholder="Tell us what you think..."
-            required></textarea>
+        <p>
+            "Excellent quality and beautiful presentation.
+            Highly recommended."
+        </p>
 
-        <br><br>
-
-        <button class="btn" type="submit">
-            Submit Review
-        </button>
-
-    </form>
+    </div>
 
 </section>
 </main>
@@ -458,25 +342,6 @@
         From Our Hands to Your Home.
     </p>
 </footer>
-<script>
-const sizeOptions = document.querySelectorAll('input[name="size"]');
-const selectedPrice = document.getElementById("selected-price");
-const addButton = document.getElementById("add-to-cart-button");
 
-sizeOptions.forEach(function(option) {
-    option.addEventListener("change", function() {
-        document.querySelectorAll(".product-size-card").forEach(function(card) {
-            card.classList.remove("selected");
-        });
-
-        this.closest(".product-size-card").classList.add("selected");
-
-        selectedPrice.textContent =
-            Number(this.dataset.price).toFixed(2);
-
-         addButton.textContent = this.dataset.buttonText;
-    });
-});
-</script>
 </body>
 </html>

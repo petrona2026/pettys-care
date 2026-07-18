@@ -78,97 +78,144 @@
                 {{ product.short[session.get('language', 'en')] }}
             </p>
 
-            <form
-                action="{{ url_for('add_to_cart', slug=product.slug) }}"
-                method="POST"
-                class="product-size-form"
-            >
+             <form
+    action="{{ url_for('add_to_cart', slug=product.slug) }}"
+    method="POST"
+    class="product-size-form"
+>
 
-                <p class="product-size-heading">
-                   {{ t.choose_your_bar }}
-                </p>
+    <h3>Choose Your Size</h3>
 
-                <label class="product-size-card">
-                    <input
-                        type="radio"
-                        name="size"
-                        value="mini"
-                        data-price="5.99"
-                        data-label="{{ t.discovery_bar }}"
-                        data-button-text="{{ t.add_discovery_bar }}"
-                    >
+    <label class="product-size-option">
+        <input
+            type="radio"
+            name="size"
+            value="mini"
+            data-price="4.99"
+        >
 
-                    <span class="product-size-card-content">
-                        <span class="product-size-name">
-                            🌿 {{ t.discovery_bar }}
-                        </span>
+        <span>
+            <strong>Mini Discovery Bar</strong><br>
+            2 oz — $4.99<br>
+            <small>Perfect for trying a new scent</small>
+        </span>
+    </label>
 
-                        <span class="product-size-weight">
-                            2 oz (56 g)
-                        </span>
+    <label class="product-size-option">
+        <input
+            type="radio"
+            name="size"
+            value="standard"
+            data-price="8.99"
+            checked
+        >
 
-                        <span class="product-size-price">
-                            $5.99
-                        </span>
+        <span>
+            <strong>Classic Handcrafted Bar</strong>
+            <small>⭐ Most Popular</small><br>
+            4 oz —
+            <del>$12.00</del>
+            <strong>$8.99</strong><br>
+            <small>🎉 Grand Opening Special</small>
+        </span>
+    </label>
 
-                        <span class="product-size-description">
-                            {{ t.perfect_first_time }}
-                        </span>
-                    </span>
-                </label>
+    <form
+    action="{{ url_for('add_to_cart', slug=product.slug) }}"
+    method="POST"
+    class="product-size-form"
+>
 
-                <label class="product-size-card selected">
-                    <input
-                        type="radio"
-                        name="size"
-                        value="standard"
-                        data-price="8.99"
-                        data-label="{{ t.classic_bar }}"
-                        data-button-text="{{ t.add_classic_bar }}"
-                        checked
-                    >
+    <p class="product-size-heading">
+        Choose Your Bar
+    </p>
 
-                    <span class="product-size-card-content">
-                        <span class="product-size-badge">
-                          {{ t. most_popular }}
-                        </span>
+    <label class="product-size-card">
+        <input
+            type="radio"
+            name="size"
+            value="mini"
+            data-price="5.99"
+            data-label="Discovery Bar"
+        >
 
-                        <span class="product-size-name">
-                            🧼 {{ t.classic_bar }}
-                        </span>
+        <span class="product-size-card-content">
+            <span class="product-size-name">
+                🌿 Discovery Bar
+            </span>
 
-                        <span class="product-size-weight">
-                            4 oz (113 g)
-                        </span>
+            <span class="product-size-weight">
+                2 oz (56 g)
+            </span>
 
-                        <span class="product-size-regular-price">
-                            $12.00
-                        </span>
+            <span class="product-size-price">
+                $5.99
+            </span>
 
-                        <span class="product-size-price">
-                            $8.99
-                        </span>
+            <span class="product-size-description">
+                Perfect for first-time customers
+            </span>
+        </span>
+    </label>
 
-                        <span class="product-size-description">
-                            🎉 {{ t.grand_opening_special }} — {{ t.save_amount }}
-                        </span>
-                    </span>
-                </label>
+    <label class="product-size-card selected">
+        <input
+            type="radio"
+            name="size"
+            value="standard"
+            data-price="8.99"
+            data-label="Classic Bar"
+            checked
+        >
 
-                <p class="product-detail-price">
-                    $<span id="selected-price">8.99</span>
-                </p>
+        <span class="product-size-card-content">
+            <span class="product-size-badge">
+                Most Popular
+            </span>
 
-                <button
-                    type="submit"
-                    class="product-primary-button"
-                    id="add-to-cart-button"
-                >
-                 {{ t.add_classic_bar }}
-                </button>
+            <span class="product-size-name">
+                🧼 Classic Bar
+            </span>
 
-            </form>
+            <span class="product-size-weight">
+                4 oz (113 g)
+            </span>
 
+            <span class="product-size-regular-price">
+                $12.00
+            </span>
+
+            <span class="product-size-price">
+                $8.99
+            </span>
+
+            <span class="product-size-description">
+                🎉 Grand Opening Special — Save $3.01
+            </span>
+        </span>
+    </label>
+
+    <p class="product-detail-price">
+        $<span id="selected-price">8.99</span>
+    </p>
+
+    <button
+        type="submit"
+        class="product-primary-button"
+        id="add-to-cart-button"
+    >
+        Add Classic Bar to Cart
+    </button>
+
+</form>
+    <button
+        type="submit"
+        class="product-primary-button"
+    >
+        Add to Cart
+    </button>
+
+</form>
              <div class="product-quick-details">
 
 {% if session.get('language', 'en') == 'es' %}
@@ -459,6 +506,14 @@
     </p>
 </footer>
 <script>
+document.querySelectorAll('input[name="size"]').forEach(function(option) {
+    option.addEventListener("change", function() {
+        document.getElementById("selected-price").textContent =
+            Number(this.dataset.price).toFixed(2);
+    });
+});
+</script>
+<script>
 const sizeOptions = document.querySelectorAll('input[name="size"]');
 const selectedPrice = document.getElementById("selected-price");
 const addButton = document.getElementById("add-to-cart-button");
@@ -474,7 +529,8 @@ sizeOptions.forEach(function(option) {
         selectedPrice.textContent =
             Number(this.dataset.price).toFixed(2);
 
-         addButton.textContent = this.dataset.buttonText;
+        addButton.textContent =
+            "Add " + this.dataset.label + " to Cart";
     });
 });
 </script>

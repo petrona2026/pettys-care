@@ -150,18 +150,12 @@
             📖 {{ t.learn_more }}
         </a>
 
-        <form
-            action="{{ url_for('add_to_cart', slug=product.slug) }}"
-            method="POST"
-            style="margin:0;"
-        >
-            <button
-                type="submit"
-                class="hero-final-btn"
-            >
-                🛒 {{ t.add_to_cart }}
-            </button>
-        </form>
+          <a
+    href="{{ url_for('product_detail', slug=product.slug) }}"
+    class="hero-final-btn"
+>
+    🌿 {{ t.choose_your_bar }}
+</a>
 
         <a
             href="{{ url_for('soap_quiz_start') }}"

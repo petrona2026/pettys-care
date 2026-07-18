@@ -23,10 +23,25 @@ translations = {
     "compatible": "Compatible",
     "notice_paragraph_2":
     "It is intended to help you discover products that may fit your skincare preferences.",
-
+    "choose_your_bar": "Choose Your Bar",
+    "starting_from": "From",
+    "discovery_bar": "Discovery Bar",
+    "classic_bar": "Classic Bar",
+    "most_popular": "Most Popular",
+    "grand_opening": "Grand Opening Special",
+    "perfect_first_time": "Perfect for first-time customers",
     "notice_medical":
     "This recommendation is not a medical diagnosis, medical advice, or a prescription.",
-
+    "starting_from": "From",
+    "choose_your_bar": "Choose Your Bar",
+    "discovery_bar": "Discovery Bar",
+    "classic_bar": "Classic Bar",
+    "most_popular": "Most Popular",
+    "grand_opening_special": "Grand Opening Special",
+    "save_amount": "Save $3.01",
+    "perfect_first_time": "Perfect for first-time customers",
+    "add_discovery_bar": "Add Discovery Bar to Cart",
+    "add_classic_bar": "Add Classic Bar to Cart",
     "notice_consult":
     "If you have allergies, skin conditions, irritation, or medical concerns, please consult a qualified healthcare professional before using any skincare product.",
     "why_we_recommended": "Why We Recommended This Soap",

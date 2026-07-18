@@ -23,69 +23,8 @@ from translations.es import translations as es
 
 
 load_dotenv()
+
 DB_PATH = os.getenv("DB_PATH", "pettys.db")
-def ensure_reviews_table():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS reviews (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            product_slug TEXT NOT NULL,
-            customer_name TEXT NOT NULL,
-            rating INTEGER NOT NULL,
-            review_text TEXT NOT NULL DEFAULT '',
-            approved INTEGER NOT NULL DEFAULT 0,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-
-    cursor.execute("PRAGMA table_info(reviews)")
-    existing_columns = {
-        row[1] for row in cursor.fetchall()
-    }
-
-    if "product_slug" not in existing_columns:
-        cursor.execute(
-            "ALTER TABLE reviews ADD COLUMN product_slug TEXT"
-        )
-
-    if "customer_name" not in existing_columns:
-        cursor.execute(
-            "ALTER TABLE reviews ADD COLUMN customer_name TEXT"
-        )
-
-    if "rating" not in existing_columns:
-        cursor.execute(
-            "ALTER TABLE reviews ADD COLUMN rating INTEGER DEFAULT 0"
-        )
-
-    if "review_text" not in existing_columns:
-        cursor.execute(
-            "ALTER TABLE reviews ADD COLUMN review_text TEXT DEFAULT ''"
-        )
-
-    if "approved" not in existing_columns:
-        cursor.execute(
-            "ALTER TABLE reviews ADD COLUMN approved INTEGER DEFAULT 0"
-        )
-
-    if "created_at" not in existing_columns:
-        cursor.execute(
-            "ALTER TABLE reviews ADD COLUMN created_at TIMESTAMP"
-        )
-        cursor.execute(
-            """
-            UPDATE reviews
-            SET created_at = CURRENT_TIMESTAMP
-            WHERE created_at IS NULL
-            """
-        )
-
-    conn.commit()
-    conn.close()
-ensure_reviews_table()
-
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 app = Flask(__name__)
@@ -255,23 +194,7 @@ products = [
         "en": "Crafted with coconut oil and Vitamin E.",
         "es": "Elaborado con aceite de coco y vitamina E."
     },
-    "price": 8.99,
-    "regular_price": 12.00,
-    "sizes": [
-    {
-        "id": "mini",
-        "name": "Mini Bar",
-        "weight": "2 oz",
-        "price": 5.99
-    },
-    {
-        "id": "standard",
-        "name": "Standard Bar",
-        "weight": "4 oz",
-        "price": 8.99,
-        "regular_price": 12.00
-    }
-],
+    "price": 12.00,
     "image": "products_clean/01-coconut-bliss.png",
 },
 {
@@ -282,23 +205,7 @@ products = [
         "en": "A soothing aloe vera soap with Vitamin E.",
         "es": "Un jabón calmante de aloe vera con vitamina E."
     },
-    "price": 8.99,
-    "regular_price": 12.00,
-    "sizes": [
-    {
-        "id": "mini",
-        "name": "Mini Bar",
-        "weight": "2 oz",
-        "price": 5.99
-    },
-    {
-        "id": "standard",
-        "name": "Standard Bar",
-        "weight": "4 oz",
-        "price": 8.99,
-        "regular_price": 12.00
-    }
-],
+    "price": 12.00,
     "image": "products_clean/02-aloe-serenity.png",
 },
 {
@@ -309,23 +216,7 @@ products = [
         "en": "A warm botanical soap with turmeric and Vitamin E.",
         "es": "Un jabón botánico de cúrcuma con vitamina E."
     },
-    "price": 8.99,
-    "regular_price": 12.00,
-    "sizes": [
-    {
-        "id": "mini",
-        "name": "Mini Bar",
-        "weight": "2 oz",
-        "price": 5.99
-    },
-    {
-        "id": "standard",
-        "name": "Standard Bar",
-        "weight": "4 oz",
-        "price": 8.99,
-        "regular_price": 12.00
-    }
-],
+    "price": 12.00,
     "image": "products_clean/03-golden-turmeric.png",
 },
 {
@@ -336,23 +227,7 @@ products = [
         "en": "A comforting honey and oatmeal soap.",
         "es": "Un jabón reconfortante de miel y avena."
     },
-    "price": 8.99,
-    "regular_price": 12.00,
-    "sizes": [
-    {
-        "id": "mini",
-        "name": "Mini Bar",
-        "weight": "2 oz",
-        "price": 5.99
-    },
-    {
-        "id": "standard",
-        "name": "Standard Bar",
-        "weight": "4 oz",
-        "price": 8.99,
-        "regular_price": 12.00
-    }
-],
+    "price": 12.00,
     "image": "products_clean/04-honey-glow.png",
 },
 {
@@ -363,23 +238,7 @@ products = [
         "en": "A rich coffee-inspired handcrafted soap.",
         "es": "Un jabón artesanal inspirado en el café."
     },
-    "price": 8.99,
-    "regular_price": 12.00,
-    "sizes": [
-    {
-        "id": "mini",
-        "name": "Mini Bar",
-        "weight": "2 oz",
-        "price": 5.99
-    },
-    {
-        "id": "standard",
-        "name": "Standard Bar",
-        "weight": "4 oz",
-        "price": 8.99,
-        "regular_price": 12.00
-    }
-],
+    "price": 12.00,
     "image": "products_clean/05-coffee-delight.png",
 },
 {
@@ -390,23 +249,7 @@ products = [
         "en": "A bold activated charcoal soap.",
         "es": "Un jabón de carbón activado para una limpieza profunda."
     },
-    "price": 8.99,
-    "regular_price": 12.00,
-    "sizes": [
-    {
-        "id": "mini",
-        "name": "Mini Bar",
-        "weight": "2 oz",
-        "price": 5.99
-    },
-    {
-        "id": "standard",
-        "name": "Standard Bar",
-        "weight": "4 oz",
-        "price": 8.99,
-        "regular_price": 12.00
-    }
-],
+    "price": 12.00,
     "image": "products_clean/06-charcoal-cleanse.png",
 },
     ]
@@ -1021,73 +864,14 @@ def submit_review(slug):
         ) + "#reviews"
     )
 
-def get_product_and_size(cart_key):
-    if "::" in cart_key:
-        slug, size_id = cart_key.split("::", 1)
-    else:
-        slug = cart_key
-        size_id = "standard"
 
-    product = next(
-        (item for item in products if item["slug"] == slug),
-        None
-    )
-
-    if not product:
-        return None, None
-
-    selected_size = next(
-        (
-            size
-            for size in product.get("sizes", [])
-            if size["id"] == size_id
-        ),
-        None
-    )
-
-    if not selected_size:
-        selected_size = next(
-            (
-                size
-                for size in product.get("sizes", [])
-                if size["id"] == "standard"
-            ),
-            None
-        )
-
-    return product, selected_size
 @app.route("/add-to-cart/<slug>", methods=["GET", "POST"])
 def add_to_cart(slug):
-    product = next(
-        (item for item in products if item["slug"] == slug),
-        None
-    )
-
-    if not product:
-        abort(404)
-
-    size_id = request.form.get("size", "standard")
-
-    selected_size = next(
-        (
-            size
-            for size in product.get("sizes", [])
-            if size["id"] == size_id
-        ),
-        None
-    )
-
-    if not selected_size:
-        size_id = "standard"
-
-    cart_key = f"{slug}::{size_id}"
     cart = session.get("cart", {})
 
-    cart[cart_key] = cart.get(cart_key, 0) + 1
+    cart[slug] = cart.get(slug, 0) + 1
 
     session["cart"] = cart
-    session.modified = True
-
     return redirect(url_for("cart"))
 @app.route("/ingredients")
 def ingredients():
@@ -1114,57 +898,50 @@ def cart():
     cart_items = []
     total = 0
 
-    for cart_key, quantity in cart.items():
-        product, selected_size = get_product_and_size(cart_key)
+    for slug, quantity in cart.items():
+        product = next((p for p in products if p["slug"] == slug), None)
 
-        if product and selected_size:
-            unit_price = selected_size["price"]
-            subtotal = unit_price * quantity
+        if product:
+            subtotal = product["price"] * quantity
             total += subtotal
 
             cart_items.append({
-                "cart_key": cart_key,
                 "product": product,
-                "size": selected_size,
-                "unit_price": unit_price,
                 "quantity": quantity,
                 "subtotal": subtotal
             })
 
-    cart_slugs = {
-        cart_key.split("::", 1)[0]
-        for cart_key in cart.keys()
-    }
+    cart_slugs = set(cart.keys())
 
     recommended_products = [
-        product
-        for product in products
-        if product["slug"] not in cart_slugs
+    product
+    for product in products
+    if product["slug"] not in cart_slugs
     ][:3]
 
     return render_template(
-        "cart.html",
-        cart_items=cart_items,
-        total=total,
-        recommended_products=recommended_products
-    )
-@app.route("/update-cart/<path:cart_key>", methods=["POST"])
-def update_cart(cart_key):
+    "cart.html",
+    cart_items=cart_items,
+    total=total,
+    recommended_products=recommended_products
+)
+@app.route("/update-cart/<slug>", methods=["POST"])
+def update_cart(slug):
     cart = session.get("cart", {})
 
-    if cart_key not in cart:
+    if slug not in cart:
         return redirect(url_for("cart"))
 
     action = request.form.get("action")
 
     if action == "increase":
-        cart[cart_key] += 1
+        cart[slug] += 1
 
     elif action == "decrease":
-        cart[cart_key] -= 1
+        cart[slug] -= 1
 
-        if cart[cart_key] <= 0:
-            cart.pop(cart_key)
+        if cart[slug] <= 0:
+            cart.pop(slug)
 
     session["cart"] = cart
     session.modified = True
@@ -1270,16 +1047,15 @@ def payment():
         return redirect(url_for("checkout"))
 
     return render_template("payment.html", customer=customer, order_number=order_number)
-@app.route("/remove-from-cart/<path:cart_key>")
-def remove_from_cart(cart_key):
+
+@app.route("/remove-from-cart/<slug>")
+def remove_from_cart(slug):
     cart = session.get("cart", {})
 
-    if cart_key in cart:
-        del cart[cart_key]
+    if slug in cart:
+        del cart[slug]
 
     session["cart"] = cart
-    session.modified = True
-
     return redirect(url_for("cart"))
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
@@ -1391,127 +1167,6 @@ def admin_customers():
 @login_required
 def admin_suppliers():
     return render_template("admin_suppliers.html")
-
-
-@app.route("/admin/reviews")
-@login_required
-def admin_reviews():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-
-    cursor.execute(
-        """
-        SELECT
-            id,
-            product_slug,
-            customer_name,
-            rating,
-            review_text,
-            approved,
-            created_at
-        FROM reviews
-        ORDER BY
-            approved ASC,
-            created_at DESC
-        """
-    )
-    reviews = cursor.fetchall()
-
-    cursor.execute("SELECT COUNT(*) FROM reviews")
-    total_reviews = cursor.fetchone()[0]
-
-    cursor.execute(
-        "SELECT COUNT(*) FROM reviews WHERE approved = 0"
-    )
-    pending_reviews = cursor.fetchone()[0]
-
-    cursor.execute(
-        "SELECT COUNT(*) FROM reviews WHERE approved = 1"
-    )
-    approved_reviews = cursor.fetchone()[0]
-
-    cursor.execute(
-        """
-        SELECT COALESCE(AVG(rating), 0)
-        FROM reviews
-        WHERE approved = 1
-        """
-    )
-    average_rating = round(cursor.fetchone()[0], 1)
-
-    conn.close()
-
-    return render_template(
-        "admin_reviews.html",
-        reviews=reviews,
-        total_reviews=total_reviews,
-        pending_reviews=pending_reviews,
-        approved_reviews=approved_reviews,
-        average_rating=average_rating
-    )
-
-
-@app.route("/admin/reviews/<int:review_id>/approve", methods=["POST"])
-@login_required
-def admin_approve_review(review_id):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-
-    cursor.execute(
-        """
-        UPDATE reviews
-        SET approved = 1
-        WHERE id = ?
-        """,
-        (review_id,)
-    )
-
-    conn.commit()
-    conn.close()
-
-    return redirect(url_for("admin_reviews"))
-
-
-@app.route("/admin/reviews/<int:review_id>/hide", methods=["POST"])
-@login_required
-def admin_hide_review(review_id):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-
-    cursor.execute(
-        """
-        UPDATE reviews
-        SET approved = 0
-        WHERE id = ?
-        """,
-        (review_id,)
-    )
-
-    conn.commit()
-    conn.close()
-
-    return redirect(url_for("admin_reviews"))
-
-
-@app.route("/admin/reviews/<int:review_id>/delete", methods=["POST"])
-@login_required
-def admin_delete_review(review_id):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-
-    cursor.execute(
-        """
-        DELETE FROM reviews
-        WHERE id = ?
-        """,
-        (review_id,)
-    )
-
-    conn.commit()
-    conn.close()
-
-    return redirect(url_for("admin_reviews"))
 
 
 @app.route("/admin/products")
