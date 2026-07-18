@@ -34,14 +34,25 @@ def ensure_reviews_table():
         product_slug TEXT NOT NULL,
         customer_name TEXT NOT NULL,
         rating INTEGER NOT NULL,
-        comment TEXT,
+        review_text TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     """)
 
+    cursor.execute("PRAGMA table_info(reviews)")
+    existing_columns = {
+        row[1] for row in cursor.fetchall()
+    }
+
+    if "review_text" not in existing_columns:
+        cursor.execute(
+            "ALTER TABLE reviews ADD COLUMN review_text TEXT"
+        )
+
     conn.commit()
     conn.close()
 ensure_reviews_table()
+
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 app = Flask(__name__)
