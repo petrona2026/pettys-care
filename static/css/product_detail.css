@@ -514,3 +514,124 @@ body.product-detail-page{
         font-size:2rem;
     }
 }
+/* ================================
+   CHOOSE YOUR BAR
+================================ */
+
+.product-size-form {
+    margin-top: 24px;
+}
+
+.product-size-heading {
+    margin-bottom: 14px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2f3a22;
+}
+
+.product-size-card {
+    position: relative;
+    display: block;
+    margin-bottom: 14px;
+    padding: 18px;
+    border: 2px solid #d8ddcf;
+    border-radius: 14px;
+    background: #ffffff;
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.product-size-card:hover {
+    border-color: #87956d;
+    box-shadow: 0 8px 20px rgba(47, 58, 34, 0.10);
+    transform: translateY(-1px);
+}
+
+.product-size-card.selected {
+    border-color: #556b2f;
+    background: #f8faf4;
+    box-shadow: 0 8px 22px rgba(85, 107, 47, 0.16);
+}
+
+.product-size-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.product-size-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.product-size-name {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: #2f3a22;
+}
+
+.product-size-weight {
+    font-size: 0.92rem;
+    color: #6c7167;
+}
+
+.product-size-regular-price {
+    font-size: 0.92rem;
+    color: #8a8a8a;
+    text-decoration: line-through;
+}
+
+.product-size-price {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #556b2f;
+}
+
+.product-size-description {
+    margin-top: 3px;
+    font-size: 0.9rem;
+    color: #5f6559;
+}
+
+.product-size-badge {
+    align-self: flex-start;
+    margin-bottom: 4px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #556b2f;
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.product-size-card.selected::after {
+    content: "✓";
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #556b2f;
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+@media (max-width: 600px) {
+    .product-size-card {
+        padding: 16px;
+    }
+
+    .product-size-name {
+        padding-right: 32px;
+    }
+}
