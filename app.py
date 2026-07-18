@@ -35,6 +35,7 @@ def ensure_reviews_table():
         customer_name TEXT NOT NULL,
         rating INTEGER NOT NULL,
         review_text TEXT,
+        approved INTEGER DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     """)
@@ -48,7 +49,10 @@ def ensure_reviews_table():
         cursor.execute(
             "ALTER TABLE reviews ADD COLUMN review_text TEXT"
         )
-
+    if "approved" not in existing_columns:
+        cursor.execute(
+            "ALTER TABLE reviews ADD COLUMN approved INTEGER DEFAULT 0"
+        )
     conn.commit()
     conn.close()
 ensure_reviews_table()
