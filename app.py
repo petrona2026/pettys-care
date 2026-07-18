@@ -29,15 +29,15 @@ def ensure_reviews_table():
     cursor = conn.cursor()
 
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS reviews (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        product_slug TEXT NOT NULL,
-        customer_name TEXT NOT NULL,
-        rating INTEGER NOT NULL,
-        review_text TEXT,
-        approved INTEGER DEFAULT 0,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
+        CREATE TABLE IF NOT EXISTS reviews (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            product_slug TEXT NOT NULL,
+            customer_name TEXT NOT NULL,
+            rating INTEGER NOT NULL,
+            review_text TEXT NOT NULL DEFAULT '',
+            approved INTEGER NOT NULL DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
     """)
 
     cursor.execute("PRAGMA table_info(reviews)")
@@ -45,14 +45,43 @@ def ensure_reviews_table():
         row[1] for row in cursor.fetchall()
     }
 
+    if "product_slug" not in existing_columns:
+        cursor.execute(
+            "ALTER TABLE reviews ADD COLUMN product_slug TEXT"
+        )
+
+    if "customer_name" not in existing_columns:
+        cursor.execute(
+            "ALTER TABLE reviews ADD COLUMN customer_name TEXT"
+        )
+
+    if "rating" not in existing_columns:
+        cursor.execute(
+            "ALTER TABLE reviews ADD COLUMN rating INTEGER DEFAULT 0"
+        )
+
     if "review_text" not in existing_columns:
         cursor.execute(
-            "ALTER TABLE reviews ADD COLUMN review_text TEXT"
+            "ALTER TABLE reviews ADD COLUMN review_text TEXT DEFAULT ''"
         )
+
     if "approved" not in existing_columns:
         cursor.execute(
             "ALTER TABLE reviews ADD COLUMN approved INTEGER DEFAULT 0"
         )
+
+    if "created_at" not in existing_columns:
+        cursor.execute(
+            "ALTER TABLE reviews ADD COLUMN created_at TIMESTAMP"
+        )
+        cursor.execute(
+            """
+            UPDATE reviews
+            SET created_at = CURRENT_TIMESTAMP
+            WHERE created_at IS NULL
+            """
+        )
+
     conn.commit()
     conn.close()
 ensure_reviews_table()
