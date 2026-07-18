@@ -1,105 +1,62 @@
+import os
 import sqlite3
-import smtplib
-from email.message import EmailMessage
-from flask_mail import Mail, Message
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+
+import resend
+import stripe
+from dotenv import load_dotenv
+from flask import Flask, abort, redirect, render_template, request, session, url_for
+from flask_login import (
+    LoginManager,
+    UserMixin,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
+
 from product_profiles import product_profiles
-from flask import Flask, render_template, redirect, url_for, abort,session,request
+from recommendation_engine import recommend_soap
 from translations.en import translations as en
 from translations.es import translations as es
-from recommendation_engine import recommend_soap
-import os
-DB_PATH = os.getenv("DB_PATH", "pettys.db")
-import stripe
-from werkzeug.utils import secure_filename
-from dotenv import load_dotenv
+
 
 load_dotenv()
-def send_order_email(to_email, subject, html_body):
-    smtp_host = os.getenv("SMTP_HOST")
-    smtp_port = int(os.getenv("SMTP_PORT", "587"))
-    smtp_username = os.getenv("SMTP_USERNAME")
-    smtp_password = os.getenv("SMTP_PASSWORD")
-    from_email = os.getenv("FROM_EMAIL", smtp_username)
 
-    if not all([
-        smtp_host,
-        smtp_username,
-        smtp_password,
-        from_email
-    ]):
-        print("EMAIL NOT SENT: SMTP settings are incomplete.")
-        return False
-
-    message = EmailMessage()
-    message["Subject"] = subject
-    message["From"] = f"PETTY'S CARE <{from_email}>"
-    message["To"] = to_email
-
-    message.set_content(
-        "Thank you for your order from PETTY'S CARE."
-    )
-
-    message.add_alternative(
-        html_body,
-        subtype="html"
-    )
-
-    try:
-        with smtplib.SMTP(smtp_host, smtp_port) as smtp:
-            smtp.starttls()
-            smtp.login(smtp_username, smtp_password)
-            smtp.send_message(message)
-
-        print(f"ORDER EMAIL SENT TO: {to_email}")
-        return True
-
-    except Exception as error:
-        print("EMAIL ERROR:", repr(error))
-        return False
-# print("Stripe Key:", os.getenv("STRIPE_SECRET_KEY"))
+DB_PATH = os.getenv("DB_PATH", "pettys.db")
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 app = Flask(__name__)
+resend.api_key = os.getenv("RESEND_API_KEY")
 
-app.config["MAIL_SERVER"] = os.getenv(
-    "SMTP_HOST",
-    "smtp.porkbun.com"
-)
-app.config["MAIL_PORT"] = int(
-    os.getenv("SMTP_PORT", "587")
-)
-app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USE_SSL"] = False
-app.config["MAIL_USERNAME"] = os.getenv("SMTP_USERNAME")
-app.config["MAIL_PASSWORD"] = os.getenv("SMTP_PASSWORD")
-app.config["MAIL_DEFAULT_SENDER"] = (
-    "PETTY'S CARE",
-    os.getenv("FROM_EMAIL", "orders@pettyscare.com")
-)
 
-mail = Mail(app)
 def send_order_confirmation_email(order_id):
     """
-    Send the paid-order confirmation email once.
+    Send a paid-order confirmation email once through Resend.
 
-    Returns True when the email was sent successfully.
-    Returns False when the order does not exist, the email was already sent,
-    or sending failed.
+    Returns True when the email is sent successfully.
+    Returns False when the order does not exist, the confirmation was already
+    sent, the Resend API key is missing, or delivery fails.
     """
+
+    if not resend.api_key:
+        print("EMAIL ERROR: RESEND_API_KEY is missing.")
+        return False
 
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
     try:
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT *
             FROM orders
             WHERE id = ?
-        """, (order_id,))
-
+            """,
+            (order_id,),
+        )
         order = cursor.fetchone()
 
         if order is None:
@@ -108,36 +65,30 @@ def send_order_confirmation_email(order_id):
 
         if order["confirmation_email_sent"] == 1:
             print(
-                f"EMAIL SKIPPED: Confirmation for "
+                "EMAIL SKIPPED: Confirmation for "
                 f"{order['order_number']} was already sent."
             )
             return False
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT *
             FROM order_items
             WHERE order_id = ?
             ORDER BY id
-        """, (order_id,))
-
+            """,
+            (order_id,),
+        )
         items = cursor.fetchall()
 
         language = session.get("language", "en")
-
         if language == "es":
             email_translations = es
         else:
             language = "en"
             email_translations = en
 
-        message = Message(
-            subject=email_translations[
-                "email_order_received_subject"
-            ],
-            recipients=[order["email"]]
-        )
-
-        message.body = (
+        text_body = (
             f"{email_translations['email_greeting']} "
             f"{order['first_name']},\n\n"
             f"{email_translations['email_order_received_message']}\n\n"
@@ -150,29 +101,40 @@ def send_order_confirmation_email(order_id):
             "orders@pettyscare.com"
         )
 
-        message.html = render_template(
+        html_body = render_template(
             "emails/order_received.html",
             order=order,
             items=items,
             t=email_translations,
-            language=language
+            language=language,
         )
 
-        mail.send(message)
+        response = resend.Emails.send(
+            {
+                "from": "PETTY'S CARE <orders@pettyscare.com>",
+                "to": [order["email"]],
+                "subject": email_translations["email_order_received_subject"],
+                "html": html_body,
+                "text": text_body,
+                "reply_to": "orders@pettyscare.com",
+            }
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             UPDATE orders
             SET confirmation_email_sent = 1
             WHERE id = ?
-        """, (order_id,))
-
+            """,
+            (order_id,),
+        )
         conn.commit()
 
         print(
-            f"EMAIL SENT: Confirmation for "
-            f"{order['order_number']} sent to {order['email']}."
+            "EMAIL SENT THROUGH RESEND: "
+            f"{order['order_number']} to {order['email']}. "
+            f"Response: {response}"
         )
-
         return True
 
     except Exception as error:
@@ -182,6 +144,8 @@ def send_order_confirmation_email(order_id):
 
     finally:
         conn.close()
+
+
 @app.context_processor
 def inject_translations():
 
@@ -1310,11 +1274,15 @@ def payment_success():
         conn.commit()
         conn.close()
 
+        send_order_confirmation_email(order_id)
+
     session.pop("cart", None)
 
     return render_template(
         "payment_success.html",
         order_number=order_number
     )
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
