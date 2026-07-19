@@ -3,8 +3,9 @@ import sqlite3
 
 import resend
 import stripe
+from product_service import get_all_products
 from dotenv import load_dotenv
-from flask import Flask, abort, redirect, render_template, request, session, url_for
+from flask import Flask, abort, redirect, render_template, request, session, url_for, flash
 from flask_login import (
     LoginManager,
     UserMixin,
@@ -230,7 +231,70 @@ class AdminUser(UserMixin):
     def __init__(self, id, username):
         self.id = id
         self.username = username
+@app.route("/admin/inventory")
+@login_required
+def admin_inventory():
 
+    products = get_all_products(active_only=False)
+
+    return render_template(
+        "admin_inventory.html",
+        products=products
+    )
+@app.route("/admin/inventory/<int:product_id>/update", methods=["POST"])
+@login_required
+def update_inventory(product_id):
+    try:
+        discovery_stock = int(request.form.get("discovery_stock", 0))
+        classic_stock = int(request.form.get("classic_stock", 0))
+    except (TypeError, ValueError):
+        flash("Stock quantities must be valid whole numbers.", "error")
+        return redirect(url_for("admin_inventory"))
+
+    if discovery_stock < 0 or classic_stock < 0:
+        flash("Stock quantities cannot be negative.", "error")
+        return redirect(url_for("admin_inventory"))
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            UPDATE product_sizes
+            SET stock = ?
+            WHERE product_id = ?
+              AND size_code = 'mini'
+        """, (discovery_stock, product_id))
+
+        cursor.execute("""
+            UPDATE product_sizes
+            SET stock = ?
+            WHERE product_id = ?
+              AND size_code = 'standard'
+        """, (classic_stock, product_id))
+
+        conn.commit()
+        flash("Inventory updated successfully.", "success")
+
+    except sqlite3.Error as error:
+        conn.rollback()
+        print(f"Inventory update error: {error}")
+        flash("Inventory could not be updated.", "error")
+
+    finally:
+        conn.close()
+
+    return redirect(url_for("admin_inventory"))
+@app.route("/admin/products-manager")
+@login_required
+def admin_products_manager():
+
+    products = get_all_products(active_only=False)
+
+    return render_template(
+        "admin_products_manager.html",
+        products=products
+    )
 @login_manager.user_loader
 def load_user(user_id):
     conn = sqlite3.connect(DB_PATH)
@@ -1180,17 +1244,34 @@ def checkout():
     cart_items = []
     total = 0
 
-    for slug, quantity in cart.items():
-        product = next((p for p in products if p["slug"] == slug), None)
+    # Build the cart using product and selected size information.
+    for cart_key, quantity in cart.items():
+        product, selected_size = get_product_and_size(cart_key)
 
-        if product:
-            subtotal = product["price"] * quantity
-            total += subtotal
-            cart_items.append({
-                "product": product,
-                "quantity": quantity,
-                "subtotal": subtotal
-            })
+        if not product or not selected_size:
+            continue
+
+        unit_price = selected_size["price"]
+        subtotal = unit_price * quantity
+        total += subtotal
+
+        cart_items.append({
+            "cart_key": cart_key,
+            "product": product,
+            "size": selected_size,
+            "unit_price": unit_price,
+            "quantity": quantity,
+            "subtotal": subtotal
+        })
+
+    # Prevent checkout when no valid cart items were found.
+    if not cart_items:
+        session.pop("cart", None)
+        flash(
+            "Your cart could not be processed. Please add the products again.",
+            "error"
+        )
+        return redirect(url_for("cart"))
 
     if request.method == "POST":
         customer = {
@@ -1208,58 +1289,105 @@ def checkout():
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
-        cursor.execute("SELECT COUNT(*) FROM orders")
-        order_count = cursor.fetchone()[0] + 1
-        order_number = f"PET-{100000 + order_count}"
+        try:
+            cursor.execute("SELECT COUNT(*) FROM orders")
+            order_count = cursor.fetchone()[0] + 1
+            order_number = f"PET-{100000 + order_count}"
 
-        cursor.execute("""
-            INSERT INTO orders (
-                order_number, first_name, last_name, email, phone,
-                address, city, state, zip_code, notes, total, status
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            order_number,
-            customer["first_name"],
-            customer["last_name"],
-            customer["email"],
-            customer["phone"],
-            customer["address"],
-            customer["city"],
-            customer["state"],
-            customer["zip_code"],
-            customer["notes"],
-            total,
-            "Pending Payment"
-        ))
-
-        order_id = cursor.lastrowid
-
-        for item in cart_items:
             cursor.execute("""
-                INSERT INTO order_items (
-                    order_id, product_name, product_slug, quantity, price, subtotal
+                INSERT INTO orders (
+                    order_number,
+                    first_name,
+                    last_name,
+                    email,
+                    phone,
+                    address,
+                    city,
+                    state,
+                    zip_code,
+                    notes,
+                    total,
+                    status
                 )
-                VALUES (?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
-                order_id,
-                item["product"]["name"],
-                item["product"]["slug"],
-                item["quantity"],
-                item["product"]["price"],
-                item["subtotal"]
+                order_number,
+                customer["first_name"],
+                customer["last_name"],
+                customer["email"],
+                customer["phone"],
+                customer["address"],
+                customer["city"],
+                customer["state"],
+                customer["zip_code"],
+                customer["notes"],
+                total,
+                "Pending Payment"
             ))
 
-        conn.commit()
-        conn.close()
+            order_id = cursor.lastrowid
+
+            for item in cart_items:
+                product_name = (
+                    item["product"].get("name_en")
+                    or item["product"].get("name")
+                    or item["product"]["slug"]
+                )
+
+                size_id = item["size"]["id"]
+
+                if size_id == "mini":
+                    size_name = "Discovery Bar - 2 oz"
+                else:
+                    size_name = "Classic Bar - 4 oz"
+
+                full_product_name = f"{product_name} - {size_name}"
+
+                cursor.execute("""
+                    INSERT INTO order_items (
+                        order_id,
+                        product_name,
+                        product_slug,
+                        quantity,
+                        price,
+                        subtotal
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (
+                    order_id,
+                    full_product_name,
+                    item["product"]["slug"],
+                    item["quantity"],
+                    item["unit_price"],
+                    item["subtotal"]
+                ))
+
+            conn.commit()
+
+        except sqlite3.Error as error:
+            conn.rollback()
+            print("CHECKOUT DATABASE ERROR:", error)
+
+            flash(
+                "The order could not be created. Please try again.",
+                "error"
+            )
+            return redirect(url_for("checkout"))
+
+        finally:
+            conn.close()
 
         session["customer"] = customer
         session["order_number"] = order_number
         session["order_id"] = order_id
+
         return redirect(url_for("payment"))
 
-    return render_template("checkout.html", cart_items=cart_items, total=total)
-
+    return render_template(
+        "checkout.html",
+        cart_items=cart_items,
+        total=total
+    )
 @app.route("/payment")
 def payment():
     customer = session.get("customer")
@@ -1687,48 +1815,78 @@ def update_order_status(order_id):
 def about():
     return render_template("about.html")
 
-
 @app.route("/create-checkout-session", methods=["POST"])
 def create_checkout_session():
     cart = session.get("cart", {})
 
     if not cart:
+        flash("Your cart is empty.", "error")
         return redirect(url_for("cart"))
 
     line_items = []
 
-    for slug, quantity in cart.items():
-        product = next((p for p in products if p["slug"] == slug), None)
+    for cart_key, quantity in cart.items():
+        product, selected_size = get_product_and_size(cart_key)
 
-        if product:
-            line_items.append({
-                "price_data": {
-                    "currency": "usd",
-                    "product_data": {
-                        "name": product["name"],
-                    },
-                    "unit_amount": int(product["price"] * 100),
+        if not product or not selected_size:
+            continue
+
+        product_name = (
+            product.get("name_en")
+            or product.get("name")
+            or product.get("slug")
+            or "Petty's Care Product"
+        )
+
+        if selected_size["id"] == "mini":
+            size_name = "Discovery Bar - 2 oz"
+        else:
+            size_name = "Classic Bar - 4 oz"
+
+        line_items.append({
+            "price_data": {
+                "currency": "usd",
+                "product_data": {
+                    "name": f"{product_name} - {size_name}",
                 },
-                "quantity": quantity,
-            })
+                "unit_amount": int(
+                    round(float(selected_size["price"]) * 100)
+                ),
+            },
+            "quantity": int(quantity),
+        })
+
+    if not line_items:
+        flash(
+            "Your cart could not be processed. Please add the products again.",
+            "error"
+        )
+        return redirect(url_for("cart"))
+
+    domain = os.getenv("DOMAIN", "http://127.0.0.1:5000").rstrip("/")
 
     print("=== ENTERING STRIPE CHECKOUT ===")
     print("Cart:", cart)
     print("Line items:", line_items)
     print("Stripe key loaded:", bool(stripe.api_key))
-    print("Domain:", os.getenv("DOMAIN"))
+    print("Domain:", domain)
 
     try:
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
             line_items=line_items,
             mode="payment",
-            success_url=os.getenv("DOMAIN") + "/payment-success",
-            cancel_url=os.getenv("DOMAIN") + "/cart",
+            success_url=domain + "/payment-success",
+            cancel_url=domain + "/cart",
         )
-    except Exception as e:
-        print("STRIPE ERROR:", repr(e))
-        raise
+
+    except Exception as error:
+        print("STRIPE ERROR:", repr(error))
+        flash(
+            "Stripe could not start the payment. Please try again.",
+            "error"
+        )
+        return redirect(url_for("payment"))
 
     return redirect(checkout_session.url, code=303)
 @app.route("/payment-success")
