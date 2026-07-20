@@ -1,13 +1,37 @@
 {% extends "admin_base.html" %}
 
-{% block title %}Inventory{% endblock %}
+{% block title %}{{ t.inventory }}{% endblock %}
 
-{% block admin_content %}
+{% block content %}
+
+{% set summary = namespace(
+    total_products=0,
+    total_bars=0,
+    low_stock=0,
+    out_of_stock=0
+) %}
+
+{% for product in products %}
+    {% set product_total = namespace(value=0) %}
+
+    {% for size in product.sizes %}
+        {% set product_total.value = product_total.value + size.stock %}
+    {% endfor %}
+
+    {% set summary.total_products = summary.total_products + 1 %}
+    {% set summary.total_bars = summary.total_bars + product_total.value %}
+
+    {% if product_total.value == 0 %}
+        {% set summary.out_of_stock = summary.out_of_stock + 1 %}
+    {% elif product_total.value <= 5 %}
+        {% set summary.low_stock = summary.low_stock + 1 %}
+    {% endif %}
+{% endfor %}
 
 <div class="admin-page-header">
     <div>
-        <h1>Inventory</h1>
-        <p>Update stock quantities for each product size.</p>
+        <h1>{{ t.inventory }}</h1>
+        <p>{{ t.update_inventory_description }}</p>
     </div>
 </div>
 
@@ -21,44 +45,86 @@
     {% endif %}
 {% endwith %}
 
+<div class="inventory-summary-grid">
+
+    <div class="inventory-summary-card">
+        <span class="inventory-summary-icon">🧼</span>
+        <div>
+            <small>{{ t.total_products }}</small>
+            <strong>{{ summary.total_products }}</strong>
+        </div>
+    </div>
+
+    <div class="inventory-summary-card">
+        <span class="inventory-summary-icon">📦</span>
+        <div>
+            <small>{{ t.total_bars }}</small>
+            <strong>{{ summary.total_bars }}</strong>
+        </div>
+    </div>
+
+    <div class="inventory-summary-card">
+        <span class="inventory-summary-icon">⚠️</span>
+        <div>
+            <small>{{ t.low_stock }}</small>
+            <strong>{{ summary.low_stock }}</strong>
+        </div>
+    </div>
+
+    <div class="inventory-summary-card">
+        <span class="inventory-summary-icon">❌</span>
+        <div>
+            <small>{{ t.out_of_stock }}</small>
+            <strong>{{ summary.out_of_stock }}</strong>
+        </div>
+    </div>
+
+</div>
+
 <div class="admin-card">
     <div class="table-responsive">
+
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>Product</th>
-                    <th>Discovery Stock</th>
-                    <th>Classic Stock</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Update</th>
+                    <th>{{ t.product }}</th>
+                    <th>{{ t.discovery_stock }}</th>
+                    <th>{{ t.classic_stock }}</th>
+                    <th>{{ t.total }}</th>
+                    <th>{{ t.status }}</th>
+                    <th>{{ t["update"] }}</th>
                 </tr>
             </thead>
 
             <tbody>
                 {% for product in products %}
-                {% set discovery = namespace(id=None, stock=0) %}
-                {% set classic = namespace(id=None, stock=0) %}
 
-                {% for size in product.sizes %}
-                    {% if size.size_code == "mini" %}
-                        {% set discovery.id = size.id %}
-                        {% set discovery.stock = size.stock %}
-                    {% elif size.size_code == "standard" %}
-                        {% set classic.id = size.id %}
-                        {% set classic.stock = size.stock %}
-                    {% endif %}
-                {% endfor %}
+                    {% set discovery = namespace(id=None, stock=0) %}
+                    {% set classic = namespace(id=None, stock=0) %}
 
-                {% set total_stock = discovery.stock + classic.stock %}
+                    {% for size in product.sizes %}
+                        {% if size.size_code == "mini" %}
+                            {% set discovery.id = size.id %}
+                            {% set discovery.stock = size.stock %}
+                        {% elif size.size_code == "standard" %}
+                            {% set classic.id = size.id %}
+                            {% set classic.stock = size.stock %}
+                        {% endif %}
+                    {% endfor %}
 
-                <tr>
-                    <td>
-                        <strong>{{ product.name_en or product.name }}</strong>
-                    </td>
+                    {% set total_stock = discovery.stock + classic.stock %}
+                    {% set form_id = "inventory-form-" ~ product.id %}
 
-                    <form method="POST"
-                          action="{{ url_for('update_inventory', product_id=product.id) }}">
+                    <tr>
+                        <td>
+                            <strong>
+                                {% if session.get("language") == "es" %}
+                                    {{ product.name_es or product.name_en or product.name }}
+                                {% else %}
+                                    {{ product.name_en or product.name }}
+                                {% endif %}
+                            </strong>
+                        </td>
 
                         <td>
                             <input
@@ -67,7 +133,8 @@
                                 value="{{ discovery.stock }}"
                                 min="0"
                                 required
-                                style="width:90px;"
+                                class="inventory-input"
+                                form="{{ form_id }}"
                             >
                         </td>
 
@@ -78,7 +145,8 @@
                                 value="{{ classic.stock }}"
                                 min="0"
                                 required
-                                style="width:90px;"
+                                class="inventory-input"
+                                form="{{ form_id }}"
                             >
                         </td>
 
@@ -88,36 +156,134 @@
 
                         <td>
                             {% if total_stock == 0 %}
-                                <span style="color:#b42318;font-weight:700;">
-                                    Out of Stock
+                                <span class="inventory-status inventory-status-out">
+                                    {{ t.out_of_stock }}
                                 </span>
                             {% elif total_stock <= 5 %}
-                                <span style="color:#b54708;font-weight:700;">
-                                    Low Stock
+                                <span class="inventory-status inventory-status-low">
+                                    {{ t.low_stock }}
                                 </span>
                             {% else %}
-                                <span style="color:#027a48;font-weight:700;">
-                                    In Stock
+                                <span class="inventory-status inventory-status-good">
+                                    {{ t.in_stock }}
                                 </span>
                             {% endif %}
-                        </td>
+                <td>
+                    <form
+                        id="{{ form_id }}"
+                        method="POST"
+                        action="{{ url_for('update_inventory', product_id=product.id) }}"
+                        style="margin: 0;"
+                 >
+                        <input
+                            type="submit"
+                            value="{{ t.get('save', 'Save') }}"
+                            style="
+                                display: inline-block;
+                                padding: 8px 16px;
+                                background: #556B2F;
+                                color: white;
+                                border: none;
+                                border-radius: 6px;
+                                font-weight: 700;
+                                cursor: pointer;
+                           "
+                 >
+             </form>
+         </td>
 
-                        <td>
-                            <button type="submit" class="admin-button">
-                                Save
-                            </button>
-                        </td>
+                        
+                    </tr>
 
-                    </form>
-                </tr>
                 {% else %}
-                <tr>
-                    <td colspan="6">No products found.</td>
-                </tr>
+                    <tr>
+                        <td colspan="6">
+                            {{ t.no_products_found }}
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
+
     </div>
 </div>
+
+<style>
+.inventory-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.inventory-summary-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px;
+    background: white;
+    border: 1px solid #e6e8df;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.inventory-summary-icon {
+    font-size: 28px;
+}
+
+.inventory-summary-card small {
+    display: block;
+    color: #667085;
+    margin-bottom: 4px;
+}
+
+.inventory-summary-card strong {
+    display: block;
+    font-size: 26px;
+    color: #34431f;
+}
+
+.inventory-input {
+    width: 90px;
+    padding: 8px 10px;
+    border: 1px solid #d0d5dd;
+    border-radius: 6px;
+}
+
+.inventory-status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.inventory-status-out {
+    color: #b42318;
+    background: #fee4e2;
+}
+
+.inventory-status-low {
+    color: #b54708;
+    background: #fef0c7;
+}
+
+.inventory-status-good {
+    color: #027a48;
+    background: #d1fadf;
+}
+
+@media (max-width: 900px) {
+    .inventory-summary-grid {
+        grid-template-columns: repeat(2, minmax(160px, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .inventory-summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 
 {% endblock %}

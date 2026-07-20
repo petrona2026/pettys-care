@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t.your_perfect_match }}{% endblock %}
+
+{% block content %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/soap_quiz.css') }}"
+>
+
+<section class="quiz-container">
+
+    <p class="quiz-subtitle">
+        🌿 {{ t.your_perfect_soap }}
+    </p>
+
+    <h1 class="quiz-title">
+        {{ product.name }}
+    </h1>
+
+    <div class="quiz-card" style="text-align:center;">
+
+        <img
+            src="{{ url_for('static', filename='images/' + product.image) }}"
+            alt="{{ product.name }}"
+            style="
+                max-width:280px;
+                width:100%;
+                margin:10px auto 25px;
+                display:block;
+            "
+        >
+
+        <p style="
+            font-size:1.1rem;
+            max-width:650px;
+            margin:auto;
+            color:#666;
+        ">
+            {{ product.short[session.get('language', 'en')] }}
+        </p>
+
+    </div>
+
+    <section class="quiz-card">
+
+        <h2 style="text-align:center;">
+            🌿 {{ t.your_skin_profile }}
+        </h2>
+
+        <table class="profile-table">
+
+            <tr>
+                <td>
+                    <strong>{{ t.skin_type }}</strong>
+                </td>
+
+                <td>
+                    {{ t["skin_" + skin] }}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <strong>{{ t.intended_use }}</strong>
+                </td>
+
+                <td>
+                    {{ t["use_" + use] }}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <strong>{{ t.goal }}</strong>
+                </td>
+
+                <td>
+                    {{ t["goal_" + goal] }}
+                </td>
+            </tr>
+
+        </table>
+
+    </section>
+
+    <section class="quiz-card">
+
+        <h2>
+            🌿 {{ t.why_we_recommended }}
+        </h2>
+
+        <p>
+            {{ t.recommendation_intro }}
+        </p>
+
+        <ul style="line-height:2;">
+
+            {% for reason in reasons %}
+                <li>✓ {{ t.get(reason, reason) }}</li>
+            {% endfor %}
+
+        </ul>
+
+    </section>
+
+    <section class="quiz-card" style="text-align:center;">
+
+        <h2>{{ t.your_match_score }}</h2>
+
+        <div class="match-bar">
+
+            <div class="match-fill">
+                {{ match_score }}% {{ t.compatible }}
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="quiz-card notice-card">
+
+        <h3>{{ t.important_notice }}</h3>
+
+        <p>
+            {{ t.notice_paragraph_1 }}
+        </p>
+
+        <p>
+            {{ t.notice_paragraph_2 }}
+        </p>
+
+        <strong>
+            {{ t.notice_medical }}
+        </strong>
+
+        <p style="margin-top:15px;">
+            {{ t.notice_consult }}
+        </p>
+
+    </section>
+
+    <div class="action-buttons">
+
+        <a
+            href="{{ url_for('product_detail', slug=product.slug) }}"
+            class="hero-final-btn"
+        >
+            📖 {{ t.learn_more }}
+        </a>
+
+          <a
+    href="{{ url_for('product_detail', slug=product.slug) }}"
+    class="hero-final-btn"
+>
+    🌿 {{ t.choose_your_bar }}
+</a>
+
+        <a
+            href="{{ url_for('soap_quiz_start') }}"
+            class="hero-final-btn"
+        >
+            ↺ {{ t.take_quiz_again }}
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

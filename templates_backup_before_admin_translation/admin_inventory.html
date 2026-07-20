@@ -1,0 +1,123 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Inventory{% endblock %}
+
+{% block content %}
+
+<div class="admin-page-header">
+    <div>
+        <h1>Inventory</h1>
+        <p>Update stock quantities for each product size.</p>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="admin-card">
+    <div class="table-responsive">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Discovery Stock</th>
+                    <th>Classic Stock</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for product in products %}
+                {% set discovery = namespace(id=None, stock=0) %}
+                {% set classic = namespace(id=None, stock=0) %}
+
+                {% for size in product.sizes %}
+                    {% if size.size_code == "mini" %}
+                        {% set discovery.id = size.id %}
+                        {% set discovery.stock = size.stock %}
+                    {% elif size.size_code == "standard" %}
+                        {% set classic.id = size.id %}
+                        {% set classic.stock = size.stock %}
+                    {% endif %}
+                {% endfor %}
+
+                {% set total_stock = discovery.stock + classic.stock %}
+
+                <tr>
+                    <td>
+                        <strong>{{ product.name_en or product.name }}</strong>
+                    </td>
+
+                    <form method="POST"
+                          action="{{ url_for('update_inventory', product_id=product.id) }}">
+
+                        <td>
+                            <input
+                                type="number"
+                                name="discovery_stock"
+                                value="{{ discovery.stock }}"
+                                min="0"
+                                required
+                                style="width:90px;"
+                            >
+                        </td>
+
+                        <td>
+                            <input
+                                type="number"
+                                name="classic_stock"
+                                value="{{ classic.stock }}"
+                                min="0"
+                                required
+                                style="width:90px;"
+                            >
+                        </td>
+
+                        <td>
+                            <strong>{{ total_stock }}</strong>
+                        </td>
+
+                        <td>
+                            {% if total_stock == 0 %}
+                                <span style="color:#b42318;font-weight:700;">
+                                    Out of Stock
+                                </span>
+                            {% elif total_stock <= 5 %}
+                                <span style="color:#b54708;font-weight:700;">
+                                    Low Stock
+                                </span>
+                            {% else %}
+                                <span style="color:#027a48;font-weight:700;">
+                                    In Stock
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <button type="submit" class="admin-button">
+                                Save
+                            </button>
+                        </td>
+
+                    </form>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">No products found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "admin_base.html" %}
+
+{% block title %}{{ t.packing_slips }}{% endblock %}
+
+{% block content %}
+
+<div class="admin-page-header">
+    <div>
+        <h1>{{ t.packing_slips }}</h1>
+        <p>{{ t.select_order_for_packing_slip }}</p>
+    </div>
+</div>
+
+<div class="admin-card">
+    <div class="table-responsive">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>{{ t.order }}</th>
+                    <th>{{ t.customer }}</th>
+                    <th>{{ t.total }}</th>
+                    <th>{{ t.status }}</th>
+                    <th>{{ t.date }}</th>
+                    <th>{{ t.packing_slip }}</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>
+                        <strong>{{ order["order_number"] }}</strong>
+                    </td>
+
+                    <td>
+                        {{ order["first_name"] }} {{ order["last_name"] }}
+                    </td>
+
+                    <td>
+                        ${{ "%.2f"|format(order["total"]) }}
+                    </td>
+
+                    <td>
+                        {{ order["status"] }}
+                    </td>
+
+                    <td>
+                        {{ order["created_at"] }}
+                    </td>
+
+                    <td>
+                        <a
+                            href="{{ url_for('admin_packing_slip', order_id=order['id']) }}"
+                            class="admin-button"
+                        >
+                            {{ t.view }}
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">{{ t.no_orders_found }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

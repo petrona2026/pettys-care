@@ -237,6 +237,40 @@ def admin_inventory():
 
     products = get_all_products(active_only=False)
 
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            id,
+            product_id,
+            size_code,
+            stock
+        FROM product_sizes
+        ORDER BY product_id, id
+    """)
+
+    size_rows = cursor.fetchall()
+    conn.close()
+
+    sizes_by_product = {}
+
+    for size in size_rows:
+        product_id = size["product_id"]
+
+        if product_id not in sizes_by_product:
+            sizes_by_product[product_id] = []
+
+        sizes_by_product[product_id].append({
+            "id": size["id"],
+            "size_code": size["size_code"],
+            "stock": size["stock"] or 0
+        })
+
+    for product in products:
+        product["sizes"] = sizes_by_product.get(product["id"], [])
+
     return render_template(
         "admin_inventory.html",
         products=products
@@ -1348,22 +1382,25 @@ def checkout():
                         order_id,
                         product_name,
                         product_slug,
+                        size_code,
+                        size_name,
                         quantity,
                         price,
                         subtotal
                     )
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     order_id,
                     full_product_name,
                     item["product"]["slug"],
+                    size_id,
+                    size_name,
                     item["quantity"],
                     item["unit_price"],
                     item["subtotal"]
                 ))
 
             conn.commit()
-
         except sqlite3.Error as error:
             conn.rollback()
             print("CHECKOUT DATABASE ERROR:", error)
@@ -1475,7 +1512,67 @@ def admin_order_detail(order_id):
     conn.close()
 
     return render_template("admin_order_detail.html", order=order, items=items)
+@app.route("/admin/packing-slips")
+@login_required
+def admin_packing_slips():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
 
+    cursor.execute("""
+        SELECT
+            id,
+            order_number,
+            first_name,
+            last_name,
+            total,
+            status,
+            created_at
+        FROM orders
+        ORDER BY created_at DESC, id DESC
+    """)
+
+    orders = cursor.fetchall()
+    conn.close()
+
+    return render_template(
+        "admin_packing_slips.html",
+        orders=orders
+    )
+@app.route("/admin/packing-slips/<int:order_id>")
+@login_required
+def admin_packing_slip(order_id):
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM orders
+        WHERE id = ?
+    """, (order_id,))
+
+    order = cursor.fetchone()
+
+    if order is None:
+        conn.close()
+        abort(404)
+
+    cursor.execute("""
+        SELECT *
+        FROM order_items
+        WHERE order_id = ?
+        ORDER BY id ASC
+    """, (order_id,))
+
+    items = cursor.fetchall()
+    conn.close()
+
+    return render_template(
+        "admin_packing_slip.html",
+        order=order,
+        items=items
+    )
 @app.route("/admin")
 @login_required
 def admin_dashboard():
@@ -1889,6 +1986,69 @@ def create_checkout_session():
         return redirect(url_for("payment"))
 
     return redirect(checkout_session.url, code=303)
+def deduct_inventory(order_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            SELECT
+                product_slug,
+                size_code,
+                quantity
+            FROM order_items
+            WHERE order_id = ?
+        """, (order_id,))
+
+        order_items = cursor.fetchall()
+
+        for product_slug, size_code, quantity in order_items:
+            cursor.execute("""
+                SELECT id
+                FROM products
+                WHERE slug = ?
+            """, (product_slug,))
+
+            product = cursor.fetchone()
+
+            if not product:
+                print(
+                    f"Inventory deduction skipped: "
+                    f"product not found for slug {product_slug}"
+                )
+                continue
+
+            product_id = product[0]
+
+            cursor.execute("""
+                UPDATE product_sizes
+                SET stock = CASE
+                    WHEN stock >= ? THEN stock - ?
+                    ELSE 0
+                END
+                WHERE product_id = ?
+                  AND size_code = ?
+            """, (
+                quantity,
+                quantity,
+                product_id,
+                size_code
+            ))
+
+            if cursor.rowcount == 0:
+                print(
+                    f"Inventory deduction skipped: "
+                    f"size {size_code} not found for {product_slug}"
+                )
+
+        conn.commit()
+
+    except sqlite3.Error as error:
+        conn.rollback()
+        print(f"Inventory deduction error: {error}")
+
+    finally:
+        conn.close()
 @app.route("/payment-success")
 def payment_success():
     order_id = session.get("order_id")
@@ -1906,7 +2066,7 @@ def payment_success():
 
         conn.commit()
         conn.close()
-
+        deduct_inventory(order_id)
         send_order_confirmation_email(order_id)
 
     session.pop("cart", None)

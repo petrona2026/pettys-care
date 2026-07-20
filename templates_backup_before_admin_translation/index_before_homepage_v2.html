@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}PETTY'S Handcrafted Soap{% endblock %}
+
+{% block content %}
+
+<section class="hero-v3">
+    <div class="hero-left-v3">
+        <img src="{{ url_for('static', filename='images/hero/hero-soap-stack.png') }}">
+    </div>
+
+    <div class="hero-copy-v3">
+        <h1>Handcrafted with<br><span>Nature.</span></h1>
+        <h2>Made with <em>Love.</em></h2>
+        <p>Small batch soaps made with natural ingredients<br>to nourish your skin and elevate your everyday.</p>
+        <a href="/shop" class="hero-btn">Shop Our Collection</a>
+    </div>
+
+    <div class="hero-right-v3">
+        <img src="{{ url_for('static', filename='images/hero/hero-botanicals.png') }}">
+    </div>
+</section>
+
+<section class="collection-v3">
+    <h2>Our Collection</h2>
+
+    <div class="products-v3">
+        {% for product in products %}
+        <div class="product-card-v3">
+            <img src="{{ url_for('static', filename='images/' + product.image) }}">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.short }}</p>
+            <strong>${{ "%.2f"|format(product.price) }}</strong>
+            <a href="/products/{{ product.slug }}">View Soap</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

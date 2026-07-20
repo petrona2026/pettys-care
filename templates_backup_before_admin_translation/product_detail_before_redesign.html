@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.name }} - PETTY'S</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>PETTY'S</h1>
+    <p>Handcrafted Soap</p>
+    <p><a href="/">Home</a> | <a href="/products">Products</a> | <a href="/about">About</a></p>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <img src="{{ url_for('static', filename='images/' + product.image) }}">
+        <h1>{{ product.name }}</h1>
+        <p>{{ product.short }}</p>
+        <h2>${{ "%.2f"|format(product.price) }}</h2>
+
+        <p><strong>Net Wt:</strong> 4 oz (113 g)</p>
+        <p><strong>Handcrafted in small batches.</strong></p>
+
+        <a class="btn" href="/">Back to Collection</a>
+    </div>
+
+</div>
+
+</body>
+</html>

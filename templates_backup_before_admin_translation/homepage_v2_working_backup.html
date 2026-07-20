@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/homepage_v2.css') }}">
+
+<header class="header-v2">
+    <img src="{{ url_for('static', filename='images/pettys_logo.png') }}" alt="PETTY'S Logo">
+
+    <nav class="nav-v2">
+        <a href="/">Home</a>
+        <a href="#collection">Shop</a>
+        <a href="#about">About</a>
+        <a href="#ingredients">Ingredients</a>
+        <a href="#contact">Contact</a>
+    </nav>
+</header>
+
+<section class="hero-v2">
+    <img class="leaf-left" src="{{ url_for('static', filename='images/left_leaf_cluster.png') }}" alt="">
+    <img class="palm-right" src="{{ url_for('static', filename='images/palm_tree.png') }}" alt="">
+
+    <div class="hero-text">
+        <h1>Handcrafted with <span>Nature.</span></h1>
+        <p>Small batch soaps made with natural ingredients and crafted with care.</p>
+        <a href="#collection" class="btn-v2">Shop Our Collection</a>
+    </div>
+
+    <div class="hero-img">
+        <img src="{{ url_for('static', filename='images/hero_soap_stack.png') }}" alt="Handcrafted soap stack">
+    </div>
+</section>
+
+<section class="collection-v2" id="collection">
+    <h2>OUR COLLECTION</h2>
+
+    <div class="product-grid-v2">
+
+        <div class="product-card-v2">
+            <img src="{{ url_for('static', filename='images/product_coconut_bliss.png') }}" alt="Coconut Bliss">
+            <h3>Coconut Bliss</h3>
+            <p>Moisturizing coconut handmade soap.</p>
+            <div class="price-v2">$8.00</div>
+            <a href="#" class="btn-v2">View Details</a>
+        </div>
+
+        <div class="product-card-v2">
+            <img src="{{ url_for('static', filename='images/product_aloe_serenity.png') }}" alt="Aloe Serenity">
+            <h3>Aloe Serenity</h3>
+            <p>Gentle aloe soap for calming care.</p>
+            <div class="price-v2">$8.00</div>
+            <a href="#" class="btn-v2">View Details</a>
+        </div>
+
+        <div class="product-card-v2">
+            <img src="{{ url_for('static', filename='images/product_golden_turmeric.png') }}" alt="Golden Turmeric">
+            <h3>Golden Turmeric</h3>
+            <p>Bright turmeric bar with warm natural notes.</p>
+            <div class="price-v2">$8.00</div>
+            <a href="#" class="btn-v2">View Details</a>
+        </div>
+
+        <div class="product-card-v2">
+            <img src="{{ url_for('static', filename='images/product_honey_glow.png') }}" alt="Honey Glow">
+            <h3>Honey Glow</h3>
+            <p>Sweet honey soap with a soft creamy finish.</p>
+            <div class="price-v2">$8.00</div>
+            <a href="#" class="btn-v2">View Details</a>
+        </div>
+
+        <div class="product-card-v2">
+            <img src="{{ url_for('static', filename='images/product_coffee_delight.png') }}" alt="Coffee Delight">
+            <h3>Coffee Delight</h3>
+            <p>Rich coffee soap with an energizing feel.</p>
+            <div class="price-v2">$8.00</div>
+            <a href="#" class="btn-v2">View Details</a>
+        </div>
+
+        <div class="product-card-v2">
+            <img src="{{ url_for('static', filename='images/product_charcoal_cleanse.png') }}" alt="Charcoal Cleanse">
+            <h3>Charcoal Cleanse</h3>
+            <p>Deep charcoal bar for a clean, fresh wash.</p>
+            <div class="price-v2">$8.00</div>
+            <a href="#" class="btn-v2">View Details</a>
+        </div>
+
+    </div>
+</section>
+
+<section class="why-v2" id="ingredients">
+    <h2>Why Choose PETTY'S?</h2>
+
+    <div class="why-grid-v2">
+        <div class="why-box">🌿<h3>Natural Ingredients</h3><p>Inspired by nature and simple skincare.</p></div>
+        <div class="why-box">🧼<h3>Small Batch</h3><p>Made with care in handcrafted batches.</p></div>
+        <div class="why-box">♻️<h3>Eco Friendly</h3><p>Designed with clean, thoughtful ingredients.</p></div>
+        <div class="why-box">❤️<h3>Made with Love</h3><p>Every bar is crafted with attention and care.</p></div>
+    </div>
+</section>
+
+<section class="collection-v2" id="about">
+    <h2>About PETTY'S</h2>
+    <p>
+        PETTY'S Handcrafted Soap is inspired by nature, simplicity, and the beauty of handmade care.
+        Each soap is created to bring a gentle, natural, and refreshing experience to your daily routine.
+    </p>
+</section>
+
+<footer class="footer-v2" id="contact">
+    <p>© 2026 PETTY'S Handcrafted Soap. All rights reserved.</p>
+</footer>
+
+{% endblock %}

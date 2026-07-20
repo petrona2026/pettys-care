@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="{{ session.get('lang','en') }}">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>{% block title %}{% endblock %}</title>
+
+<style>
+
+body{
+    margin:0;
+    padding:30px;
+    background:#f5f5f5;
+    font-family:Arial,Helvetica,sans-serif;
+    color:#222;
+}
+
+.document{
+
+    max-width:900px;
+    margin:auto;
+    background:white;
+    border:1px solid #ddd;
+    border-radius:12px;
+    padding:40px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+
+}
+
+.header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    border-bottom:3px solid #556B2F;
+
+    padding-bottom:20px;
+    margin-bottom:30px;
+
+}
+
+.logo{
+
+    display:flex;
+    align-items:center;
+    gap:15px;
+
+}
+
+.logo img{
+
+    width:90px;
+
+}
+
+.company h1{
+
+    margin:0;
+    color:#556B2F;
+
+}
+
+.company p{
+
+    margin:4px 0;
+    color:#666;
+
+}
+
+.footer{
+
+    margin-top:40px;
+
+    padding-top:20px;
+
+    border-top:1px solid #ddd;
+
+    text-align:center;
+
+    color:#666;
+
+    font-size:13px;
+
+}
+
+@media print{
+
+body{
+
+background:white;
+
+padding:0;
+
+}
+
+.document{
+
+box-shadow:none;
+
+border:none;
+
+padding:15px;
+
+max-width:none;
+
+}
+
+.no-print{
+
+display:none;
+
+}
+
+}
+
+</style>
+
+{% block styles %}{% endblock %}
+
+</head>
+
+<body>
+
+<div class="document">
+
+<div class="header">
+
+<div class="logo">
+
+<img
+src="{{ url_for('static', filename='images/official_logo.png') }}"
+alt="Petty's Care">
+
+<div class="company">
+
+<h1>PETTY'S CARE</h1>
+
+<p>{{ t.product_tagline }}</p>
+
+<p>{{ t.small_batches }}</p>
+
+</div>
+
+</div>
+
+<div>
+
+{% block document_header %}
+
+{% endblock %}
+
+</div>
+
+</div>
+
+{% block content %}
+
+{% endblock %}
+
+<div class="footer">
+
+<strong>Petty's Care</strong><br>
+
+{{ t.thank_you_footer }}<br>
+
+www.pettyscare.com
+
+</div>
+
+</div>
+
+</body>
+
+</html>

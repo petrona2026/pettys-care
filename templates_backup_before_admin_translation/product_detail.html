@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>{{ product.name }} | PETTY'S CARE</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/product_detail.css') }}"
+    >
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/reviews.css') }}"
+>
+</head>
+
+<body class="product-detail-page">
+
+<header class="product-page-header">
+    <a href="/" class="product-brand">
+        PETTY'S CARE
+    </a>
+
+<p class="product-brand-tagline">
+    {{ t.product_tagline }}
+</p>
+    <nav class="product-page-nav">
+<a href="/">{{ t.home }}</a>
+<a href="/shop">{{ t.shop }}</a>
+<a href="/about">{{ t.product_nav_about }}</a>
+    </nav>
+</header>
+
+
+<main class="product-detail-container">
+
+    <!-- Main product section -->
+    <section class="product-main">
+
+        <div class="product-image-column">
+            <div class="product-image-frame">
+
+                <img
+                    src="{{ url_for('static', filename='images/' + product.image) }}"
+                    alt="{{ product.name }} handcrafted soap"
+                    class="product-detail-image"
+                >
+
+            </div>
+        </div>
+
+
+        <div class="product-information-column">
+
+            <p class="product-small-label">
+    {{ t.handcrafted_soap|upper }}
+</p>
+            <h1 class="product-detail-title">
+                {{ product.name }}
+            </h1>
+
+            <div class="product-rating">
+                <span>★★★★★</span>
+            <small>{{ t.handcrafted_with_care }}</small>
+            </div>
+
+            <p class="product-detail-description">
+                {{ product.short[session.get('language', 'en')] }}
+            </p>
+
+            <form
+                action="{{ url_for('add_to_cart', slug=product.slug) }}"
+                method="POST"
+                class="product-size-form"
+            >
+
+                <p class="product-size-heading">
+                   {{ t.choose_your_bar }}
+                </p>
+
+                <label class="product-size-card">
+                    <input
+                        type="radio"
+                        name="size"
+                        value="mini"
+                        data-price="5.99"
+                        data-label="{{ t.discovery_bar }}"
+                        data-button-text="{{ t.add_discovery_bar }}"
+                    >
+
+                    <span class="product-size-card-content">
+                        <span class="product-size-name">
+                            🌿 {{ t.discovery_bar }}
+                        </span>
+
+                        <span class="product-size-weight">
+                            2 oz (56 g)
+                        </span>
+
+                        <span class="product-size-price">
+                            $5.99
+                        </span>
+
+                        <span class="product-size-description">
+                            {{ t.perfect_first_time }}
+                        </span>
+                    </span>
+                </label>
+
+                <label class="product-size-card selected">
+                    <input
+                        type="radio"
+                        name="size"
+                        value="standard"
+                        data-price="8.99"
+                        data-label="{{ t.classic_bar }}"
+                        data-button-text="{{ t.add_classic_bar }}"
+                        checked
+                    >
+
+                    <span class="product-size-card-content">
+                        <span class="product-size-badge">
+                          {{ t. most_popular }}
+                        </span>
+
+                        <span class="product-size-name">
+                            🧼 {{ t.classic_bar }}
+                        </span>
+
+                        <span class="product-size-weight">
+                            4 oz (113 g)
+                        </span>
+
+                        <span class="product-size-regular-price">
+                            $12.00
+                        </span>
+
+                        <span class="product-size-price">
+                            $8.99
+                        </span>
+
+                        <span class="product-size-description">
+                            🎉 {{ t.grand_opening_special }} — {{ t.save_amount }}
+                        </span>
+                    </span>
+                </label>
+
+                <p class="product-detail-price">
+                    $<span id="selected-price">8.99</span>
+                </p>
+
+                <button
+                    type="submit"
+                    class="product-primary-button"
+                    id="add-to-cart-button"
+                >
+                 {{ t.add_classic_bar }}
+                </button>
+
+            </form>
+
+             <div class="product-quick-details">
+
+{% if session.get('language', 'en') == 'es' %}
+
+    <p>
+        <strong>Peso Neto:</strong>
+        4 oz (113 g)
+    </p>
+
+    <p>
+        <strong>Elaboración:</strong>
+        Hecho a mano en pequeños lotes
+    </p>
+
+    <p>
+        <strong>Uso:</strong>
+        Rostro y cuerpo
+    </p>
+
+{% else %}
+
+    <p>
+        <strong>Net Weight:</strong>
+        4 oz (113 g)
+    </p>
+
+    <p>
+        <strong>Made:</strong>
+        Handcrafted in small batches
+    </p>
+
+    <p>
+        <strong>Use:</strong>
+        Face and body
+    </p>
+
+{% endif %}
+
+</div>
+            <div class="product-actions">
+                <a class="product-primary-button" href="/shop">
+                {{ t.continue_shopping }}
+                </a>
+
+                <a class="product-secondary-button" href="/">
+                    {{ t.back_home }}
+                </a>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Ingredients and benefits -->
+    <section class="product-information-grid">
+
+        <article class="product-info-card">
+
+            <div class="product-card-heading">
+                <span class="product-card-icon">🌿</span>
+
+                <div>
+                <p class="product-card-label">
+    {{ t.naturally_inspired|upper }}
+</p>
+
+<h2>{{ t.key_ingredients }}</h2>
+                </div>
+            </div>
+
+<div class="product-feature-list">
+
+    {% for ingredient in details.ingredients %}
+
+    <div class="product-feature-item">
+
+        <span>{{ ingredient.icon }}</span>
+
+        <div>
+            <h3>{{ ingredient.name }}</h3>
+            <p>{{ ingredient.description }}</p>
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+        </article>
+
+
+<article class="product-info-card">
+
+    <div class="product-card-heading">
+        <span class="product-card-icon">✨</span>
+
+        <div>
+          <p class="product-card-label">
+    {{ t.everyday_skincare|upper }}
+</p>
+
+<h2>{{ t.benefits }}</h2>
+        </div>
+    </div>
+
+    <div class="product-benefit-list">
+
+        {% for benefit in details.benefits %}
+
+        <div class="product-benefit-item">
+            <span>✓</span>
+            <p>{{ benefit }}</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="product-perfect-for">
+
+          <h3>{{ t.perfect_for }}</h3>
+        <div class="product-tag-list">
+
+            {% for item in details.perfect_for %}
+                <span>{{ item }}</span>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- How to use -->
+    <section class="product-use-section">
+
+        <div class="product-use-heading">
+          <p>{{ t.care_instructions|upper }}</p>
+<h2>{{ t.how_to_use }}</h2>
+        </div>
+
+        <div class="product-use-steps">
+
+            <div class="product-use-step">
+                <span>01</span>
+                <h3>{{ t.lather }}</h3>
+                <p>
+                 <p>{{ t.lather_text }}</p>
+                </p>
+            </div>
+
+            <div class="product-use-step">
+                <span>02</span>
+                <p>{{ t.cleanse_text }}</p>
+                <p>
+                    <p>{{ t.cleanse_text }}</p>
+                    
+                </p>
+            </div>
+
+            <div class="product-use-step">
+                <span>03</span>
+                <h3>{{ t.rinse }}</h3>
+                <p>
+                    <p>{{ t.rinse_text }}</p>
+                    
+                </p>
+            </div>
+
+            <div class="product-use-step">
+                <span>04</span>
+                <h3>{{ t.keep_dry }}</h3>
+                <p>
+                    <p>{{ t.keep_dry_text }}</p>
+                    
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+<section class="product-care-message">
+
+    <p>{{ t.handmade_with_care|upper }}</p>
+
+    <h2>{{ t.care_message_title }}</h2>
+
+    <p>{{ t.hero_description }}</p>
+
+</section>
+<section class="product-reviews" id="reviews">
+
+    <div class="reviews-header">
+        <p>{{ t.what_our_customers_say|upper }}</p>
+        <h2>{{ t.customer_reviews }}</h2>
+
+        <h3>
+            ⭐ {{ average_rating }}/5
+            {% if review_count %}
+                ({{ review_count }} Reviews)
+            {% else %}
+                (No reviews yet)
+            {% endif %}
+        </h3>
+    </div>
+
+    {% if review_submitted %}
+    <div class="success-message">
+        Thank you! Your review has been received and is awaiting approval.
+    </div>
+    {% endif %}
+
+    {% if review_error %}
+    <div class="error-message">
+        {{ review_error }}
+    </div>
+    {% endif %}
+
+    {% for review in reviews %}
+
+    <div class="review-card">
+
+        <div class="review-stars">
+            {{ "★" * review.rating }}
+        </div>
+
+        <h3>{{ review.customer_name }}</h3>
+
+        <p>{{ review.review_text }}</p>
+
+    </div>
+
+    {% endfor %}
+
+    <hr style="margin:50px 0;">
+
+    <h2>Write a Review</h2>
+
+    <form method="POST"
+          action="{{ url_for('submit_review', slug=product.slug) }}">
+
+        <input
+            type="text"
+            name="customer_name"
+            placeholder="Your name"
+            required>
+
+        <br><br>
+
+        <select name="rating" required>
+            <option value="">Select Rating</option>
+            <option value="5">★★★★★</option>
+            <option value="4">★★★★☆</option>
+            <option value="3">★★★☆☆</option>
+            <option value="2">★★☆☆☆</option>
+            <option value="1">★☆☆☆☆</option>
+        </select>
+
+        <br><br>
+
+        <textarea
+            name="review_text"
+            rows="6"
+            placeholder="Tell us what you think..."
+            required></textarea>
+
+        <br><br>
+
+        <button class="btn" type="submit">
+            Submit Review
+        </button>
+
+    </form>
+
+</section>
+</main>
+
+
+<footer class="product-page-footer">
+    <p>
+        &copy; 2026 PETTY'S CARE.
+        From Our Hands to Your Home.
+    </p>
+</footer>
+<script>
+const sizeOptions = document.querySelectorAll('input[name="size"]');
+const selectedPrice = document.getElementById("selected-price");
+const addButton = document.getElementById("add-to-cart-button");
+
+sizeOptions.forEach(function(option) {
+    option.addEventListener("change", function() {
+        document.querySelectorAll(".product-size-card").forEach(function(card) {
+            card.classList.remove("selected");
+        });
+
+        this.closest(".product-size-card").classList.add("selected");
+
+        selectedPrice.textContent =
+            Number(this.dataset.price).toFixed(2);
+
+         addButton.textContent = this.dataset.buttonText;
+    });
+});
+</script>
+</body>
+</html>

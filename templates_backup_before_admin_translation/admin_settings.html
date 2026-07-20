@@ -1,0 +1,50 @@
+{% extends "admin_base.html" %}
+{% block title %}Store Settings{% endblock %}
+
+{% block content %}
+
+<div class="admin-header">
+    <h1>Store Settings</h1>
+    <p>Manage your business information.</p>
+</div>
+
+<div class="admin-form-card">
+
+<form method="POST">
+
+<label>Business Name</label>
+<input type="text" name="business_name" value="{{ settings.business_name }}">
+
+<label>Owner Name</label>
+<input type="text" name="owner_name" value="{{ settings.owner_name }}">
+
+<label>Business Email</label>
+<input type="email" name="contact_email" value="{{ settings.contact_email }}">
+
+<label>Website</label>
+<input type="text" name="website" value="{{ settings.website }}">
+
+<label>Phone</label>
+<input type="text" name="phone" value="{{ settings.phone or '' }}">
+
+<label>Address</label>
+<input type="text" name="address" value="{{ settings.address or '' }}">
+
+<label>City</label>
+<input type="text" name="city" value="{{ settings.city or '' }}">
+
+<label>State</label>
+<input type="text" name="state" value="{{ settings.state or '' }}">
+
+<label>ZIP Code</label>
+<input type="text" name="zip_code" value="{{ settings.zip_code or '' }}">
+
+<button type="submit">
+    Save Settings
+</button>
+
+</form>
+
+</div>
+
+{% endblock %}

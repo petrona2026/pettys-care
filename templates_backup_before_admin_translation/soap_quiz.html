@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t.find_your_perfect_soap }}{% endblock %}
+
+{% block content %}
+
+<section style="max-width:900px;margin:60px auto;padding:0 20px;text-align:center;">
+
+    <h1>{{ t.find_your_perfect_soap }}</h1>
+
+    <p>
+        {{ t.soap_quiz_intro }}
+    </p>
+
+    <a href="{{ url_for('soap_quiz_start') }}" class="hero-final-btn">
+        {{ t.start_quiz }}
+    </a>
+
+</section>
+
+{% endblock %}

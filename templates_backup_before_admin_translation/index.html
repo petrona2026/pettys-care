@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}PETTY'S Handcrafted Soap{% endblock %}
+
+{% block content %}
+
+<section class="hero-final">
+    <div class="hero-side hero-left">
+        <img src="{{ url_for('static', filename='images/hero_soap_stack3.png') }}"
+             alt="Soap Stack">
+    </div>
+
+<div class="hero-main">
+
+<h1>{{ t.hero_line_1 }}</h1>
+
+<h1 class="hero-nature">
+    <span>{{ t.hero_line_2 }}</span>
+</h1>
+
+<h2>{{ t.hero_line_3 }}</h2>
+
+<p>
+    {{ t.hero_description }}
+</p>
+
+<a href="#collection" class="hero-final-btn">
+    {{ t.shop_collection }}
+</a>
+</div>
+    <div class="hero-side hero-right">
+        <img src="{{ url_for('static', filename='images/hero_soap_stack_right1.png') }}"
+             alt="Palm Tree">
+    </div>
+</section>
+
+<section class="collection-final" id="collection">
+
+<h2>{{ t.our_collection }}</h2>
+    <div class="product-row-final">
+        {% for product in products %}
+        <div class="product-card-final">
+
+            <a href="{{ url_for('product_detail', slug=product.slug) }}"
+               class="product-image-link">
+                <img src="{{ url_for('static', filename='images/' + product.image) }}"
+                     alt="{{ product.name }}">
+            </a>
+
+            <h3>{{ product.name }}</h3>
+        <div class="product-starting-price">
+    <small>{{ t.starting_from }}</small>
+    <strong>
+        ${{ "%.2f"|format(product.sizes | map(attribute='price') | min) }}
+    </strong>
+</div>
+<a href="{{ url_for('product_detail', slug=product.slug) }}"
+   class="product-button">
+    🌿 {{ t.choose_your_bar }}
+</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t.checkout }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/checkout.css') }}">
+<section class="checkout-page">
+
+    <h1>{{ t.checkout }}</h1>
+
+    <div class="checkout-layout">
+
+        <form class="checkout-form" method="POST" action="/checkout">
+
+            <h2>{{ t.customer_information }}</h2>
+
+            <input type="text" name="first_name" placeholder="{{ t.first_name }}" required>
+            <input type="text" name="last_name" placeholder="{{ t.last_name }}" required>
+            <input type="email" name="email" placeholder="{{ t.email_address }}" required>
+            <input type="text" name="phone" placeholder="{{ t.phone_number }}" required>
+
+            <h2>{{ t.shipping_address }}</h2>
+
+            <input type="text" name="address" placeholder="{{ t.street_address }}" required>
+            <input type="text" name="city" placeholder="{{ t.city }}" required>
+            <input type="text" name="state" placeholder="{{ t.state }}" required>
+            <input type="text" name="zip_code" placeholder="{{ t.zip_code }}" required>
+
+            <textarea name="notes" placeholder="{{ t.order_notes_optional }}"></textarea>
+
+            <button type="submit" class="hero-final-btn">
+              {{ t.continue_to_payment }}
+            </button>
+
+        </form>
+
+        <div class="order-summary">
+
+            <h2>{{ t.order_summary }}</h2>
+
+            {% for item in cart_items %}
+            <div class="summary-item">
+                <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                <strong>${{ "%.2f"|format(item.subtotal) }}</strong>
+            </div>
+            {% endfor %}
+
+            <hr>
+
+            <div class="summary-total">
+                <span>{{ t.total }}</span>
+                <strong>${{ "%.2f"|format(total) }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

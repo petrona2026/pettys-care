@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PETTY'S Handcrafted Soap</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+</head>
+
+<body>
+
+<header class="main-header">
+    <img class="logo" src="{{ url_for('static', filename='images/pettys-logo.png') }}">
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="#collection">Shop</a>
+        <a href="#">About Us</a>
+        <a href="#">Ingredients</a>
+        <a href="#">Contact</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <img class="hero-img left-img" src="{{ url_for('static', filename='images/soap-stack.png') }}">
+
+    <div class="hero-text">
+        <h1>Handcrafted with Nature.</h1>
+        <h2>Made with Love.</h2>
+        <p>Small batch soaps made with natural ingredients<br>to nourish your skin and elevate your everyday.</p>
+        <a href="#collection" class="hero-btn">Shop Our Collection</a>
+    </div>
+
+    <img class="hero-img right-img" src="{{ url_for('static', filename='images/coconut-hero.png') }}">
+</section>
+
+<section id="collection" class="collection">
+    <h2>Our Collection</h2>
+    <div class="divider">❧ — ♥ — ❧</div>
+
+    <div class="products">
+        {% for product in products %}
+        <div class="card">
+            <img src="{{ url_for('static', filename='images/' + product.image) }}">
+            <div>
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.short }}</p>
+                <strong>${{ "%.2f"|format(product.price) }}</strong>
+                <br>
+                <a class="btn" href="/products/{{ product.slug }}">View Soap</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+</body>
+</html>

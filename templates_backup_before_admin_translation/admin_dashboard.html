@@ -1,0 +1,41 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin Dashboard - PETTY'S CARE{% endblock %}
+
+{% block content %}
+
+<div class="admin-header">
+    <h1>Welcome back, José 👋</h1>
+    <p>Here’s what’s happening in your store today.</p>
+</div>
+
+<div class="quick-actions">
+    <a href="/admin/products/add">+ Add Product</a>
+    <a href="/admin/orders">View Orders</a>
+    <a href="/admin/products">Manage Products</a>
+    <a href="/">View Store</a>
+</div>
+
+<div class="admin-cards">
+    <div class="admin-card">
+        <h3>Orders</h3>
+        <p>{{ total_orders }}</p>
+    </div>
+
+    <div class="admin-card">
+        <h3>Customers</h3>
+        <p>{{ total_customers }}</p>
+    </div>
+
+    <div class="admin-card">
+        <h3>Products</h3>
+        <p>{{ total_products }}</p>
+    </div>
+
+    <div class="admin-card">
+        <h3>Revenue</h3>
+        <p>${{ total_revenue }}</p>
+    </div>
+</div>
+
+{% endblock %}

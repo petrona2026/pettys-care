@@ -1,0 +1,93 @@
+<div class="top-bar">
+    {{ t.free_shipping }} • {{ t.small_batches }}
+</div>
+<header class="main-header">
+
+    <nav class="main-nav">
+
+<a href="/">{{ t.home }}</a>
+<a href="/shop">{{ t.shop }}</a>
+<a href="{{ url_for('soap_quiz') }}">
+    🌿 {{ t.find_your_perfect_soap }}
+</a>
+<a href="/about">{{ t.about_us }}</a>
+<a href="/ingredients">{{ t.ingredients }}</a>
+<a href="/contact">{{ t.contact }}</a>
+
+<a
+    href="/search"
+    class="nav-icon"
+    title="{{ t.search }}"
+>
+    🔍
+</a>
+
+<a
+    href="/account"
+    class="nav-icon"
+    title="{{ t.my_account }}"
+>
+    👤
+</a>
+        <div class="admin-menu">
+
+            <a href="/admin" class="admin-link">
+                Admin ▾
+            </a>
+
+            <div class="admin-dropdown">
+
+                {% if session.get('language', 'en') == 'es' %}
+
+                    <a href="/admin">Panel</a>
+                    <a href="/admin/orders">Pedidos</a>
+                    <a href="/admin/customers">Clientes</a>
+                    <a href="/admin/suppliers">Proveedores</a>
+                    <a href="/admin/products">Productos</a>
+
+                {% else %}
+
+                    <a href="/admin">Dashboard</a>
+                    <a href="/admin/orders">Orders</a>
+                    <a href="/admin/customers">Customers</a>
+                    <a href="/admin/suppliers">Suppliers</a>
+                    <a href="/admin/products">Products</a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <a
+            href="/cart"
+            class="nav-icon cart-icon"
+            title="{% if session.get('language', 'en') == 'es' %}Carrito de compras{% else %}Shopping Cart{% endif %}"
+        >
+            🛒
+            <span>{{ session.get('cart', {})|length }}</span>
+        </a>
+
+        <div class="language-switcher">
+
+            <a
+                href="{{ url_for('set_language', language='en') }}"
+                class="{% if session.get('language', 'en') == 'en' %}active-language{% endif %}"
+            >
+                EN
+            </a>
+
+            <span>|</span>
+
+            <a
+                href="{{ url_for('set_language', language='es') }}"
+                class="{% if session.get('language', 'en') == 'es' %}active-language{% endif %}"
+            >
+                ES
+            </a>
+
+        </div>
+
+    </nav>
+
+</header>
