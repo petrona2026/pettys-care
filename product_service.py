@@ -21,7 +21,7 @@ def get_all_products(active_only=True):
             SELECT
                 id,
                 slug,
-                COALESCE(NULLIF(name_en, ''), name) AS name,
+                COALESCE(NULLIF(name_en, ''), name_es, slug) AS name,
                 short_description_en,
                 short_description_es,
                 image,
@@ -63,7 +63,7 @@ def get_product_by_slug(slug, active_only=True):
             SELECT
                 id,
                 slug,
-                COALESCE(NULLIF(name_en, ''), name) AS name,
+                COALESCE(NULLIF(name_en, ''), name_es, slug) AS name,
                 short_description_en,
                 short_description_es,
                 image,
