@@ -78,6 +78,13 @@ if "size_code" not in item_columns:
 
 if "size_name" not in item_columns:
     cursor.execute("ALTER TABLE order_items ADD COLUMN size_name TEXT")
+print("\n===== ORDERS TABLE COLUMNS =====")
+for column in cursor.execute("PRAGMA table_info(orders)"):
+    print(column)
+
+print("\n===== ORDER_ITEMS TABLE COLUMNS =====")
+for column in cursor.execute("PRAGMA table_info(order_items)"):
+    print(column)
 conn.commit()
 conn.close()
 
