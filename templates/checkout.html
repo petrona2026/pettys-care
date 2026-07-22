@@ -47,10 +47,35 @@
 
             <hr>
 
-            <div class="summary-total">
-                <span>{{ t.total }}</span>
-                <strong>${{ "%.2f"|format(total) }}</strong>
-            </div>
+           <div class="summary-row">
+               <span>Subtotal</span>
+               <strong>${{ "%.2f"|format(subtotal) }}</strong>
+           </div>
+
+           <div class="summary-row">
+               <span>Shipping</span>
+               <strong>
+                   {% if shipping_amount == 0 %}
+                       FREE
+                   {% else %}
+                       ${{ "%.2f"|format(shipping_amount) }}
+                   {% endif %}
+               </strong>
+           </div>
+
+           <div class="summary-row">
+                <span>Tax</span>
+                <strong>${{ "%.2f"|format(tax_amount) }}</strong>
+           </div>
+
+           <div class="summary-total">
+               <span>{{ t.total }}</span>
+               <strong>${{ "%.2f"|format(total) }}</strong>
+           </div>
+
+           <p class="shipping-note">
+               Free shipping on orders of $60 or more.
+           </p>
 
         </div>
 

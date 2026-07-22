@@ -4,23 +4,64 @@
 
 {% block content %}
 
-<section style="max-width:900px;margin:60px auto;text-align:center;">
-    <h1>Payment</h1>
+<section style="max-width:700px;margin:60px auto;background:white;padding:40px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.08);">
 
-    <h2>Order {{ order_number }}</h2>
+    <h1 style="text-align:center;">Secure Payment</h1>
 
-    <p>Thank you, {{ customer.first_name }}.</p>
-    <p>Your order is saved as <strong>Pending Payment</strong>.</p>
+    <p style="text-align:center;">
+        Thank you, <strong>{{ customer.first_name }}</strong>.
+    </p>
 
-    <form action="/create-checkout-session" method="POST">
-        <button type="submit" class="hero-final-btn">
+    <p style="text-align:center;">
+        Order <strong>{{ order_number }}</strong>
+    </p>
+
+    <hr>
+
+    <div style="display:flex;justify-content:space-between;margin:12px 0;">
+        <span>Subtotal</span>
+        <strong>${{ "%.2f"|format(subtotal) }}</strong>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin:12px 0;">
+        <span>Shipping</span>
+        <strong>
+            {% if shipping_amount == 0 %}
+                FREE
+            {% else %}
+                ${{ "%.2f"|format(shipping_amount) }}
+            {% endif %}
+        </strong>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin:12px 0;">
+        <span>Tax</span>
+        <strong>${{ "%.2f"|format(tax_amount) }}</strong>
+    </div>
+
+    <hr>
+
+    <div style="display:flex;justify-content:space-between;font-size:24px;font-weight:bold;">
+        <span>Total</span>
+        <span>${{ "%.2f"|format(total) }}</span>
+    </div>
+
+    <p style="margin-top:25px;text-align:center;color:#666;">
+        🔒 Secure payment powered by Stripe
+    </p>
+
+    <form action="/create-checkout-session" method="POST" style="margin-top:25px;">
+        <button
+            type="submit"
+            class="hero-final-btn"
+            style="width:100%;">
             Pay Securely with Stripe
         </button>
     </form>
 
-    <br>
+    <p style="text-align:center;margin-top:20px;">
+        <a href="/cart">← Back to Cart</a>
+    </p>
 
-    <a href="/cart">Back to Cart</a>
 </section>
-
 {% endblock %}

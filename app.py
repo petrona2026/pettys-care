@@ -1321,8 +1321,8 @@ def cart():
 
         if product and selected_size:
             unit_price = selected_size["price"]
-            subtotal = unit_price * quantity
-            total += subtotal
+            item_subtotal = unit_price * quantity
+            total += item_subtotal
 
             cart_items.append({
                 "cart_key": cart_key,
@@ -1330,7 +1330,7 @@ def cart():
                 "size": selected_size,
                 "unit_price": unit_price,
                 "quantity": quantity,
-                "subtotal": subtotal
+                "subtotal": item_subtotal
             })
 
     cart_slugs = {
@@ -1380,6 +1380,10 @@ def checkout():
         return redirect(url_for("cart"))
 
     cart_items = []
+
+    subtotal = 0
+    shipping_amount = 0
+    tax_amount = 0
     total = 0
 
     # Build the cart using product and selected size information.
@@ -1390,8 +1394,8 @@ def checkout():
             continue
 
         unit_price = selected_size["price"]
-        subtotal = unit_price * quantity
-        total += subtotal
+        item_subtotal = unit_price * quantity
+        subtotal += item_subtotal
 
         cart_items.append({
             "cart_key": cart_key,
@@ -1399,9 +1403,13 @@ def checkout():
             "size": selected_size,
             "unit_price": unit_price,
             "quantity": quantity,
-            "subtotal": subtotal
+            "subtotal": item_subtotal
         })
 
+    # Calculate shipping after all products have been added
+    shipping_amount = 0 if subtotal >= 60 else 5.99
+    tax_amount = 0
+    total = subtotal + shipping_amount + tax_amount
     # Prevent checkout when no valid cart items were found.
     if not cart_items:
         session.pop("cart", None)
@@ -1444,10 +1452,13 @@ def checkout():
                     state,
                     zip_code,
                     notes,
+                    subtotal,
+                    shipping_amount,  
+                    tax_amount,
                     total,
                     status
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 order_number,
                 customer["first_name"],
@@ -1459,6 +1470,9 @@ def checkout():
                 customer["state"],
                 customer["zip_code"],
                 customer["notes"],
+                subtotal,
+                shipping_amount,
+                tax_amount,
                 total,
                 "Pending Payment"
             ))
@@ -1527,6 +1541,9 @@ def checkout():
     return render_template(
         "checkout.html",
         cart_items=cart_items,
+        subtotal=subtotal,
+        shipping_amount=shipping_amount,
+        tax_amount=tax_amount,
         total=total
     )
 @app.route("/payment")
@@ -1535,10 +1552,35 @@ def payment():
     order_number = session.get("order_number")
     cart = session.get("cart", {})
 
-    if not customer or not cart:
+    if not customer or not order_number or not cart:
         return redirect(url_for("checkout"))
 
-    return render_template("payment.html", customer=customer, order_number=order_number)
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT subtotal, shipping_amount, tax_amount, total
+        FROM orders
+        WHERE order_number = ?
+    """, (order_number,))
+
+    order = cursor.fetchone()
+    conn.close()
+
+    if not order:
+        flash("Order information could not be found.", "error")
+        return redirect(url_for("checkout"))
+
+    return render_template(
+        "payment.html",
+        customer=customer,
+        order_number=order_number,
+        subtotal=order["subtotal"],
+        shipping_amount=order["shipping_amount"],
+        tax_amount=order["tax_amount"],
+        total=order["total"]
+    )
 @app.route("/remove-from-cart/<path:cart_key>")
 def remove_from_cart(cart_key):
     cart = session.get("cart", {})
@@ -2025,6 +2067,7 @@ def create_checkout_session():
         return redirect(url_for("cart"))
 
     line_items = []
+    subtotal = 0
 
     for cart_key, quantity in cart.items():
         product, selected_size = get_product_and_size(cart_key)
@@ -2043,7 +2086,7 @@ def create_checkout_session():
             size_name = "Discovery Bar - 2 oz"
         else:
             size_name = "Classic Bar - 4 oz"
-
+        subtotal += float(selected_size["price"]) * int(quantity)   
         line_items.append({
             "price_data": {
                 "currency": "usd",
@@ -2055,8 +2098,18 @@ def create_checkout_session():
                 ),
             },
             "quantity": int(quantity),
-        })
-
+    })
+    if subtotal < 60:
+        line_items.append({
+            "price_data": {
+                "currency": "usd",
+                "product_data": {
+                    "name": "Shipping"
+                },
+                "unit_amount": 599,
+          },
+          "quantity": 1,
+       }) 
     if not line_items:
         flash(
             "Your cart could not be processed. Please add the products again.",
