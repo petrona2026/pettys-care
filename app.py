@@ -1519,15 +1519,16 @@ def checkout():
                 ))
 
             conn.commit()
-        except sqlite3.Error as error:
-            conn.rollback()
-            print("CHECKOUT DATABASE ERROR:", error)
+        except Exception as error:
+             conn.rollback()
 
-            flash(
-                "The order could not be created. Please try again.",
-                "error"
-            )
-            return redirect(url_for("checkout"))
+             import traceback
+             traceback.print_exc()
+
+             return f"""
+             <h2>Checkout Error</h2>
+             <pre>{error}</pre>
+             """, 500
 
         finally:
             conn.close()
