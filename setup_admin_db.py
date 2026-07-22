@@ -1,7 +1,12 @@
 import sqlite3
+import os
+
+DB_PATH = os.getenv("DB_PATH", "pettys.db")
+
+conn = sqlite3.connect(DB_PATH)
+
 from werkzeug.security import generate_password_hash
 
-conn = sqlite3.connect("pettys.db")
 cursor = conn.cursor()
 
 cursor.execute("""

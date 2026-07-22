@@ -1,6 +1,10 @@
 import sqlite3
+import os
 
-conn = sqlite3.connect("pettys.db")
+DB_PATH = os.getenv("DB_PATH", "pettys.db")
+
+conn = sqlite3.connect(DB_PATH)
+
 cursor = conn.cursor()
 
 cursor.execute("""
