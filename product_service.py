@@ -17,35 +17,56 @@ def get_all_products(active_only=True):
     try:
         cursor = connection.cursor()
 
-        query = """
+        cursor.execute("""
             SELECT
                 id,
+                name,
                 slug,
-                COALESCE(NULLIF(name_en, ''), name_es, slug) AS name,
-                short_description_en,
-                short_description_es,
+                description,
                 image,
-                active,
-                featured
+                price,
+                stock
             FROM products
-        """
+            ORDER BY id
+        """)
 
-        parameters = []
-
-        if active_only:
-            query += " WHERE active = ?"
-            parameters.append(1)
-
-        query += " ORDER BY id"
-
-        cursor.execute(query, parameters)
-        product_rows = cursor.fetchall()
-
+        rows = cursor.fetchall()
         products = []
 
-        for product_row in product_rows:
-            product = build_product(cursor, product_row)
-            products.append(product)
+        for row in rows:
+            cursor.execute("""
+                SELECT
+                    id,
+                    size_code,
+                    stock
+                FROM product_sizes
+                WHERE product_id = ?
+                ORDER BY id
+            """, (row["id"],))
+
+            size_rows = cursor.fetchall()
+
+            sizes = [
+                {
+                    "id": size["id"],
+                    "size_code": size["size_code"],
+                    "stock": size["stock"],
+                }
+                for size in size_rows
+            ]
+
+            products.append({
+                "id": row["id"],
+                "name": row["name"],
+                "name_en": row["name"],
+                "name_es": row["name"],
+                "slug": row["slug"],
+                "description": row["description"] or "",
+                "image": row["image"] or "",
+                "price": row["price"],
+                "stock": row["stock"],
+                "sizes": sizes,
+            })
 
         return products
 
