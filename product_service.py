@@ -1,9 +1,8 @@
 import json
 import sqlite3
-from pathlib import Path
+import os
 
-DB_PATH = Path("pettys.db")
-
+DB_PATH = os.getenv("DB_PATH", "pettys.db")
 
 def get_connection():
     connection = sqlite3.connect(DB_PATH)
