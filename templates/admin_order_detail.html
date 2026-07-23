@@ -24,13 +24,41 @@
     <label><strong>Update Status:</strong></label>
 
     <select name="status" style="padding:10px;margin-left:10px;">
-        <option value="Pending Payment">Pending Payment</option>
-        <option value="Paid">Paid</option>
-        <option value="Preparing">Preparing</option>
-        <option value="Packed">Packed</option>
-        <option value="Shipped">Shipped</option>
-        <option value="Delivered">Delivered</option>
-        <option value="Cancelled">Cancelled</option>
+    <option value="Pending Payment"
+        {% if order.status == "Pending Payment" %}selected{% endif %}>
+        Pending Payment
+    </option>
+
+    <option value="Paid"
+        {% if order.status == "Paid" %}selected{% endif %}>
+        Paid
+    </option>
+
+    <option value="Preparing"
+        {% if order.status == "Preparing" %}selected{% endif %}>
+        Preparing
+    </option>
+
+    <option value="Packed"
+        {% if order.status == "Packed" %}selected{% endif %}>
+        Packed
+    </option>
+
+    <option value="Shipped"
+        {% if order.status == "Shipped" %}selected{% endif %}>
+        Shipped
+    </option>
+
+    <option value="Delivered"
+        {% if order.status == "Delivered" %}selected{% endif %}>
+        Delivered
+    </option>
+
+    <option value="Cancelled"
+        {% if order.status == "Cancelled" %}selected{% endif %}>
+        Cancelled
+    </option>
+</select>
     </select>
 
     <button type="submit" class="hero-final-btn" style="padding:10px 20px;margin-left:10px;">

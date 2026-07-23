@@ -25,6 +25,48 @@ from translations.es import translations as es
 
 load_dotenv()
 DB_PATH = os.getenv("DB_PATH", "pettys.db")
+def ensure_order_schema():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # Make sure the orders table exists first
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS orders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT
+        )
+    """)
+
+    order_columns = {row[1] for row in cursor.execute("PRAGMA table_info(orders)")}
+
+    if "subtotal" not in order_columns:
+        cursor.execute("ALTER TABLE orders ADD COLUMN subtotal REAL DEFAULT 0")
+
+    if "shipping_amount" not in order_columns:
+        cursor.execute("ALTER TABLE orders ADD COLUMN shipping_amount REAL DEFAULT 0")
+
+    if "tax_amount" not in order_columns:
+        cursor.execute("ALTER TABLE orders ADD COLUMN tax_amount REAL DEFAULT 0")
+
+    # Only check order_items if it exists
+    cursor.execute("""
+        SELECT name FROM sqlite_master
+        WHERE type='table' AND name='order_items'
+    """)
+
+    if cursor.fetchone():
+        item_columns = {row[1] for row in cursor.execute("PRAGMA table_info(order_items)")}
+
+        if "size_code" not in item_columns:
+            cursor.execute("ALTER TABLE order_items ADD COLUMN size_code TEXT")
+
+        if "size_name" not in item_columns:
+            cursor.execute("ALTER TABLE order_items ADD COLUMN size_name TEXT")
+
+    conn.commit()
+    conn.close()
+
+
+ensure_order_schema()
 def ensure_store_settings_table():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -2217,15 +2259,32 @@ def payment_success():
         cursor = conn.cursor()
 
         cursor.execute("""
-            UPDATE orders
-            SET status = ?
+            SELECT status
+            FROM orders
             WHERE id = ?
-        """, ("Paid", order_id))
+        """, (order_id,))
 
-        conn.commit()
-        conn.close()
-        deduct_inventory(order_id)
-        send_order_confirmation_email(order_id)
+        order = cursor.fetchone()
+
+        if order and order[0] != "Paid":
+            cursor.execute("""
+                UPDATE orders
+                SET status = ?
+                WHERE id = ?
+            """, ("Paid", order_id))
+
+            conn.commit()
+            conn.close()
+
+            deduct_inventory(order_id)
+            send_order_confirmation_email(order_id)
+
+        else:
+            conn.close()
+            print(
+                f"Order {order_id} is already paid. "
+                "Inventory deduction skipped."
+            )
 
     session.pop("cart", None)
 
