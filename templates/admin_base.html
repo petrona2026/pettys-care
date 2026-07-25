@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>{% block title %}PETTY'S CARE Admin{% endblock %}</title>
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
 
-<section class="admin-page">
+<section class="admin-layout">
+
+    <!-- ===========================
+         SIDEBAR
+    ============================ -->
 
     <aside class="admin-sidebar">
 
@@ -18,35 +25,95 @@
             <p>Admin Panel</p>
         </div>
 
-       <hr>
+        <hr>
 
-<small class="menu-title">{{ t.dashboard }}</small>
-<a href="/admin">🏠 {{ t.dashboard }}</a>
+        <!-- Dashboard -->
 
-<small class="menu-title">{{ t.admin_sales }}</small>
-<a href="/admin/orders">📦 {{ t.orders }}</a>
-<a href="/admin/customers">👥 {{ t.customers }}</a>
-<a href="/admin/reviews">⭐ {{ t.reviews }}</a>
+        <small class="menu-title">{{ t.dashboard }}</small>
 
-<small class="menu-title">{{ t.admin_catalog }}</small>
-<a href="/admin/products">🧼 {{ t.products }}</a>
-<a href="/admin/inventory">📋 {{ t.inventory }}</a>
+        <a href="/admin"
+           class="{% if request.path == '/admin' %}active{% endif %}">
+            🏠 {{ t.dashboard }}
+        </a>
 
-<small class="menu-title">{{ t.admin_fulfillment }}</small>
-<a href="/admin/packing-slips">🖨️ {{ t.packing_slips }}</a>
-<a href="/admin/suppliers">🚚 {{ t.suppliers }}</a>
+        <!-- SALES -->
 
-<small class="menu-title">{{ t.admin_business }}</small>
-<a href="/admin/reports">📊 {{ t.reports }}</a>
-<a href="/admin/settings">⚙️ {{ t.settings }}</a>
+        <small class="menu-title">{{ t.admin_sales }}</small>
 
-<hr>
-        <a href="/" target="_blank">🌐 View Store</a>
+        <a href="/admin/orders"
+           class="{% if request.path.startswith('/admin/orders') %}active{% endif %}">
+            📦 {{ t.orders }}
+        </a>
+
+        <a href="/admin/customers"
+           class="{% if request.path.startswith('/admin/customers') %}active{% endif %}">
+            👥 {{ t.customers }}
+        </a>
+
+        <a href="/admin/reviews"
+           class="{% if request.path.startswith('/admin/reviews') %}active{% endif %}">
+            ⭐ {{ t.reviews }}
+        </a>
+
+        <a href="/admin/reports"
+           class="{% if request.path.startswith('/admin/reports') %}active{% endif %}">
+            📊 {{ t.reports }}
+        </a>
+
+        <!-- CATALOG -->
+
+        <small class="menu-title">{{ t.admin_catalog }}</small>
+
+        <a href="/admin/products"
+           class="{% if request.path.startswith('/admin/products') %}active{% endif %}">
+            🧼 {{ t.products }}
+        </a>
+
+        <a href="/admin/inventory"
+           class="{% if request.path.startswith('/admin/inventory') %}active{% endif %}">
+            📋 {{ t.inventory }}
+        </a>
+
+        <!-- FULFILLMENT -->
+
+        <small class="menu-title">{{ t.admin_fulfillment }}</small>
+
+        <a href="/admin/packing-slips"
+           class="{% if request.path.startswith('/admin/packing-slips') %}active{% endif %}">
+            🖨️ {{ t.packing_slips }}
+        </a>
+
+        <a href="/admin/suppliers"
+           class="{% if request.path.startswith('/admin/suppliers') %}active{% endif %}">
+            🚚 {{ t.suppliers }}
+        </a>
+
+        <!-- BUSINESS -->
+
+        <small class="menu-title">{{ t.admin_business }}</small>
+
+        <a href="/admin/settings"
+           class="{% if request.path.startswith('/admin/settings') %}active{% endif %}">
+            ⚙️ {{ t.settings }}
+        </a>
+
+        <hr>
+
+        <a href="/" target="_blank">
+            🌐 View Store
+        </a>
 
     </aside>
 
+    <!-- ===========================
+         MAIN CONTENT
+    ============================ -->
+
     <main class="admin-content">
-        {% block content %}{% endblock %}
+
+        {% block content %}
+        {% endblock %}
+
     </main>
 
 </section>
