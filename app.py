@@ -650,14 +650,61 @@ def admin_reports():
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
+    # Total Orders
     cur.execute("SELECT COUNT(*) FROM orders")
     total_orders = cur.fetchone()[0]
+
+    # Total Sales
+    cur.execute("""
+        SELECT COALESCE(SUM(total), 0)
+        FROM orders
+        WHERE status NOT IN ('Cancelled', 'Pending Payment')
+    """)
+    total_sales = cur.fetchone()[0]
+
+    # Total Customers
+    cur.execute("""
+        SELECT COUNT(DISTINCT LOWER(email))
+        FROM orders
+        WHERE email IS NOT NULL
+          AND TRIM(email) != ''
+    """)
+    total_customers = cur.fetchone()[0]
+
+    # Total Products
+    cur.execute("SELECT COUNT(*) FROM products")
+    total_products = cur.fetchone()[0]
+
+    # Order Status Counts
+    cur.execute("""
+        SELECT status, COUNT(*) AS count
+        FROM orders
+        GROUP BY status
+    """)
+    status_rows = cur.fetchall()
+
+    order_status_counts = {
+        "Pending Payment": 0,
+        "Paid": 0,
+        "Preparing": 0,
+        "Packed": 0,
+        "Shipped": 0,
+        "Delivered": 0,
+        "Cancelled": 0
+    }
+
+    for row in status_rows:
+        order_status_counts[row["status"]] = row["count"]
 
     conn.close()
 
     return render_template(
         "admin_reports.html",
-        total_orders=total_orders
+        total_orders=total_orders,
+        total_sales=total_sales,
+        total_customers=total_customers,
+        total_products=total_products,
+        order_status_counts=order_status_counts
     )
 @app.route("/")
 def index():
