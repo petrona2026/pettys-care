@@ -5,8 +5,30 @@ import os
 DB_PATH = os.getenv("DB_PATH", "pettys.db")
 
 def get_connection():
+    print("=" * 70)
+    print("PRODUCT SERVICE DATABASE DEBUG")
+    print("PID:", os.getpid())
+    print("DB_PATH:", DB_PATH)
+    print("ABSOLUTE DB_PATH:", os.path.abspath(DB_PATH))
+    print("DB EXISTS:", os.path.exists(DB_PATH))
+
     connection = sqlite3.connect(DB_PATH)
     connection.row_factory = sqlite3.Row
+
+    print("PRAGMA database_list:")
+    for row in connection.execute("PRAGMA database_list"):
+        print(tuple(row))
+
+    print("VISIBLE TABLES:")
+    for row in connection.execute("""
+        SELECT name
+        FROM sqlite_master
+        WHERE type = 'table'
+        ORDER BY name
+    """):
+        print(row["name"])
+
+    print("=" * 70)
     return connection
 
 
