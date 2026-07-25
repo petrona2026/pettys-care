@@ -380,47 +380,68 @@ class AdminUser(UserMixin):
 @app.route("/admin/inventory")
 @login_required
 def admin_inventory():
+    try:
+        products = get_all_products(active_only=False)
 
-    products = get_all_products(active_only=False)
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
 
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+        cursor.execute("""
+            SELECT
+                id,
+                product_id,
+                size_code,
+                stock
+            FROM product_sizes
+            ORDER BY product_id, id
+        """)
 
-    cursor.execute("""
-        SELECT
-            id,
-            product_id,
-            size_code,
-            stock
-        FROM product_sizes
-        ORDER BY product_id, id
-    """)
+        size_rows = cursor.fetchall()
+        conn.close()
 
-    size_rows = cursor.fetchall()
-    conn.close()
+        sizes_by_product = {}
 
-    sizes_by_product = {}
+        for size in size_rows:
+            product_id = size["product_id"]
 
-    for size in size_rows:
-        product_id = size["product_id"]
+            if product_id not in sizes_by_product:
+                sizes_by_product[product_id] = []
 
-        if product_id not in sizes_by_product:
-            sizes_by_product[product_id] = []
+            sizes_by_product[product_id].append({
+                "id": size["id"],
+                "size_code": size["size_code"],
+                "stock": size["stock"] or 0
+            })
 
-        sizes_by_product[product_id].append({
-            "id": size["id"],
-            "size_code": size["size_code"],
-            "stock": size["stock"] or 0
-        })
+        for product in products:
+            product["sizes"] = sizes_by_product.get(
+                product["id"],
+                []
+            )
 
-    for product in products:
-        product["sizes"] = sizes_by_product.get(product["id"], [])
+        return render_template(
+            "admin_inventory.html",
+            products=products
+        )
 
-    return render_template(
-        "admin_inventory.html",
-        products=products
-    )
+    except Exception:
+        import traceback
+
+        error_details = traceback.format_exc()
+        print(error_details)
+
+        return f"""
+        <html>
+            <head>
+                <title>Inventory Error</title>
+            </head>
+            <body style="font-family: monospace; padding: 30px;">
+                <h1>Inventory Error</h1>
+                <pre>{error_details}</pre>
+            </body>
+        </html>
+        """, 500
 @app.route("/admin/inventory/<int:product_id>/update", methods=["POST"])
 @login_required
 def update_inventory(product_id):
