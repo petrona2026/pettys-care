@@ -377,6 +377,13 @@ class AdminUser(UserMixin):
     def __init__(self, id, username):
         self.id = id
         self.username = username
+@app.route("/set-language/<language>")
+def set_language(language):
+    if language not in ("en", "es"):
+        language = "en"
+
+    session["language"] = language
+    return redirect(request.referrer or url_for("index"))
 @app.route("/admin/inventory")
 @login_required
 def admin_inventory():
@@ -636,15 +643,22 @@ products = [
     "image": "products_clean/06-charcoal-cleanse.png",
 },
     ]
-@app.route("/set-language/<language>")
-def set_language(language):
+@app.route("/admin/reports")
+@login_required
+def admin_reports():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
 
-    if language not in ["en", "es"]:
-        language = "en"
+    cur.execute("SELECT COUNT(*) FROM orders")
+    total_orders = cur.fetchone()[0]
 
-    session["language"] = language
+    conn.close()
 
-    return redirect(request.referrer or url_for("index"))
+    return render_template(
+        "admin_reports.html",
+        total_orders=total_orders
+    )
 @app.route("/")
 def index():
     return render_template("index.html", products=products)

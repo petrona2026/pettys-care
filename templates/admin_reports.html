@@ -1,0 +1,29 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+<section style="max-width:1100px; margin:40px auto;">
+    <h1>Reports</h1>
+
+    <div style="
+        display:grid;
+        grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+        gap:20px;
+        margin-top:30px;
+    ">
+        <div style="
+            background:white;
+            border-radius:12px;
+            padding:24px;
+            box-shadow:0 4px 14px rgba(0,0,0,0.08);
+        ">
+            <div style="font-size:28px;">📦</div>
+            <h3 style="margin:10px 0;">Total Orders</h3>
+            <p style="font-size:32px; font-weight:bold; margin:0;">
+                {{ total_orders }}
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}
