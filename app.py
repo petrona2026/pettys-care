@@ -385,7 +385,9 @@ def admin_inventory():
         import os
 
         debug = []
-
+        debug.append(f"Service: {os.getenv('RAILWAY_SERVICE_NAME')}")
+        debug.append(f"Environment: {os.getenv('RAILWAY_ENVIRONMENT_NAME')}")
+        debug.append(f"Deployment: {os.getenv('RAILWAY_DEPLOYMENT_ID')}")
         debug.append(f"DB_PATH env: {os.getenv('DB_PATH')}")
         debug.append(f"DB_PATH variable: {DB_PATH}")
 
