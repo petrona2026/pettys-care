@@ -1,0 +1,47 @@
+<div class="{{ card_class }}">
+
+    <a href="{{ url_for('product_detail', slug=product.slug) }}"
+       class="product-image-link">
+
+        <img
+            src="{{ url_for('static', filename='images/' + product.image) }}"
+            alt="{{ product.name }}"
+        >
+
+    </a>
+
+    <h3>{{ product.name }}</h3>
+
+    {% if show_description %}
+    <p class="shared-product-description">
+        {{ product.short[session.get('language', 'en')] }}
+    </p>
+    {% endif %}
+
+    <div class="product-starting-price">
+        <small>{{ t.starting_from }}</small>
+
+        <strong>
+            ${{ "%.2f"|format(product.sizes | map(attribute='price') | min) }}
+        </strong>
+    </div>
+
+    <form
+        action="{{ url_for('add_to_cart', slug=product.slug) }}"
+        method="POST"
+        style="margin-top:15px;"
+    >
+        <input type="hidden" name="size" value="standard">
+
+        <button type="submit" class="{{ button_class }}">
+            🛒 Add to Cart
+        </button>
+    </form>
+
+    <p style="margin-top:10px;">
+        <a href="{{ url_for('product_detail', slug=product.slug) }}">
+            {{ details_text }}
+        </a>
+    </p>
+
+</div>

@@ -8,7 +8,6 @@
     <h1 class="cart-page-title">
        {{ t.shopping_cart }}
     </h1>
-
     <p class="cart-page-subtitle">
         Crafted with Care. Cleansed with Joy.
     </p>
@@ -36,9 +35,11 @@
                 <h2 class="cart-card-title">
                     {{ item.product.name }}
                 </h2>
+
                 <p class="cart-card-size">
                     {{ item.size.name }} — {{ item.size.weight }}
                 </p>
+
                 <p class="cart-card-description">
                     {{ item.product.short[session.get('language', 'en')] }}
                 </p>
@@ -64,7 +65,6 @@
                         method="POST"
                         style="margin:0;"
                     >
-
                         <button
                             type="submit"
                             name="action"
@@ -72,7 +72,6 @@
                         >
                             −
                         </button>
-
                     </form>
 
                     <strong style="font-size:1.2rem;">
@@ -84,7 +83,6 @@
                         method="POST"
                         style="margin:0;"
                     >
-
                         <button
                             type="submit"
                             name="action"
@@ -92,27 +90,20 @@
                         >
                             +
                         </button>
-
                     </form>
 
                 </div>
 
                 <p>
-
                     <strong>{{ t.subtotal }}</strong>
-
                     <br>
-
                     ${{ "%.2f"|format(item.subtotal) }}
-
                 </p>
 
                 <p style="margin-top:15px;">
-
-                      <a href="{{ url_for('remove_from_cart', cart_key=item.cart_key) }}">  
+                    <a href="{{ url_for('remove_from_cart', cart_key=item.cart_key) }}">
                         {{ t.remove }}
                     </a>
-
                 </p>
 
             </div>
@@ -233,30 +224,46 @@
                     font-size:1.1rem;
                     font-weight:bold;
                 ">
-          <small>{{ t.starting_from }}</small><br>
-<strong>
-    ${{ "%.2f"|format(product.sizes | map(attribute='price') | min) }}
-</strong>
+                    <small>{{ t.starting_from }}</small><br>
+
+                    <strong>
+                        ${{ "%.2f"|format(product.sizes | map(attribute='price') | min) }}
+                    </strong>
                 </p>
 
-		
-     <a
-    href="{{ url_for('product_detail', slug=product.slug) }}"
-    class="hero-final-btn"
-    style="margin-top:15px;display:inline-block;"
->
-    🌿 {{ t.choose_your_bar }}
-</a>
-<p style="
-    margin-top:12px;
-    font-size:.9rem;
-">
+                <form
+                    action="{{ url_for('add_to_cart', slug=product.slug) }}"
+                    method="POST"
+                    style="margin-top:15px;"
+                >
 
-    <a href="{{ url_for('product_detail', slug=product.slug) }}">
-        {{ t.learn_more }} →
-    </a>
+                    <input
+                        type="hidden"
+                        name="size"
+                        value="standard"
+                    >
 
-</p>
+                    <button
+                        type="submit"
+                        class="hero-final-btn"
+                        style="border:none;cursor:pointer;"
+                    >
+                        🛒 Add to Cart
+                    </button>
+
+                </form>
+
+                <p style="
+                    margin-top:12px;
+                    font-size:.9rem;
+                ">
+
+                    <a href="{{ url_for('product_detail', slug=product.slug) }}">
+                        {{ t.learn_more }} →
+                    </a>
+
+                </p>
+
             </article>
 
             {% endfor %}

@@ -1,27 +1,57 @@
 {% extends 'base.html' %}
 
 {% block title %}{{ t.shop_title }} | PETTY'S CARE{% endblock %}
+
 {% block content %}
 
 <section class="page-title">
-<h1>{{ t.shop_title }}</h1>
-<p>{{ t.shop_subtitle }}</p>
+    <h1>{{ t.shop_title }}</h1>
+    <p>{{ t.shop_subtitle }}</p>
 </section>
 
 <section class="collection">
+
     <div class="products shop-grid">
+
         {% for product in products %}
+
         <div class="shop-card">
-            <img src="{{ url_for('static', filename='images/' + product.image) }}">
+
+            <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}">
+
             <h3>{{ product.name }}</h3>
-            <p>{{ product.short[session.get('language', 'en')] }}</p>
-            <strong>${{ "%.2f"|format(product.price) }}</strong>
-         <a class="btn" href="/products/{{ product.slug }}">
-    {{ t.view_soap }}
-</a>
+
+            <p>
+                {{ product.short[session.get('language', 'en')] }}
+            </p>
+
+            <strong>
+                From ${{ "%.2f"|format(product.sizes | map(attribute='price') | min) }}
+            </strong>
+
+            <br><br>
+
+            <form action="{{ url_for('add_to_cart', slug=product.slug) }}" method="POST">
+                <input type="hidden" name="size" value="standard">
+
+                <button type="submit" class="btn">
+                    🛒 Add to Cart
+                </button>
+            </form>
+             
+
+            <br><br>
+
+            <a class="shop-details-link" href="/products/{{ product.slug }}">
+                View Details
+            </a>
+
         </div>
+
         {% endfor %}
+
     </div>
+
 </section>
 
 {% endblock %}
