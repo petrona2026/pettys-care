@@ -381,53 +381,35 @@ class AdminUser(UserMixin):
 @login_required
 def admin_inventory():
     try:
-        products = get_all_products(active_only=False)
+        import sqlite3
+        import os
+
+        debug = []
+
+        debug.append(f"DB_PATH env: {os.getenv('DB_PATH')}")
+        debug.append(f"DB_PATH variable: {DB_PATH}")
 
         conn = sqlite3.connect(DB_PATH)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
+        cur = conn.cursor()
 
-        cursor.execute("""
-            SELECT
-                id,
-                product_id,
-                size_code,
-                stock
-            FROM product_sizes
-            ORDER BY product_id, id
+        cur.execute("""
+            SELECT name
+            FROM sqlite_master
+            WHERE type='table'
+            ORDER BY name
         """)
 
-        size_rows = cursor.fetchall()
+        debug.append("Tables:")
+        for row in cur.fetchall():
+            debug.append(f" - {row[0]}")
+
         conn.close()
 
-        sizes_by_product = {}
-
-        for size in size_rows:
-            product_id = size["product_id"]
-
-            if product_id not in sizes_by_product:
-                sizes_by_product[product_id] = []
-
-            sizes_by_product[product_id].append({
-                "id": size["id"],
-                "size_code": size["size_code"],
-                "stock": size["stock"] or 0
-            })
-
-        for product in products:
-            product["sizes"] = sizes_by_product.get(
-                product["id"],
-                []
-            )
-
-        return render_template(
-            "admin_inventory.html",
-            products=products
-        )
+        return "<pre>" + "\n".join(debug) + "</pre>"
 
     except Exception:
         import traceback
-
+        return f"<pre>{traceback.format_exc()}</pre>", 500
         error_details = traceback.format_exc()
         print(error_details)
 
