@@ -381,37 +381,14 @@ class AdminUser(UserMixin):
 @login_required
 def admin_inventory():
     try:
-        import sqlite3
-        import os
-
-        debug = []
-        debug.append(f"Service: {os.getenv('RAILWAY_SERVICE_NAME')}")
-        debug.append(f"Environment: {os.getenv('RAILWAY_ENVIRONMENT_NAME')}")
-        debug.append(f"Deployment: {os.getenv('RAILWAY_DEPLOYMENT_ID')}")
-        debug.append(f"DB_PATH env: {os.getenv('DB_PATH')}")
-        debug.append(f"DB_PATH variable: {DB_PATH}")
-
-        conn = sqlite3.connect(DB_PATH)
-        cur = conn.cursor()
-
-        cur.execute("""
-            SELECT name
-            FROM sqlite_master
-            WHERE type='table'
-            ORDER BY name
-        """)
-
-        debug.append("Tables:")
-        for row in cur.fetchall():
-            debug.append(f" - {row[0]}")
-
-        conn.close()
-
-        return "<pre>" + "\n".join(debug) + "</pre>"
+        products = get_all_products()
+        return render_template(
+            "admin_inventory.html",
+            products=products
+        )
 
     except Exception:
         import traceback
-        return f"<pre>{traceback.format_exc()}</pre>", 500
         error_details = traceback.format_exc()
         print(error_details)
 
