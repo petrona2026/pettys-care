@@ -642,7 +642,61 @@ products = [
 ],
     "image": "products_clean/06-charcoal-cleanse.png",
 },
-    ]
+{
+    "id": 7,
+    "name": "Almond Deluxe",
+    "slug": "almond-deluxe",
+    "short": {
+        "en": "A nourishing handcrafted soap with almond goodness.",
+        "es": "Un jabón artesanal nutritivo con la bondad de la almendra."
+    },
+    "price": 8.99,
+    "regular_price": 12.00,
+    "sizes": [
+    {
+            "id": "mini",
+            "name": "Mini Bar",
+            "weight": "2 oz",
+            "price": 5.99
+    },
+    {
+            "id": "standard",
+            "name": "Standard Bar",
+            "weight": "4 oz",
+            "price": 8.99,
+            "regular_price": 12.00
+    }
+],
+    "image": "products_clean/07-almond-deluxe.png",
+},
+{
+    "id": 8,
+    "name": "Orange Sunrise",
+    "slug": "orange-sunrise",
+    "short": {
+        "en": "A bright handcrafted soap inspired by fresh orange.",
+        "es": "Un jabón artesanal vibrante inspirado en la naranja fresca."
+    },
+    "price": 8.99,
+    "regular_price": 12.00,
+    "sizes": [
+    {
+            "id": "mini",
+            "name": "Mini Bar",
+            "weight": "2 oz",
+            "price": 5.99
+    },
+    {
+            "id": "standard",
+            "name": "Standard Bar",
+            "weight": "4 oz",
+            "price": 8.99,
+            "regular_price": 12.00
+    }
+    ],
+    "image": "products_clean/08-orange-sunrise.png",
+},
+]
 @app.route("/admin/reports")
 @login_required
 def admin_reports():
@@ -1162,6 +1216,150 @@ def product_detail(slug):
             "Piel Mixta",
             "Uso Corporal",
             "Limpieza Profunda"
+        ]
+    }
+},
+"almond-deluxe": {
+    "en": {
+        "ingredients": [
+            {
+                "icon": "🌰",
+                "name": "Almond Oil",
+                "description": "Helps nourish the skin and leaves it feeling soft, smooth, and conditioned."
+            },
+            {
+                "icon": "💧",
+                "name": "Vegetable Glycerin",
+                "description": "Helps attract and retain moisture so the skin feels hydrated and comfortable."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamin E",
+                "description": "Provides antioxidant care while helping nourish and condition the skin."
+            }
+        ],
+        "benefits": [
+            "Helps maintain skin moisture",
+            "Leaves skin feeling soft and smooth",
+            "Gentle cleansing without a dry, tight feeling",
+            "Helps comfort dry or delicate-feeling skin",
+            "Nourishing care for everyday use"
+        ],
+        "perfect_for": [
+            "Dry Skin",
+            "Sensitive-Feeling Skin",
+            "Daily Use",
+            "Face & Body"
+        ]
+    },
+
+    "es": {
+        "ingredients": [
+            {
+                "icon": "🌰",
+                "name": "Aceite de Almendras",
+                "description": "Ayuda a nutrir la piel y la deja con una sensación suave, tersa y acondicionada."
+            },
+            {
+                "icon": "💧",
+                "name": "Glicerina Vegetal",
+                "description": "Ayuda a atraer y conservar la humedad para mantener la piel hidratada y confortable."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamina E",
+                "description": "Brinda cuidado antioxidante mientras ayuda a nutrir y acondicionar la piel."
+            }
+        ],
+        "benefits": [
+            "Ayuda a mantener la hidratación natural de la piel",
+            "Deja la piel suave y tersa",
+            "Limpia suavemente sin dejar sensación de resequedad o tirantez",
+            "Ayuda a reconfortar la piel seca o delicada",
+            "Cuidado nutritivo para el uso diario"
+        ],
+        "perfect_for": [
+            "Piel Seca",
+            "Piel Delicada",
+            "Uso Diario",
+            "Rostro y Cuerpo"
+        ]
+    }
+},
+"orange-sunrise": {
+    "en": {
+        "ingredients": [
+            {
+                "icon": "🍊",
+                "name": "Orange Essential Oil / Extract",
+                "description": "Adds a fresh citrus character and helps leave the skin feeling clean and refreshed."
+            },
+            {
+                "icon": "🍊",
+                "name": "Orange Peel",
+                "description": "Provides gentle exfoliation to help remove surface buildup and leave the skin feeling smoother."
+            },
+            {
+                "icon": "💧",
+                "name": "Vegetable Glycerin",
+                "description": "Helps attract and retain moisture so the skin feels soft and comfortable after cleansing."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamin E",
+                "description": "Provides nourishing antioxidant care and helps condition the skin."
+            }
+        ],
+        "benefits": [
+            "Refreshing citrus cleansing",
+            "Gentle exfoliation",
+            "Helps smooth rough-feeling skin",
+            "Leaves skin feeling soft and refreshed",
+            "Nourishing care for everyday cleansing"
+        ],
+        "perfect_for": [
+            "Normal Skin",
+            "Dull-Looking Skin",
+            "Daily Use",
+            "Face & Body"
+        ]
+    },
+
+    "es": {
+        "ingredients": [
+            {
+                "icon": "🍊",
+                "name": "Aceite Esencial / Extracto de Naranja",
+                "description": "Aporta un fresco toque cítrico y ayuda a dejar la piel con una sensación limpia y refrescada."
+            },
+            {
+                "icon": "🍊",
+                "name": "Cáscara de Naranja",
+                "description": "Proporciona una exfoliación suave que ayuda a eliminar residuos superficiales y deja la piel más tersa."
+            },
+            {
+                "icon": "💧",
+                "name": "Glicerina Vegetal",
+                "description": "Ayuda a atraer y conservar la humedad para que la piel se sienta suave y confortable después de la limpieza."
+            },
+            {
+                "icon": "💛",
+                "name": "Vitamina E",
+                "description": "Brinda cuidado antioxidante nutritivo y ayuda a acondicionar la piel."
+            }
+        ],
+        "benefits": [
+            "Limpieza cítrica refrescante",
+            "Exfoliación suave",
+            "Ayuda a suavizar la piel áspera",
+            "Deja la piel suave y fresca",
+            "Cuidado nutritivo para la limpieza diaria"
+        ],
+        "perfect_for": [
+            "Piel Normal",
+            "Piel de Apariencia Opaca",
+            "Uso Diario",
+            "Rostro y Cuerpo"
         ]
     }
 },
