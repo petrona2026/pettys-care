@@ -6,11 +6,12 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
-
+CREAM = colors.HexColor("#F4EBDD")
 
 OUTPUT_FILE = "generated_pdfs/pettys_business_cards_back.pdf"
 QR_FILE = "generated_pdfs/pettys_qr.png"
 
+BACKGROUND_FILE = "static/print/business_cards/back_card_only_v1.png"
 WEBSITE_URL = "https://pettyscare.com"
 
 PAGE_WIDTH, PAGE_HEIGHT = letter
@@ -27,7 +28,6 @@ TOP_MARGIN = 0.5 * inch
 HORIZONTAL_GAP = 0
 VERTICAL_GAP = 0
 
-CREAM = colors.HexColor("#F1DFCF")
 OLIVE = colors.HexColor("#556B2F")
 GOLD = colors.HexColor("#B78B43")
 BROWN = colors.HexColor("#3B2A1E")
@@ -55,18 +55,41 @@ def create_qr_code() -> None:
 
 
 def draw_card_back(pdf: canvas.Canvas, x: float, y: float) -> None:
-    pdf.setFillColor(CREAM)
-    pdf.rect(
+
+    # Draw the background artwork
+    background = ImageReader(BACKGROUND_FILE)
+
+    pdf.drawImage(
+        background,
         x,
         y,
-        CARD_WIDTH,
-        CARD_HEIGHT,
+        width=CARD_WIDTH,
+        height=CARD_HEIGHT,
+        preserveAspectRatio=False,
+        mask="auto",
+    )
+        # Cover the old QR code and old website button
+    pdf.setFillColor(CREAM)
+
+    cover_width = 1.28 * inch
+    cover_height = 1.10 * inch
+
+    cover_x = x + (CARD_WIDTH - cover_width) / 2
+    cover_y = y + 0.10 * inch
+
+    pdf.roundRect(
+        cover_x,
+        cover_y,
+        cover_width,
+        cover_height,
+        0.06 * inch,
         fill=1,
         stroke=0,
     )
-
+    # Optional decorative border
     pdf.setStrokeColor(GOLD)
     pdf.setLineWidth(0.8)
+
     pdf.rect(
         x + 0.08 * inch,
         y + 0.08 * inch,
@@ -76,29 +99,13 @@ def draw_card_back(pdf: canvas.Canvas, x: float, y: float) -> None:
         stroke=1,
     )
 
-    pdf.setFillColor(OLIVE)
-    pdf.setFont("Times-Bold", 15)
-
-    pdf.drawCentredString(
-        x + CARD_WIDTH / 2,
-        y + 1.60 * inch,
-        "Handcrafted with Nature",
-    )
-
-    pdf.setFillColor(GOLD)
-    pdf.setFont("Times-Italic", 11)
-
-    pdf.drawCentredString(
-        x + CARD_WIDTH / 2,
-        y + 1.36 * inch,
-        "Made with Love",
-    )
-
+    # Real QR Code
+        # Add the real working QR code
     qr = ImageReader(QR_FILE)
 
-    qr_size = 0.90 * inch
+    qr_size = 0.92 * inch
     qr_x = x + (CARD_WIDTH - qr_size) / 2
-    qr_y = y + 0.30 * inch
+    qr_y = y + 0.24 * inch
 
     pdf.drawImage(
         qr,
@@ -109,18 +116,19 @@ def draw_card_back(pdf: canvas.Canvas, x: float, y: float) -> None:
         preserveAspectRatio=True,
         mask="auto",
     )
-
+    # Website under QR
     pdf.setFillColor(BROWN)
-    pdf.setFont("Helvetica", 7.5)
+    pdf.setFont("Helvetica-Bold", 8)
 
     pdf.drawCentredString(
         x + CARD_WIDTH / 2,
-        y + 0.18 * inch,
+        y + 0.16 * inch,
         "pettyscare.com",
     )
 
 
 def create_back_sheet() -> None:
+
     create_qr_code()
 
     pdf = canvas.Canvas(
@@ -130,6 +138,7 @@ def create_back_sheet() -> None:
 
     for row in range(ROWS):
         for column in range(COLUMNS):
+
             x = (
                 LEFT_MARGIN
                 + column * (CARD_WIDTH + HORIZONTAL_GAP)
@@ -145,6 +154,7 @@ def create_back_sheet() -> None:
             draw_card_back(pdf, x, y)
 
     pdf.save()
+
     print(f"Created: {OUTPUT_FILE}")
     print(f"Created: {QR_FILE}")
 
