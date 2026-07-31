@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Business Cards - PETTY'S CARE{% endblock %}
+
+{% block content %}
+
+<section style="
+    max-width:900px;
+    margin:50px auto;
+    padding:20px;
+    text-align:center;
+">
+
+    <h1 style="color:#556B2F;">
+        Business Card Studio
+    </h1>
+
+    <p>
+        Avery 5877 — 10 cards per sheet
+    </p>
+
+    <div style="
+        background:white;
+        padding:30px;
+        margin-top:30px;
+        border-radius:16px;
+        box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    ">
+
+        <h2 style="color:#3B2A1E;">
+            Generate
+        </h2>
+
+        <form method="POST"
+              action="{{ url_for('generate_business_cards') }}">
+
+            <button type="submit"
+                    style="
+                        background:#556B2F;
+                        color:white;
+                        border:none;
+                        padding:14px 28px;
+                        border-radius:25px;
+                        font-weight:bold;
+                        cursor:pointer;
+                    ">
+                Generate Front & Back
+            </button>
+
+        </form>
+
+    </div>
+
+    <div style="
+        background:white;
+        padding:30px;
+        margin-top:25px;
+        border-radius:16px;
+        box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    ">
+
+        <h2 style="color:#3B2A1E;">
+            Preview
+        </h2>
+
+        <div style="
+            display:flex;
+            justify-content:center;
+            gap:20px;
+            flex-wrap:wrap;
+        ">
+
+            <a href="/admin/print-studio/business-cards/front"
+               target="_blank"
+               style="
+                   background:#556B2F;
+                   color:white;
+                   padding:12px 22px;
+                   border-radius:25px;
+                   text-decoration:none;
+                   font-weight:bold;
+               ">
+                View Front
+            </a>
+
+            <a href="/admin/print-studio/business-cards/back"
+               target="_blank"
+               style="
+                   background:#B78B43;
+                   color:white;
+                   padding:12px 22px;
+                   border-radius:25px;
+                   text-decoration:none;
+                   font-weight:bold;
+               ">
+                View Back
+            </a>
+
+        </div>
+
+    </div>
+
+    <div style="
+        background:white;
+        padding:30px;
+        margin-top:25px;
+        border-radius:16px;
+        box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    ">
+
+        <h2 style="color:#3B2A1E;">
+            Print
+        </h2>
+
+        <div style="
+            display:flex;
+            justify-content:center;
+            gap:20px;
+            flex-wrap:wrap;
+        ">
+
+            <form method="POST"
+                  action="/admin/print-studio/business-cards/print-front">
+
+                <button type="submit"
+                        style="
+                            background:#556B2F;
+                            color:white;
+                            border:none;
+                            padding:12px 22px;
+                            border-radius:25px;
+                            font-weight:bold;
+                            cursor:pointer;
+                        ">
+                    Print Front
+                </button>
+
+            </form>
+
+            <form method="POST"
+                  action="/admin/print-studio/business-cards/print-back">
+
+                <button type="submit"
+                        style="
+                            background:#B78B43;
+                            color:white;
+                            border:none;
+                            padding:12px 22px;
+                            border-radius:25px;
+                            font-weight:bold;
+                            cursor:pointer;
+                        ">
+                    Print Back
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

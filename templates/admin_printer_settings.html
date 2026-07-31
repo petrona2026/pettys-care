@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Printer Settings - PETTY'S CARE{% endblock %}
+
+{% block content %}
+
+<section style="
+    max-width:800px;
+    margin:50px auto;
+    padding:20px;
+">
+
+    <h1 style="text-align:center;color:#556B2F;">
+        Printer Settings
+    </h1>
+
+    <p style="text-align:center;margin-bottom:30px;">
+        Choose which printer Petty's Print Studio should use.
+    </p>
+
+    <form method="POST"
+          style="
+              background:white;
+              padding:30px;
+              border-radius:16px;
+              box-shadow:0 6px 18px rgba(0,0,0,.08);
+          ">
+
+        <label><strong>Default Printer</strong></label>
+
+        <select name="default_printer"
+                style="width:100%;padding:12px;margin:8px 0 22px;">
+
+            {% for printer in printers %}
+                <option value="{{ printer }}"
+                    {% if settings.default_printer == printer %}
+                        selected
+                    {% endif %}
+                >
+                    {{ printer }}
+                </option>
+            {% endfor %}
+
+        </select>
+
+        <label><strong>Business Cards Printer</strong></label>
+
+        <select name="business_cards_printer"
+                style="width:100%;padding:12px;margin:8px 0 22px;">
+
+            {% for printer in printers %}
+                <option value="{{ printer }}"
+                    {% if settings.business_cards_printer == printer %}
+                        selected
+                    {% endif %}
+                >
+                    {{ printer }}
+                </option>
+            {% endfor %}
+
+        </select>
+
+        <label><strong>Labels Printer</strong></label>
+
+        <select name="labels_printer"
+                style="width:100%;padding:12px;margin:8px 0 22px;">
+
+            {% for printer in printers %}
+                <option value="{{ printer }}"
+                    {% if settings.labels_printer == printer %}
+                        selected
+                    {% endif %}
+                >
+                    {{ printer }}
+                </option>
+            {% endfor %}
+
+        </select>
+
+        <label><strong>Paper Size</strong></label>
+
+        <select name="paper_size"
+                style="width:100%;padding:12px;margin:8px 0 22px;">
+
+            <option value="Letter"
+                {% if settings.paper_size == "Letter" %}
+                    selected
+                {% endif %}
+            >
+                Letter
+            </option>
+
+            <option value="A4"
+                {% if settings.paper_size == "A4" %}
+                    selected
+                {% endif %}
+            >
+                A4
+            </option>
+
+        </select>
+
+        <div style="text-align:center;margin-top:20px;">
+
+            <button type="submit"
+                    style="
+                        background:#556B2F;
+                        color:white;
+                        border:none;
+                        padding:14px 28px;
+                        border-radius:25px;
+                        font-weight:bold;
+                        cursor:pointer;
+                    ">
+                Save Printer Settings
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock %}

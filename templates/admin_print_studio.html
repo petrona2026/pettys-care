@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}Petty's Print Studio{% endblock %}
+
+{% block content %}
+
+<section style="
+    max-width:1100px;
+    margin:50px auto;
+    padding:20px;
+">
+
+    <div style="text-align:center;margin-bottom:40px;">
+
+        <h1 style="
+            color:#556B2F;
+            font-size:38px;
+            margin-bottom:10px;
+        ">
+            Petty's Print Studio
+        </h1>
+
+        <p style="
+            color:#5f554c;
+            font-size:17px;
+        ">
+            Generate, preview, and print your business materials.
+        </p>
+
+    </div>
+
+    <div style="
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+        gap:25px;
+    ">
+
+        <!-- Business Cards -->
+        <div style="
+            background:white;
+            padding:28px;
+            border-radius:16px;
+            box-shadow:0 6px 20px rgba(0,0,0,.08);
+            text-align:center;
+        ">
+
+            <div style="font-size:42px;">💼</div>
+
+            <h2 style="color:#3B2A1E;">
+                Business Cards
+            </h2>
+
+            <p>Avery 5877</p>
+            <p>Front and back printing</p>
+
+            <span style="
+                display:inline-block;
+                background:#E7F0DC;
+                color:#556B2F;
+                padding:5px 12px;
+                border-radius:20px;
+                font-size:13px;
+                font-weight:bold;
+                margin-bottom:18px;
+            ">
+                Ready
+            </span>
+
+            <br>
+
+            <a href="/admin/print-studio/business-cards"
+               style="
+                   display:inline-block;
+                   background:#556B2F;
+                   color:white;
+                   padding:12px 22px;
+                   border-radius:25px;
+                   text-decoration:none;
+                   font-weight:bold;
+               ">
+                Open Studio
+            </a>
+
+        </div>
+
+        <!-- Logo Stickers -->
+        <div style="
+            background:white;
+            padding:28px;
+            border-radius:16px;
+            box-shadow:0 6px 20px rgba(0,0,0,.08);
+            text-align:center;
+        ">
+
+            <div style="font-size:42px;">🏷️</div>
+
+            <h2 style="color:#3B2A1E;">
+                Logo Stickers
+            </h2>
+
+            <p>Avery 22877</p>
+            <p>Two-inch round labels</p>
+
+            <span style="
+                display:inline-block;
+                background:#FFF0D6;
+                color:#9A6B20;
+                padding:5px 12px;
+                border-radius:20px;
+                font-size:13px;
+                font-weight:bold;
+                margin-bottom:18px;
+            ">
+                In Development
+            </span>
+
+            <br>
+
+            <a href="/admin/print-studio/labels"
+               style="
+                   display:inline-block;
+                   background:#B78B43;
+                   color:white;
+                   padding:12px 22px;
+                   border-radius:25px;
+                   text-decoration:none;
+                   font-weight:bold;
+               ">
+                Open Studio
+            </a>
+
+        </div>
+
+        <!-- Thank You Cards -->
+        <div style="
+            background:white;
+            padding:28px;
+            border-radius:16px;
+            box-shadow:0 6px 20px rgba(0,0,0,.08);
+            text-align:center;
+            opacity:.75;
+        ">
+
+            <div style="font-size:42px;">💌</div>
+
+            <h2 style="color:#3B2A1E;">
+                Thank You Cards
+            </h2>
+
+            <p>Order inserts</p>
+            <p>Customer appreciation cards</p>
+
+            <span style="
+                display:inline-block;
+                background:#EFEFEF;
+                color:#666;
+                padding:5px 12px;
+                border-radius:20px;
+                font-size:13px;
+                font-weight:bold;
+            ">
+                Coming Soon
+            </span>
+
+        </div>
+
+        <!-- Shipping Labels -->
+        <div style="
+            background:white;
+            padding:28px;
+            border-radius:16px;
+            box-shadow:0 6px 20px rgba(0,0,0,.08);
+            text-align:center;
+            opacity:.75;
+        ">
+
+            <div style="font-size:42px;">📦</div>
+
+            <h2 style="color:#3B2A1E;">
+                Shipping Labels
+            </h2>
+
+            <p>Four-by-six labels</p>
+            <p>Shipping and order fulfillment</p>
+
+            <span style="
+                display:inline-block;
+                background:#EFEFEF;
+                color:#666;
+                padding:5px 12px;
+                border-radius:20px;
+                font-size:13px;
+                font-weight:bold;
+            ">
+                Coming Soon
+            </span>
+
+        </div>
+
+        <!-- Product Inserts -->
+        <div style="
+            background:white;
+            padding:28px;
+            border-radius:16px;
+            box-shadow:0 6px 20px rgba(0,0,0,.08);
+            text-align:center;
+            opacity:.75;
+        ">
+
+            <div style="font-size:42px;">🧼</div>
+
+            <h2 style="color:#3B2A1E;">
+                Product Inserts
+            </h2>
+
+            <p>Ingredients and care instructions</p>
+            <p>Inside-package information cards</p>
+
+            <span style="
+                display:inline-block;
+                background:#EFEFEF;
+                color:#666;
+                padding:5px 12px;
+                border-radius:20px;
+                font-size:13px;
+                font-weight:bold;
+            ">
+                Coming Soon
+            </span>
+
+        </div>
+
+        <!-- Printer Settings -->
+        <div style="
+            background:white;
+            padding:28px;
+            border-radius:16px;
+            box-shadow:0 6px 20px rgba(0,0,0,.08);
+            text-align:center;
+        ">
+
+            <div style="font-size:42px;">⚙️</div>
+
+            <h2 style="color:#3B2A1E;">
+                Printer Settings
+            </h2>
+
+            <p>Choose printers and defaults</p>
+            <p>Manage print calibration</p>
+
+            <a href="/admin/print-studio/printer-settings"
+               style="
+                   display:inline-block;
+                   margin-top:18px;
+                   background:#556B2F;
+                   color:white;
+                   padding:12px 22px;
+                   border-radius:25px;
+                   text-decoration:none;
+                   font-weight:bold;
+               ">
+                open settings
+             </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

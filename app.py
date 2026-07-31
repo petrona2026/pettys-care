@@ -1,8 +1,12 @@
 import os
+import json
 import sqlite3
-
+import subprocess
 import resend
 import stripe
+from flask import send_file
+from pathlib import Path
+
 from product_service import get_all_products
 from dotenv import load_dotenv
 from flask import Flask, abort, redirect, render_template, request, session, url_for, flash
@@ -454,6 +458,438 @@ def update_inventory(product_id):
         conn.close()
 
     return redirect(url_for("admin_inventory"))
+@app.route(
+    "/admin/print-studio/printer-settings",
+    methods=["GET", "POST"],
+)
+@login_required
+def printer_settings():
+    settings_file = Path("printing/printer_settings.json")
+
+    default_settings = {
+        "default_printer": "",
+        "business_cards_printer": "",
+        "labels_printer": "",
+        "paper_size": "Letter",
+    }
+
+    if settings_file.exists():
+        with settings_file.open("r", encoding="utf-8") as file:
+            settings = json.load(file)
+    else:
+        settings = default_settings
+
+    result = subprocess.run(
+        ["lpstat", "-p"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    printers = []
+
+    for line in result.stdout.splitlines():
+        if line.startswith("printer "):
+            printer_name = line.split()[1]
+            printers.append(printer_name)
+
+    if request.method == "POST":
+        settings["default_printer"] = request.form.get(
+            "default_printer",
+            "",
+        )
+
+        settings["business_cards_printer"] = request.form.get(
+            "business_cards_printer",
+            "",
+        )
+
+        settings["labels_printer"] = request.form.get(
+            "labels_printer",
+            "",
+        )
+
+        settings["paper_size"] = request.form.get(
+            "paper_size",
+            "Letter",
+        )
+
+        with settings_file.open("w", encoding="utf-8") as file:
+            json.dump(settings, file, indent=2)
+
+        flash("Printer settings were saved.", "success")
+
+        return redirect(
+            url_for("printer_settings")
+        )
+
+    return render_template(
+        "admin_printer_settings.html",
+        settings=settings,
+        printers=printers,
+    )
+@app.route(
+    "/admin/print-studio/labels/print",
+    methods=["POST"],
+)
+@login_required
+def print_logo_stickers():
+    pdf_path = Path(
+        "generated_pdfs/labels/logo_stickers_test.pdf"
+    )
+
+    if not pdf_path.exists():
+        flash(
+            "Generate the label sheet first.",
+            "error",
+        )
+        return redirect(
+            url_for("admin_label_studio")
+        )
+
+    try:
+        subprocess.run(
+            ["lp", str(pdf_path)],
+            check=True,
+        )
+
+        flash(
+            "The Avery 22877 label sheet was sent to the printer.",
+            "success",
+        )
+
+    except subprocess.CalledProcessError:
+        flash(
+            "The label sheet could not be printed.",
+            "error",
+        )
+
+    return redirect(
+        url_for("admin_label_studio")
+    )
+@app.route("/admin/print-studio/labels/preview")
+@login_required
+def preview_logo_stickers():
+    pdf_path = Path(
+        "generated_pdfs/labels/logo_stickers_test.pdf"
+    )
+
+    if not pdf_path.exists():
+        flash(
+            "Generate the label sheet first.",
+            "error",
+        )
+        return redirect(
+            url_for("admin_label_studio")
+        )
+
+    return send_file(
+        pdf_path,
+        mimetype="application/pdf",
+    )
+@app.route(
+    "/admin/print-studio/labels/generate",
+    methods=["POST"],
+)
+@login_required
+def generate_logo_stickers():
+    try:
+        subprocess.run(
+            [
+                "python",
+                "printing/labels/logo_stickers.py",
+            ],
+            check=True,
+        )
+
+        flash(
+            "The Avery 22877 label sheet was generated.",
+            "success",
+        )
+
+    except subprocess.CalledProcessError:
+        flash(
+            "The label sheet could not be generated.",
+            "error",
+        )
+
+    return redirect(
+        url_for("admin_label_studio")
+    )
+
+@app.route(
+    "/admin/print-studio/business-cards/print-front",
+    methods=["POST"],
+)
+@login_required
+def print_business_card_front():
+    pdf_path = Path(
+        "generated_pdfs/pettys_business_cards_front.pdf"
+    )
+
+    if not pdf_path.exists():
+        flash(
+            "Generate the business cards first.",
+            "error",
+        )
+        return redirect(url_for("admin_business_cards"))
+
+    settings_file = Path("printing/printer_settings.json")
+
+    try:
+        with settings_file.open("r", encoding="utf-8") as file:
+            printer_settings = json.load(file)
+
+        printer_name = printer_settings.get(
+            "business_cards_printer",
+            "",
+        )
+
+        if not printer_name:
+            flash(
+                "Select a business-card printer in Printer Settings.",
+                "error",
+            )
+            return redirect(url_for("admin_business_cards"))
+
+        subprocess.run(
+            [
+                "lp",
+                "-d",
+                printer_name,
+                str(pdf_path),
+            ],
+            check=True,
+        )
+
+        flash(
+            f"The front sheet was sent to {printer_name}.",
+            "success",
+        )
+
+    except (OSError, json.JSONDecodeError):
+        flash(
+            "The printer settings could not be read.",
+            "error",
+        )
+
+    except subprocess.CalledProcessError:
+        flash(
+            "The front sheet could not be printed.",
+            "error",
+        )
+
+    return redirect(url_for("admin_business_cards"))
+
+
+@app.route(
+    "/admin/print-studio/business-cards/print-back",
+    methods=["POST"],
+)
+@login_required
+def print_business_card_back():
+    pdf_path = Path(
+        "generated_pdfs/pettys_business_cards_back.pdf"
+    )
+
+    if not pdf_path.exists():
+        flash(
+            "Generate the business cards first.",
+            "error",
+        )
+        return redirect(url_for("admin_business_cards"))
+
+    settings_file = Path("printing/printer_settings.json")
+
+    try:
+        with settings_file.open("r", encoding="utf-8") as file:
+            printer_settings = json.load(file)
+
+        printer_name = printer_settings.get(
+            "business_cards_printer",
+            "",
+        )
+
+        if not printer_name:
+            flash(
+                "Select a business-card printer in Printer Settings.",
+                "error",
+            )
+            return redirect(url_for("admin_business_cards"))
+
+        subprocess.run(
+            [
+                "lp",
+                "-d",
+                printer_name,
+                str(pdf_path),
+            ],
+            check=True,
+        )
+
+        flash(
+            f"The back sheet was sent to {printer_name}.",
+            "success",
+        )
+
+    except (OSError, json.JSONDecodeError):
+        flash(
+            "The printer settings could not be read.",
+            "error",
+        )
+
+    except subprocess.CalledProcessError:
+        flash(
+            "The back sheet could not be printed.",
+            "error",
+        )
+
+    return redirect(url_for("admin_business_cards"))
+@app.route(
+    "/admin/print-studio/labels",
+    methods=["GET", "POST"],
+)
+@login_required
+def admin_label_studio():
+    calibration_file = Path("printing/calibration.json")
+
+    default_data = {
+        "avery_22877": {
+            "x_offset": 0.00,
+            "y_offset": 0.00,
+        },
+        "avery_5877": {
+            "x_offset": 0.00,
+            "y_offset": 0.00,
+        },
+    }
+
+    if calibration_file.exists():
+        with calibration_file.open("r", encoding="utf-8") as file:
+            calibration_data = json.load(file)
+    else:
+        calibration_data = default_data
+
+    label_calibration = calibration_data.get(
+        "avery_22877",
+        default_data["avery_22877"],
+    )
+
+    x_offset = label_calibration.get("x_offset", 0.00)
+    y_offset = label_calibration.get("y_offset", 0.00)
+
+    if request.method == "POST":
+        try:
+            x_offset = float(
+                request.form.get("x_offset", 0.00)
+            )
+            y_offset = float(
+                request.form.get("y_offset", 0.00)
+            )
+        except ValueError:
+            flash(
+                "Please enter valid calibration numbers.",
+                "error",
+            )
+            return redirect(
+                url_for("admin_label_studio")
+            )
+
+        calibration_data["avery_22877"] = {
+            "x_offset": x_offset,
+            "y_offset": y_offset,
+        }
+
+        calibration_file.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        with calibration_file.open(
+            "w",
+            encoding="utf-8",
+        ) as file:
+            json.dump(
+                calibration_data,
+                file,
+                indent=2,
+            )
+
+        flash(
+            "Label calibration was saved.",
+            "success",
+        )
+
+        return redirect(
+            url_for("admin_label_studio")
+        )
+
+    return render_template(
+        "admin_label_studio.html",
+        x_offset=x_offset,
+        y_offset=y_offset,
+    )
+@app.route("/admin/print-studio/business-cards/front")
+@login_required
+def preview_business_card_front():
+    pdf_path = Path(
+        "generated_pdfs/pettys_business_cards_front.pdf"
+    )
+
+    if not pdf_path.exists():
+        flash(
+            "Generate the business cards first.",
+            "error",
+        )
+        return redirect(url_for("admin_business_cards"))
+
+    return send_file(
+        pdf_path,
+        mimetype="application/pdf",
+    )
+
+
+@app.route("/admin/print-studio/business-cards/back")
+@login_required
+def preview_business_card_back():
+    pdf_path = Path(
+        "generated_pdfs/pettys_business_cards_back.pdf"
+    )
+
+    if not pdf_path.exists():
+        flash(
+            "Generate the business cards first.",
+            "error",
+        )
+        return redirect(url_for("admin_business_cards"))
+
+    return send_file(
+        pdf_path,
+        mimetype="application/pdf",
+    )
+@app.route("/admin/print-studio")
+@login_required
+def admin_print_studio():
+    return render_template("admin_print_studio.html")
+@app.route("/admin/print-studio/business-cards")
+@login_required
+def admin_business_cards():
+    return render_template("admin_business_cards.html")
+@app.route("/admin/print-studio/business-cards/generate", methods=["POST"])
+@login_required
+def generate_business_cards():
+    try:
+        subprocess.run(
+            ["python", "printing/business_cards.py"],
+            check=True,
+        )
+
+        flash("Business card front and back PDFs were created successfully.", "success")
+
+    except subprocess.CalledProcessError:
+        flash("The business card PDFs could not be created.", "error")
+
+    return redirect(url_for("admin_business_cards"))
 @app.route("/admin/products-manager")
 @login_required
 def admin_products_manager():
