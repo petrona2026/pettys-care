@@ -10,13 +10,35 @@
 </div>
 
 <div class="quick-actions">
-    <a href="/admin/products/add">+ {{ t.add_product }}</a>
-    <a href="/admin/orders">{{ t.view_orders }}</a>
-    <a href="/admin/products">{{ t.manage_products }}</a>
-    <a href="/">{{ t.view_store }}</a>
+
+    <a href="/admin/products/add">
+        + {{ t.add_product }}
+    </a>
+
+    <a href="/admin/orders">
+        {{ t.view_orders }}
+    </a>
+
+    <a href="/admin/products">
+        {{ t.manage_products }}
+    </a>
+
+    <a href="/admin/print-studio">
+        🖨 Print Studio
+    </a>
+
+    <a href="/admin/reports">
+        📊 Reports
+    </a>
+
+    <a href="/">
+        {{ t.view_store }}
+    </a>
+
 </div>
 
 <div class="admin-cards">
+
     <div class="admin-card">
         <h3>{{ t.orders }}</h3>
         <p>{{ total_orders }}</p>
@@ -36,6 +58,127 @@
         <h3>{{ t.revenue }}</h3>
         <p>${{ total_revenue }}</p>
     </div>
+
+    <div class="admin-card">
+
+        <h3>Print Studio</h3>
+
+        <p>Ready</p>
+
+        <a href="/admin/print-studio"
+           style="
+                display:inline-block;
+                margin-top:10px;
+                color:#556B2F;
+                font-weight:bold;
+                text-decoration:none;
+           ">
+            Open Studio →
+        </a>
+
+    </div>
+
+</div>
+
+<div style="
+    margin-top:35px;
+    background:white;
+    padding:25px;
+    border-radius:16px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+">
+
+    <h2 style="
+        color:#3B2A1E;
+        margin-top:0;
+    ">
+        Needs Attention
+    </h2>
+
+    <div style="
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+        gap:18px;
+        margin-top:20px;
+    ">
+
+        <!-- Orders -->
+
+        <a href="/admin/orders"
+           style="
+                display:block;
+                padding:18px;
+                border:1px solid {% if pending_orders > 0 %}#E0B56D{% else %}#B8D2A5{% endif %};
+                background:{% if pending_orders > 0 %}#FFF8EB{% else %}#F3F8EE{% endif %};
+                border-radius:12px;
+                text-decoration:none;
+                color:#3B2A1E;
+           ">
+
+            <strong>🛒 Orders</strong>
+
+            <p style="margin:10px 0 0;color:#6D6259;">
+
+                {% if pending_orders > 0 %}
+                    {{ pending_orders }} order(s) need attention.
+                {% else %}
+                    No pending orders.
+                {% endif %}
+
+            </p>
+
+        </a>
+
+        <!-- Inventory -->
+
+        <a href="/admin/inventory"
+           style="
+                display:block;
+                padding:18px;
+                border:1px solid {% if low_stock_products > 0 %}#D99A8B{% else %}#B8D2A5{% endif %};
+                background:{% if low_stock_products > 0 %}#FFF2EF{% else %}#F3F8EE{% endif %};
+                border-radius:12px;
+                text-decoration:none;
+                color:#3B2A1E;
+           ">
+
+            <strong>📦 Inventory</strong>
+
+            <p style="margin:10px 0 0;color:#6D6259;">
+
+                {% if low_stock_products > 0 %}
+                    {{ low_stock_products }} product(s) are low in stock.
+                {% else %}
+                    Inventory looks good.
+                {% endif %}
+
+            </p>
+
+        </a>
+
+        <!-- Print Studio -->
+
+        <a href="/admin/print-studio"
+           style="
+                display:block;
+                padding:18px;
+                border:1px solid #B8D2A5;
+                background:#F3F8EE;
+                border-radius:12px;
+                text-decoration:none;
+                color:#3B2A1E;
+           ">
+
+            <strong>🖨 Print Studio</strong>
+
+            <p style="margin:10px 0 0;color:#6D6259;">
+                Business cards, labels and printers are ready.
+            </p>
+
+        </a>
+
+    </div>
+
 </div>
 
 {% endblock %}

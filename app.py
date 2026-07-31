@@ -458,6 +458,103 @@ def update_inventory(product_id):
         conn.close()
 
     return redirect(url_for("admin_inventory"))
+
+@app.route(
+    "/admin/print-studio/printer-settings/test",
+    methods=["POST"],
+)
+@login_required
+def printer_test_page():
+    settings_file = Path("printing/printer_settings.json")
+    test_file = Path("generated_pdfs/printer_test.pdf")
+
+    try:
+        with settings_file.open("r", encoding="utf-8") as file:
+            printer_settings = json.load(file)
+
+        printer_name = printer_settings.get(
+            "default_printer",
+            "",
+        )
+
+        if not printer_name:
+            flash(
+                "Select a default printer first.",
+                "error",
+            )
+            return redirect(url_for("printer_settings"))
+
+        test_file.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        from reportlab.lib.pagesizes import letter
+        from reportlab.pdfgen import canvas
+
+        pdf = canvas.Canvas(
+            str(test_file),
+            pagesize=letter,
+        )
+
+        pdf.setFont("Helvetica-Bold", 22)
+        pdf.drawCentredString(
+            306,
+            700,
+            "PETTY'S CARE",
+        )
+
+        pdf.setFont("Helvetica-Bold", 16)
+        pdf.drawCentredString(
+            306,
+            665,
+            "Printer Test",
+        )
+
+        pdf.setFont("Helvetica", 12)
+        pdf.drawCentredString(
+            306,
+            630,
+            f"Printer: {printer_name}",
+        )
+
+        pdf.drawCentredString(
+            306,
+            600,
+            "Status: SUCCESS",
+        )
+
+        pdf.save()
+
+        subprocess.run(
+            [
+                "lp",
+                "-d",
+                printer_name,
+                str(test_file),
+            ],
+            check=True,
+        )
+
+        flash(
+            f"Test page was sent to {printer_name}.",
+            "success",
+        )
+
+    except (OSError, json.JSONDecodeError):
+        flash(
+            "Printer settings could not be read.",
+            "error",
+        )
+
+    except subprocess.CalledProcessError:
+        flash(
+            "The test page could not be printed.",
+            "error",
+        )
+
+    return redirect(url_for("printer_settings"))
+
 @app.route(
     "/admin/print-studio/printer-settings",
     methods=["GET", "POST"],
@@ -528,6 +625,7 @@ def printer_settings():
         settings=settings,
         printers=printers,
     )
+
 @app.route(
     "/admin/print-studio/labels/print",
     methods=["POST"],
@@ -547,15 +645,45 @@ def print_logo_stickers():
             url_for("admin_label_studio")
         )
 
+    settings_file = Path("printing/printer_settings.json")
+
     try:
+        with settings_file.open("r", encoding="utf-8") as file:
+            printer_settings = json.load(file)
+
+        printer_name = printer_settings.get(
+            "labels_printer",
+            "",
+        )
+
+        if not printer_name:
+            flash(
+                "Select a labels printer in Printer Settings.",
+                "error",
+            )
+            return redirect(
+                url_for("admin_label_studio")
+            )
+
         subprocess.run(
-            ["lp", str(pdf_path)],
+            [
+                "lp",
+                "-d",
+                printer_name,
+                str(pdf_path),
+            ],
             check=True,
         )
 
         flash(
-            "The Avery 22877 label sheet was sent to the printer.",
+            f"The label sheet was sent to {printer_name}.",
             "success",
+        )
+
+    except (OSError, json.JSONDecodeError):
+        flash(
+            "The printer settings could not be read.",
+            "error",
         )
 
     except subprocess.CalledProcessError:
@@ -567,6 +695,7 @@ def print_logo_stickers():
     return redirect(
         url_for("admin_label_studio")
     )
+
 @app.route("/admin/print-studio/labels/preview")
 @login_required
 def preview_logo_stickers():
@@ -2439,6 +2568,7 @@ def admin_packing_slip(order_id):
         order=order,
         items=items
     )
+
 @app.route("/admin")
 @login_required
 def admin_dashboard():
@@ -2451,16 +2581,48 @@ def admin_dashboard():
     cursor.execute("SELECT COUNT(*) FROM orders")
     total_orders = cursor.fetchone()[0]
 
-    
+    # Pending Orders
+    cursor.execute(
+        """
+        SELECT COUNT(*)
+        FROM orders
+        WHERE status IN ('Pending Payment', 'Paid', 'Preparing', 'Packed')
+        """
+    )
+    pending_orders = cursor.fetchone()[0]
+
     # Total Products
-    total_products = len(products)
-    
+    cursor.execute("SELECT COUNT(*) FROM products")
+    total_products = cursor.fetchone()[0]
+
+    # Low Stock Products
+    cursor.execute(
+        """
+        SELECT COUNT(*)
+        FROM products
+        WHERE stock <= 2
+          AND active = 1
+        """
+    )
+    low_stock_products = cursor.fetchone()[0]
+
     # Total Customers
-    cursor.execute("SELECT COUNT(DISTINCT email) FROM orders")
+    cursor.execute(
+        """
+        SELECT COUNT(DISTINCT email)
+        FROM orders
+        """
+    )
     total_customers = cursor.fetchone()[0]
 
     # Total Revenue
-    cursor.execute("SELECT IFNULL(SUM(total), 0) FROM orders")
+    cursor.execute(
+        """
+        SELECT IFNULL(SUM(total), 0)
+        FROM orders
+        WHERE status NOT IN ('Cancelled', 'Pending Payment')
+        """
+    )
     total_revenue = cursor.fetchone()[0]
 
     conn.close()
@@ -2468,10 +2630,13 @@ def admin_dashboard():
     return render_template(
         "admin_dashboard.html",
         total_orders=total_orders,
+        pending_orders=pending_orders,
         total_customers=total_customers,
         total_products=total_products,
-        total_revenue=total_revenue
+        low_stock_products=low_stock_products,
+        total_revenue=total_revenue,
     )
+
 @app.route("/admin/customers")
 @login_required
 def admin_customers():
