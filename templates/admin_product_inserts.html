@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Product Inserts - PETTY'S CARE{% endblock %}
+
+{% block content %}
+
+<section style="
+    max-width:950px;
+    margin:50px auto;
+    padding:20px;
+">
+
+    <div style="text-align:center;">
+
+        <h1 style="color:#556B2F;">
+            Product Insert Studio
+        </h1>
+
+        <p>
+            Create care and ingredient cards for Petty's Care products.
+        </p>
+
+    </div>
+
+    <div style="
+        background:white;
+        padding:30px;
+        margin-top:30px;
+        border-radius:16px;
+        box-shadow:0 6px 18px rgba(0,0,0,.08);
+    ">
+
+        <form method="POST"
+              action="{{ url_for('generate_product_insert') }}">
+
+            <h2 style="color:#3B2A1E;">
+                Select Product
+            </h2>
+
+            <select id="product_slug"
+                    name="product_slug"
+                    required
+                    style="
+                        width:100%;
+                        padding:13px;
+                        font-size:16px;
+                        margin-top:10px;
+                    ">
+
+                {% for product in products %}
+                    <option value="{{ product.slug }}"
+                        {% if product.slug == selected_slug %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ product.name }}
+                     </option>
+                {% endfor %}
+
+            </select>
+
+            <div style="
+                margin-top:28px;
+                display:flex;
+                justify-content:center;
+                gap:15px;
+                flex-wrap:wrap;
+            ">
+
+                <button type="submit"
+                        style="
+                            background:#556B2F;
+                            color:white;
+                            border:none;
+                            padding:13px 25px;
+                            border-radius:25px;
+                            font-weight:bold;
+                            cursor:pointer;
+                        ">
+                    Generate Insert
+                </button>
+
+                <button type="button"
+                        onclick="previewInsert()"
+                        style="
+                            background:#B78B43;
+                            color:white;
+                            border:none;
+                            padding:13px 25px;
+                            border-radius:25px;
+                            font-weight:bold;
+                            cursor:pointer;
+                        ">
+                    Preview Insert
+                </button>
+
+            </div>
+
+        </form>
+
+        <form method="POST"
+              action="{{ url_for('print_product_insert') }}"
+              onsubmit="copySelectedProduct()"
+              style="text-align:center;margin-top:15px;">
+
+            <input type="hidden"
+                   id="print_product_slug"
+                   name="product_slug">
+
+            <button type="submit"
+                    style="
+                        background:#556B2F;
+                        color:white;
+                        border:none;
+                        padding:13px 25px;
+                        border-radius:25px;
+                        font-weight:bold;
+                        cursor:pointer;
+                    ">
+                Print Insert
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+<script>
+function getSelectedProduct() {
+    return document.getElementById("product_slug").value;
+}
+
+function previewInsert() {
+    const slug = getSelectedProduct();
+
+    const url =
+        "{{ url_for('preview_product_insert') }}"
+        + "?product_slug="
+        + encodeURIComponent(slug);
+
+    window.open(url, "_blank");
+}
+
+function copySelectedProduct() {
+    document.getElementById(
+        "print_product_slug"
+    ).value = getSelectedProduct();
+}
+</script>
+
+{% endblock %}

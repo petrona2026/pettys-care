@@ -459,6 +459,167 @@ def update_inventory(product_id):
 
     return redirect(url_for("admin_inventory"))
 
+@app.route("/admin/print-studio/product-inserts")
+@login_required
+def admin_product_inserts():
+    products = get_all_products()
+
+    selected_slug = session.get(
+        "product_insert_slug",
+        products[0]["slug"] if products else "",
+    )
+
+    return render_template(
+        "admin_product_inserts.html",
+        products=products,
+        selected_slug=selected_slug,
+    )
+
+@app.route(
+    "/admin/print-studio/product-inserts/generate",
+    methods=["POST"],
+)
+@login_required
+def generate_product_insert():
+    product_slug = request.form.get("product_slug", "").strip()
+
+    if not product_slug:
+        flash("Select a product first.", "error")
+        return redirect(url_for("admin_product_inserts"))
+
+    try:
+        subprocess.run(
+            [
+                "python",
+                "printing/product_inserts/generate.py",
+                product_slug,
+            ],
+            check=True,
+        )
+
+        session["product_insert_slug"] = product_slug
+
+        flash(
+            "The product insert was generated.",
+            "success",
+        )
+
+    except subprocess.CalledProcessError:
+        flash(
+            "The product insert could not be generated.",
+            "error",
+        )
+
+    return redirect(url_for("admin_product_inserts"))
+
+
+@app.route("/admin/print-studio/product-inserts/preview")
+@login_required
+def preview_product_insert():
+    product_slug = request.args.get(
+        "product_slug",
+        session.get("product_insert_slug", ""),
+    ).strip()
+
+    if not product_slug:
+        flash(
+            "Generate a product insert first.",
+            "error",
+        )
+        return redirect(url_for("admin_product_inserts"))
+
+    pdf_path = Path(
+        f"generated_pdfs/product_inserts/"
+        f"{product_slug}_product_inserts.pdf"
+    )
+
+    if not pdf_path.exists():
+        flash(
+            "Generate this product insert first.",
+            "error",
+        )
+        return redirect(url_for("admin_product_inserts"))
+
+    return send_file(
+        pdf_path,
+        mimetype="application/pdf",
+    )
+
+
+@app.route(
+    "/admin/print-studio/product-inserts/print",
+    methods=["POST"],
+)
+@login_required
+def print_product_insert():
+    product_slug = request.form.get(
+        "product_slug",
+        session.get("product_insert_slug", ""),
+    ).strip()
+
+    if not product_slug:
+        flash("Select a product first.", "error")
+        return redirect(url_for("admin_product_inserts"))
+
+    pdf_path = Path(
+        f"generated_pdfs/product_inserts/"
+        f"{product_slug}_product_inserts.pdf"
+    )
+
+    if not pdf_path.exists():
+        flash(
+            "Generate this product insert first.",
+            "error",
+        )
+        return redirect(url_for("admin_product_inserts"))
+
+    settings_file = Path("printing/printer_settings.json")
+
+    try:
+        with settings_file.open("r", encoding="utf-8") as file:
+            printer_settings = json.load(file)
+
+        printer_name = printer_settings.get(
+            "default_printer",
+            "",
+        )
+
+        if not printer_name:
+            flash(
+                "Select a default printer in Printer Settings.",
+                "error",
+            )
+            return redirect(url_for("admin_product_inserts"))
+
+        subprocess.run(
+            [
+                "lp",
+                "-d",
+                printer_name,
+                str(pdf_path),
+            ],
+            check=True,
+        )
+
+        flash(
+            f"The product insert was sent to {printer_name}.",
+            "success",
+        )
+
+    except (OSError, json.JSONDecodeError):
+        flash(
+            "The printer settings could not be read.",
+            "error",
+        )
+
+    except subprocess.CalledProcessError:
+        flash(
+            "The product insert could not be printed.",
+            "error",
+        )
+
+    return redirect(url_for("admin_product_inserts"))
+
 @app.route(
     "/admin/print-studio/printer-settings/test",
     methods=["POST"],
@@ -555,6 +716,8 @@ def printer_test_page():
 
     return redirect(url_for("printer_settings"))
 
+
+
 @app.route(
     "/admin/print-studio/printer-settings",
     methods=["GET", "POST"],
@@ -626,10 +789,134 @@ def printer_settings():
         printers=printers,
     )
 
+@app.route("/admin/print-studio/thank-you-cards/preview")
+@login_required
+def preview_thank_you_cards():
+    pdf_path = Path(
+        "generated_pdfs/thank_you_cards/pettys_thank_you_cards.pdf"
+    )
+
+    if not pdf_path.exists():
+        flash(
+            "Generate the thank-you cards first.",
+            "error",
+        )
+        return redirect(
+            url_for("admin_thank_you_cards")
+        )
+
+    return send_file(
+        pdf_path,
+        mimetype="application/pdf",
+    )
+
+
+
+@app.route(
+    "/admin/print-studio/thank-you-cards/generate",
+    methods=["POST"],
+)
+@login_required
+def generate_thank_you_cards():
+    try:
+        subprocess.run(
+            [
+                "python",
+                "printing/thank_you_cards/generate.py",
+            ],
+            check=True,
+        )
+
+        flash(
+            "The thank-you card sheet was generated.",
+            "success",
+        )
+
+    except subprocess.CalledProcessError:
+        flash(
+            "The thank-you card sheet could not be generated.",
+            "error",
+        )
+
+    return redirect(
+        url_for("admin_thank_you_cards")
+    )
+
 @app.route(
     "/admin/print-studio/labels/print",
     methods=["POST"],
 )
+
+@app.route(
+    "/admin/print-studio/thank-you-cards/print",
+    methods=["POST"],
+)
+@login_required
+def print_thank_you_cards():
+    pdf_path = Path(
+        "generated_pdfs/thank_you_cards/pettys_thank_you_cards.pdf"
+    )
+
+    if not pdf_path.exists():
+        flash(
+            "Generate the thank-you cards first.",
+            "error",
+        )
+        return redirect(
+            url_for("admin_thank_you_cards")
+        )
+
+    settings_file = Path("printing/printer_settings.json")
+
+    try:
+        with settings_file.open("r", encoding="utf-8") as file:
+            printer_settings = json.load(file)
+
+        printer_name = printer_settings.get(
+            "default_printer",
+            "",
+        )
+
+        if not printer_name:
+            flash(
+                "Select a default printer in Printer Settings.",
+                "error",
+            )
+            return redirect(
+                url_for("admin_thank_you_cards")
+            )
+
+        subprocess.run(
+            [
+                "lp",
+                "-d",
+                printer_name,
+                str(pdf_path),
+            ],
+            check=True,
+        )
+
+        flash(
+            f"The thank-you cards were sent to {printer_name}.",
+            "success",
+        )
+
+    except (OSError, json.JSONDecodeError):
+        flash(
+            "The printer settings could not be read.",
+            "error",
+        )
+
+    except subprocess.CalledProcessError:
+        flash(
+            "The thank-you cards could not be printed.",
+            "error",
+        )
+
+    return redirect(
+        url_for("admin_thank_you_cards")
+    )
+
 @login_required
 def print_logo_stickers():
     pdf_path = Path(
@@ -809,6 +1096,11 @@ def print_business_card_front():
         )
 
     return redirect(url_for("admin_business_cards"))
+
+@app.route("/admin/print-studio/thank-you-cards")
+@login_required
+def admin_thank_you_cards():
+    return render_template("admin_thank_you_cards.html")
 
 
 @app.route(

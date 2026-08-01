@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Thank You Cards - PETTY'S CARE{% endblock %}
+
+{% block content %}
+
+<section style="
+    max-width:900px;
+    margin:50px auto;
+    padding:20px;
+    text-align:center;
+">
+
+    <h1 style="color:#556B2F;">
+        Thank You Card Studio
+    </h1>
+
+    <p>
+        Four customer appreciation cards per Letter sheet
+    </p>
+
+    <div style="
+        background:white;
+        padding:30px;
+        margin-top:30px;
+        border-radius:16px;
+        box-shadow:0 6px 18px rgba(0,0,0,.08);
+    ">
+
+        <h2 style="color:#3B2A1E;">
+            Classic Petty’s Care Card
+        </h2>
+
+        <p>
+            Logo, thank-you message, tagline, and website.
+        </p>
+
+        <form method="POST"
+              action="{{ url_for('generate_thank_you_cards') }}"
+              style="margin-top:25px;">
+
+            <button type="submit"
+                    style="
+                        background:#556B2F;
+                        color:white;
+                        border:none;
+                        padding:13px 25px;
+                        border-radius:25px;
+                        font-weight:bold;
+                        cursor:pointer;
+                    ">
+                Generate Cards
+            </button>
+
+        </form>
+
+        <a href="{{ url_for('preview_thank_you_cards') }}"
+           target="_blank"
+           style="
+               display:inline-block;
+               margin-top:15px;
+               background:#B78B43;
+               color:white;
+               padding:12px 24px;
+               border-radius:25px;
+               text-decoration:none;
+               font-weight:bold;
+           ">
+            Preview Cards
+        </a>
+
+        <form method="POST"
+              action="{{ url_for('print_thank_you_cards') }}"
+              style="margin-top:15px;">
+
+            <button type="submit"
+                    style="
+                        background:#556B2F;
+                        color:white;
+                        border:none;
+                        padding:12px 24px;
+                        border-radius:25px;
+                        font-weight:bold;
+                        cursor:pointer;
+                    ">
+                Print Cards
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}
