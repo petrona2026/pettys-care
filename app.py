@@ -1166,6 +1166,7 @@ def print_business_card_back():
         )
 
     return redirect(url_for("admin_business_cards"))
+
 @app.route(
     "/admin/print-studio/labels",
     methods=["GET", "POST"],
@@ -1174,21 +1175,44 @@ def print_business_card_back():
 def admin_label_studio():
     calibration_file = Path("printing/calibration.json")
 
+    position_names = [
+        "A1", "B1", "C1",
+        "A2", "B2", "C2",
+        "A3", "B3", "C3",
+        "A4", "B4", "C4",
+    ]
+
+    default_positions = {
+        position_name: {
+            "x": 0.0,
+            "y": 0.0,
+        }
+        for position_name in position_names
+    }
+
     default_data = {
         "avery_22877": {
-            "x_offset": 0.00,
-            "y_offset": 0.00,
+            "global_x": 0.0,
+            "global_y": 0.0,
+            "positions": default_positions,
         },
         "avery_5877": {
-            "x_offset": 0.00,
-            "y_offset": 0.00,
+            "x_offset": 0.0,
+            "y_offset": 0.0,
         },
     }
 
-    if calibration_file.exists():
-        with calibration_file.open("r", encoding="utf-8") as file:
-            calibration_data = json.load(file)
-    else:
+    try:
+        if calibration_file.exists():
+            with calibration_file.open(
+                "r",
+                encoding="utf-8",
+            ) as file:
+                calibration_data = json.load(file)
+        else:
+            calibration_data = default_data
+
+    except (OSError, json.JSONDecodeError):
         calibration_data = default_data
 
     label_calibration = calibration_data.get(
@@ -1196,18 +1220,68 @@ def admin_label_studio():
         default_data["avery_22877"],
     )
 
-    x_offset = label_calibration.get("x_offset", 0.00)
-    y_offset = label_calibration.get("y_offset", 0.00)
+    global_x = float(
+        label_calibration.get(
+            "global_x",
+            label_calibration.get("x_offset", 0.0),
+        )
+    )
+
+    global_y = float(
+        label_calibration.get(
+            "global_y",
+            label_calibration.get("y_offset", 0.0),
+        )
+    )
+
+    saved_positions = label_calibration.get(
+        "positions",
+        {},
+    )
+
+    positions = {}
+
+    for position_name in position_names:
+        saved_position = saved_positions.get(
+            position_name,
+            {},
+        )
+
+        positions[position_name] = {
+            "x": float(
+                saved_position.get("x", 0.0)
+            ),
+            "y": float(
+                saved_position.get("y", 0.0)
+            ),
+        }
 
     if request.method == "POST":
         try:
-            x_offset = float(
-                request.form.get("x_offset", 0.00)
+            global_x = float(
+                request.form.get("global_x", 0.0)
             )
-            y_offset = float(
-                request.form.get("y_offset", 0.00)
+
+            global_y = float(
+                request.form.get("global_y", 0.0)
             )
-        except ValueError:
+
+            for position_name in position_names:
+                positions[position_name]["x"] = float(
+                    request.form.get(
+                        f"{position_name}_x",
+                        positions[position_name]["x"],
+                    )
+                )
+
+                positions[position_name]["y"] = float(
+                    request.form.get(
+                        f"{position_name}_y",
+                        positions[position_name]["y"],
+                    )
+                )
+
+        except (TypeError, ValueError):
             flash(
                 "Please enter valid calibration numbers.",
                 "error",
@@ -1217,8 +1291,9 @@ def admin_label_studio():
             )
 
         calibration_data["avery_22877"] = {
-            "x_offset": x_offset,
-            "y_offset": y_offset,
+            "global_x": global_x,
+            "global_y": global_y,
+            "positions": positions,
         }
 
         calibration_file.parent.mkdir(
@@ -1237,7 +1312,7 @@ def admin_label_studio():
             )
 
         flash(
-            "Label calibration was saved.",
+            "Avery 22877 matrix calibration was saved.",
             "success",
         )
 
@@ -1247,9 +1322,12 @@ def admin_label_studio():
 
     return render_template(
         "admin_label_studio.html",
-        x_offset=x_offset,
-        y_offset=y_offset,
+        global_x=global_x,
+        global_y=global_y,
+        positions=positions,
+        position_names=position_names,
     )
+
 @app.route("/admin/print-studio/business-cards/front")
 @login_required
 def preview_business_card_front():
