@@ -842,10 +842,6 @@ def generate_thank_you_cards():
         url_for("admin_thank_you_cards")
     )
 
-@app.route(
-    "/admin/print-studio/labels/print",
-    methods=["POST"],
-)
 
 @app.route(
     "/admin/print-studio/thank-you-cards/print",
@@ -916,6 +912,12 @@ def print_thank_you_cards():
     return redirect(
         url_for("admin_thank_you_cards")
     )
+
+@app.route(
+    "/admin/print-studio/labels/print",
+    methods=["POST"],
+)
+
 
 @login_required
 def print_logo_stickers():

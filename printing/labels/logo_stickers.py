@@ -164,13 +164,6 @@ def create_logo_sticker_sheet() -> None:
                 mask="auto",
             )
 
-            # Temporary position name for calibration.
-            pdf.setFont("Helvetica-Bold", 7)
-            pdf.drawCentredString(
-                center_x,
-                label_y + 0.05 * inch,
-                position_name,
-            )
 
     pdf.save()
 
