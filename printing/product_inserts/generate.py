@@ -13,8 +13,19 @@ from reportlab.pdfgen import canvas
 from product_service import get_product_by_slug
 
 
-OUTPUT_DIRECTORY = Path("generated_pdfs/product_inserts")
-LOGO_FILE = Path("static/images/branding/official_logo1.png")
+OUTPUT_DIRECTORY = (
+    PROJECT_ROOT / "generated_pdfs/product_inserts"
+)
+
+LOGO_FILE = (
+    PROJECT_ROOT
+    / "static/images/branding/official_logo1.png"
+)
+
+BACKGROUND_DIRECTORY = (
+    PROJECT_ROOT
+    / "static/print/product_inserts/backgrounds"
+)
 
 PAGE_WIDTH, PAGE_HEIGHT = letter
 
@@ -64,16 +75,47 @@ def draw_product_insert(
 ) -> None:
     center_x = x + CARD_WIDTH / 2
 
-    pdf.setFillColor(CREAM)
-    pdf.rect(
-        x,
-        y,
-        CARD_WIDTH,
-        CARD_HEIGHT,
-        fill=1,
-        stroke=0,
+    product_slug = product.get("slug", "").strip()
+
+    background_path = (
+        BACKGROUND_DIRECTORY
+        / f"{product_slug}.png"
     )
 
+    # Product-specific background
+    if background_path.is_file():
+        print(f"Using background: {background_path}")
+
+        background = ImageReader(
+            str(background_path)
+        )
+
+        pdf.drawImage(
+            background,
+            x,
+            y,
+            width=CARD_WIDTH,
+            height=CARD_HEIGHT,
+            preserveAspectRatio=False,
+            mask="auto",
+        )
+
+        
+    else:
+        print(f"Background not found: {background_path}")
+
+        pdf.setFillColor(CREAM)
+
+        pdf.rect(
+            x,
+            y,
+            CARD_WIDTH,
+            CARD_HEIGHT,
+            fill=1,
+            stroke=0,
+        )
+
+    # Border
     pdf.setStrokeColor(GOLD)
     pdf.setLineWidth(1)
 
@@ -86,9 +128,9 @@ def draw_product_insert(
         stroke=1,
     )
 
-    if LOGO_FILE.exists():
+    # Petty's Care logo
+    if LOGO_FILE.is_file():
         logo = ImageReader(str(LOGO_FILE))
-
         logo_size = 0.78 * inch
 
         pdf.drawImage(
@@ -101,13 +143,22 @@ def draw_product_insert(
             mask="auto",
         )
 
-    product_image_value = product.get("image", "").strip()
+    # Product image
+    product_image_value = (
+        product.get("image", "") or ""
+    ).strip()
 
     if product_image_value:
-        product_image_path = Path("static") / product_image_value
+        product_image_path = (
+            PROJECT_ROOT
+            / "static"
+            / product_image_value
+        )
 
         if product_image_path.is_file():
-            product_image = ImageReader(str(product_image_path))
+            product_image = ImageReader(
+                str(product_image_path)
+            )
 
             image_size = 1.10 * inch
 
@@ -119,18 +170,22 @@ def draw_product_insert(
                 height=image_size,
                 preserveAspectRatio=True,
                 mask="auto",
-           )
+            )
 
+    # Product name
     pdf.setFillColor(OLIVE)
     pdf.setFont("Times-Bold", 16)
 
     pdf.drawCentredString(
         center_x,
         y + 3.05 * inch,
-        product.get("name", "Petty's Care Product"),
+        product.get(
+            "name",
+            "Petty's Care Product",
+        ),
     )
 
-       
+    # Description
     short_description = (
         product.get("short", {}).get("en", "")
     )
@@ -146,18 +201,38 @@ def draw_product_insert(
 
     description_y = y + 2.82 * inch
 
-    for index, line in enumerate(description_lines[:5]):
+    for index, line in enumerate(
+        description_lines[:5]
+    ):
         pdf.drawCentredString(
-        center_x,
-        description_y - index * 0.16 * inch,
-        line[:78],
+            center_x,
+            description_y
+            - index * 0.16 * inch,
+            line[:78],
+        )
+
+    content = (
+        product
+        .get("content", {})
+        .get("en", {})
     )
-    content = product.get("content", {}).get("en", {})
 
-    ingredients = content.get("ingredients", [])
-    benefits = content.get("benefits", [])
-    perfect_for = content.get("perfect_for", [])
+    ingredients = content.get(
+        "ingredients",
+        [],
+    )
 
+    benefits = content.get(
+        "benefits",
+        [],
+    )
+
+    perfect_for = content.get(
+        "perfect_for",
+        [],
+    )
+
+    # Ingredients
     pdf.setFillColor(OLIVE)
     pdf.setFont("Helvetica-Bold", 9)
 
@@ -180,6 +255,7 @@ def draw_product_insert(
         max_items=5,
     )
 
+    # Benefits
     pdf.setFillColor(OLIVE)
     pdf.setFont("Helvetica-Bold", 9)
 
@@ -202,11 +278,14 @@ def draw_product_insert(
         max_items=4,
     )
 
+    # Perfect for
     if perfect_for:
         pdf.setFillColor(GOLD)
         pdf.setFont("Times-Italic", 8.5)
 
-        perfect_for_text = ", ".join(perfect_for[:3])
+        perfect_for_text = ", ".join(
+            perfect_for[:3]
+        )
 
         pdf.drawCentredString(
             center_x,
@@ -214,6 +293,7 @@ def draw_product_insert(
             f"Perfect for: {perfect_for_text}",
         )
 
+    # Website
     pdf.setFillColor(OLIVE)
     pdf.setFont("Helvetica-Bold", 8)
 
@@ -233,7 +313,9 @@ def draw_product_insert(
     )
 
 
-def create_product_insert_sheet(slug: str) -> Path:
+def create_product_insert_sheet(
+    slug: str,
+) -> Path:
     product = get_product_by_slug(slug)
 
     if product is None:
@@ -267,10 +349,10 @@ def create_product_insert_sheet(slug: str) -> Path:
             )
 
             draw_product_insert(
-                pdf,
-                x,
-                y,
-                product,
+                pdf=pdf,
+                x=x,
+                y=y,
+                product=product,
             )
 
     pdf.save()
@@ -283,7 +365,11 @@ def create_product_insert_sheet(slug: str) -> Path:
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         raise SystemExit(
-            "Usage: python printing/product_inserts/generate.py <product-slug>"
+            "Usage: python "
+            "printing/product_inserts/generate.py "
+            "<product-slug>"
         )
 
-    create_product_insert_sheet(sys.argv[1])
+    create_product_insert_sheet(
+        sys.argv[1]
+    )

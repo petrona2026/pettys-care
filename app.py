@@ -540,11 +540,20 @@ def preview_product_insert():
         )
         return redirect(url_for("admin_product_inserts"))
 
-    return send_file(
+    response = send_file(
         pdf_path,
         mimetype="application/pdf",
+        conditional=False,
+        max_age=0,
     )
 
+    response.headers["Cache-Control"] = (
+        "no-store, no-cache, must-revalidate, max-age=0"
+    )
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+
+    return response
 
 @app.route(
     "/admin/print-studio/product-inserts/print",
@@ -1751,7 +1760,30 @@ def product_detail(slug):
     if product is None:
         abort(404)
     language = session.get("language", "en")
+    
+    gallery_directory = (
+        Path("static/images/gallery")
+        / product["slug"]
+    )
 
+    gallery_images = []
+
+    if gallery_directory.is_dir():
+        allowed_extensions = {
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".webp",
+    }
+
+    gallery_images = sorted(
+        [
+            file.name
+            for file in gallery_directory.iterdir()
+            if file.is_file()
+            and file.suffix.lower() in allowed_extensions
+        ]
+    )
     product_details = {
         "coconut-bliss": {
         "en": {
@@ -2345,6 +2377,7 @@ def product_detail(slug):
 
     return render_template(
         "product_detail.html",
+        gallery_images=gallery_images,
         product=product,
         details=details,
         reviews=reviews,

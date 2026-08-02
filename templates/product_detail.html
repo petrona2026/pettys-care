@@ -47,19 +47,72 @@
     <!-- Main product section -->
     <section class="product-main">
 
-        <div class="product-image-column">
-            <div class="product-image-frame">
+    <div class="product-image-column">
 
-                <img
-                    src="{{ url_for('static', filename='images/' + product.image) }}"
-                    alt="{{ product.name }} handcrafted soap"
-                    class="product-detail-image"
-                >
+    {% if gallery_images %}
 
-            </div>
+        <div class="product-image-frame">
+            <img
+                id="main-product-image"
+                src="{{ url_for(
+                    'static',
+                    filename='images/gallery/'
+                    + product.slug
+                    + '/'
+                    + gallery_images[0]
+                ) }}"
+                alt="{{ product.name }} handcrafted soap"
+                class="product-detail-image"
+            >
         </div>
 
+        <div class="product-gallery-thumbnails">
 
+            {% for image_name in gallery_images %}
+
+                <button
+                    type="button"
+                    class="product-gallery-thumb {% if loop.first %}active{% endif %}"
+                    data-image="{{ url_for(
+                        'static',
+                        filename='images/gallery/'
+                        + product.slug
+                        + '/'
+                        + image_name
+                    ) }}"
+                >
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='images/gallery/'
+                            + product.slug
+                            + '/'
+                            + image_name
+                        ) }}"
+                        alt="{{ product.name }} gallery image {{ loop.index }}"
+                    >
+                </button>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="product-image-frame">
+            <img
+                src="{{ url_for(
+                    'static',
+                    filename='images/' + product.image
+                ) }}"
+                alt="{{ product.name }} handcrafted soap"
+                class="product-detail-image"
+            >
+        </div>
+
+    {% endif %}
+
+</div>
         <div class="product-information-column">
 
             <p class="product-small-label">
@@ -75,7 +128,7 @@
             </div>
 
             <p class="product-detail-description">
-                {{ product.short[session.get('language', 'en')] }}
+                   {{ product.short[session.get('language', 'en')] }}
             </p>
 
             <form
@@ -478,5 +531,54 @@ sizeOptions.forEach(function(option) {
     });
 });
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const mainImage = document.getElementById(
+        "main-product-image"
+    );
+
+    const thumbnails = document.querySelectorAll(
+        ".product-gallery-thumb"
+    );
+
+    if (!mainImage || thumbnails.length === 0) {
+        return;
+    }
+
+    function changeMainImage(button) {
+        const imageUrl = button.dataset.image;
+
+        if (!imageUrl) {
+            return;
+        }
+
+        mainImage.classList.add("changing");
+
+        window.setTimeout(function () {
+            mainImage.src = imageUrl;
+            mainImage.classList.remove("changing");
+        }, 130);
+
+        thumbnails.forEach(function (thumbnail) {
+            thumbnail.classList.remove("active");
+        });
+
+        button.classList.add("active");
+    }
+
+    thumbnails.forEach(function (button) {
+        button.addEventListener("click", function () {
+            changeMainImage(button);
+        });
+
+        button.addEventListener("mouseenter", function () {
+            changeMainImage(button);
+        });
+    });
+});
+</script>
+
+
 </body>
 </html>
