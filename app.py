@@ -776,7 +776,16 @@ def printer_settings():
     except OSError:
         printer_detection_available = False
         printers = []
+        saved_printers = [
+        settings.get("default_printer", ""),
+        settings.get("business_cards_printer", ""),
+        settings.get("labels_printer", ""),
+    ]
 
+    for printer_name in saved_printers:
+        if printer_name and printer_name not in printers:
+            printers.append(printer_name) 
+    
     if request.method == "POST":
         settings["default_printer"] = request.form.get(
             "default_printer",
