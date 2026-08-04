@@ -726,7 +726,6 @@ def printer_test_page():
     return redirect(url_for("printer_settings"))
 
 
-
 @app.route(
     "/admin/print-studio/printer-settings",
     methods=["GET", "POST"],
@@ -742,10 +741,17 @@ def printer_settings():
         "paper_size": "Letter",
     }
 
-    if settings_file.exists():
-        with settings_file.open("r", encoding="utf-8") as file:
-            settings = json.load(file)
-    else:
+    try:
+        if settings_file.exists():
+            with settings_file.open(
+                "r",
+                encoding="utf-8",
+            ) as file:
+                settings = json.load(file)
+        else:
+            settings = default_settings.copy()
+
+    except (OSError, json.JSONDecodeError):
         settings = default_settings.copy()
 
     printers = []
@@ -768,15 +774,12 @@ def printer_settings():
                 if len(parts) >= 2:
                     printers.append(parts[1])
 
-    except FileNotFoundError:
-        # Railway (or another server) does not have lpstat/CUPS.
+    except (FileNotFoundError, OSError):
+        # Railway does not provide lpstat/CUPS.
         printer_detection_available = False
-        printers = []
 
-    except OSError:
-        printer_detection_available = False
-        printers = []
-        saved_printers = [
+    # This must be outside the try/except block.
+    saved_printers = [
         settings.get("default_printer", ""),
         settings.get("business_cards_printer", ""),
         settings.get("labels_printer", ""),
@@ -784,8 +787,8 @@ def printer_settings():
 
     for printer_name in saved_printers:
         if printer_name and printer_name not in printers:
-            printers.append(printer_name) 
-    
+            printers.append(printer_name)
+
     if request.method == "POST":
         settings["default_printer"] = request.form.get(
             "default_printer",
@@ -812,13 +815,27 @@ def printer_settings():
             exist_ok=True,
         )
 
-        with settings_file.open("w", encoding="utf-8") as file:
-            json.dump(settings, file, indent=2)
+        try:
+            with settings_file.open(
+                "w",
+                encoding="utf-8",
+            ) as file:
+                json.dump(
+                    settings,
+                    file,
+                    indent=2,
+                )
 
-        flash(
-            "Printer settings were saved.",
-            "success",
-        )
+            flash(
+                "Printer settings were saved.",
+                "success",
+            )
+
+        except OSError:
+            flash(
+                "Printer settings could not be saved on this server.",
+                "error",
+            )
 
         return redirect(
             url_for("printer_settings")
@@ -830,6 +847,7 @@ def printer_settings():
         printers=printers,
         printer_detection_available=printer_detection_available,
     )
+
 
 @app.route("/admin/print-studio/thank-you-cards/preview")
 @login_required
