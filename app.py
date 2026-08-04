@@ -746,21 +746,36 @@ def printer_settings():
         with settings_file.open("r", encoding="utf-8") as file:
             settings = json.load(file)
     else:
-        settings = default_settings
-
-    result = subprocess.run(
-        ["lpstat", "-p"],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+        settings = default_settings.copy()
 
     printers = []
+    printer_detection_available = True
 
-    for line in result.stdout.splitlines():
-        if line.startswith("printer "):
-            printer_name = line.split()[1]
-            printers.append(printer_name)
+    try:
+        result = subprocess.run(
+            ["lpstat", "-p"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        for line in result.stdout.splitlines():
+            line = line.strip()
+
+            if line.startswith("printer "):
+                parts = line.split()
+
+                if len(parts) >= 2:
+                    printers.append(parts[1])
+
+    except FileNotFoundError:
+        # Railway (or another server) does not have lpstat/CUPS.
+        printer_detection_available = False
+        printers = []
+
+    except OSError:
+        printer_detection_available = False
+        printers = []
 
     if request.method == "POST":
         settings["default_printer"] = request.form.get(
@@ -783,10 +798,18 @@ def printer_settings():
             "Letter",
         )
 
+        settings_file.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
         with settings_file.open("w", encoding="utf-8") as file:
             json.dump(settings, file, indent=2)
 
-        flash("Printer settings were saved.", "success")
+        flash(
+            "Printer settings were saved.",
+            "success",
+        )
 
         return redirect(
             url_for("printer_settings")
@@ -796,6 +819,7 @@ def printer_settings():
         "admin_printer_settings.html",
         settings=settings,
         printers=printers,
+        printer_detection_available=printer_detection_available,
     )
 
 @app.route("/admin/print-studio/thank-you-cards/preview")
